@@ -64,11 +64,18 @@ fun FormScreen(
         },
         bottomBar = {
             BottomNavBar(
-                canNavigateBack = true,
-                nextButtonLabel = stringResource(R.string.next),
-                onNextButtonClicked = onNextButtonClicked,
-                previousButtonLabel = stringResource(R.string.previous),
-                onPreviousButtonClicked = onPreviousButtonClicked
+                buttons = listOf(
+                    Triple(
+                        onPreviousButtonClicked,
+                        stringResource(R.string.previous),
+                        ButtonType.Outlined
+                    ),
+                    Triple(
+                        onNextButtonClicked,
+                        stringResource(R.string.next),
+                        ButtonType.Filled
+                    )
+                )
             )
         },
         modifier = modifier

@@ -34,14 +34,23 @@ fun LoadingScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
             BottomNavBar(
-                canNavigateBack = true,
-                nextButtonLabel = "Success",
-                onNextButtonClicked = { formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED) },
-                previousButtonLabel = "Fail",
-                onPreviousButtonClicked = {
-                    formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.connection_failed)))
-                    formViewModel.setConnectionStatus(ConnectionStatus.ERROR)
-                }
+                buttons = listOf(
+                    Triple(
+                        {
+                            formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.connection_failed)))
+                            formViewModel.setConnectionStatus(ConnectionStatus.ERROR)
+                        },
+                        "Fail",
+                        ButtonType.Outlined
+                    ),
+                    Triple(
+                        {
+                            formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
+                        },
+                        "Success",
+                        ButtonType.Filled
+                    )
+                )
             )
         },
         modifier = modifier

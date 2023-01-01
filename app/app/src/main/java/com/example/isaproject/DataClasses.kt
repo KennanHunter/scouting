@@ -78,3 +78,8 @@ data class Device(
     val id: String,
     val name: String
 )
+
+enum class ButtonType {
+    Outlined,
+    Filled
+}

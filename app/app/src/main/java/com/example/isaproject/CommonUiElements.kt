@@ -45,34 +45,36 @@ fun PageTitle(
 
 @Composable
 fun BottomNavBar(
-    canNavigateBack: Boolean,
-    nextButtonLabel: String,
-    onNextButtonClicked: () -> Unit,
-    modifier: Modifier = Modifier,
-    previousButtonLabel: String = "",
-    onPreviousButtonClicked: () -> Unit = {}
+    buttons: List<Triple<() -> Unit, String, ButtonType>>,
+    modifier: Modifier = Modifier
 ) {
     BottomAppBar(
         modifier = modifier
     ) {
         Row {
-            if (canNavigateBack) {
-                OutlinedButton(
-                    onClick = onPreviousButtonClicked,
-                    modifier = Modifier
-                        .padding(all = dimensionResource(R.dimen.margin))
-                        .weight(1f)
-                ) {
-                    Text(previousButtonLabel)
+            for (it in buttons) {
+                when (it.third) {
+                    ButtonType.Outlined -> {
+                        OutlinedButton(
+                            onClick = it.first,
+                            modifier = Modifier
+                                .padding(all = dimensionResource(R.dimen.margin))
+                                .weight(1f)
+                        ) {
+                            Text(it.second)
+                        }
+                    }
+                    ButtonType.Filled -> {
+                        Button(
+                            onClick = it.first,
+                            modifier = Modifier
+                                .padding(all = dimensionResource(R.dimen.margin))
+                                .weight(1f)
+                        ) {
+                            Text(it.second)
+                        }
+                    }
                 }
-            }
-            Button(
-                onClick = onNextButtonClicked,
-                modifier = Modifier
-                    .padding(all = dimensionResource(R.dimen.margin))
-                    .weight(1f)
-            ) {
-                Text(nextButtonLabel)
             }
         }
     }

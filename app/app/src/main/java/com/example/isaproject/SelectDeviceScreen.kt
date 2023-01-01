@@ -36,17 +36,21 @@ fun SelectDeviceScreen(
         topBar = { PageTitle(text = AppScreens.SelectDevice.label) },
         bottomBar = {
             BottomNavBar(
-                canNavigateBack = false,
-                nextButtonLabel = stringResource(R.string.connect),
-                onNextButtonClicked = {
-                    if (formViewModel.currentDevice.id != "") {
-                        formViewModel.setConnectionStatus(ConnectionStatus.CONNECTING)
-                        //TODO: Code for connecting to the selected device
-                        onConnectButtonClicked()
-                    } else {
-                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
-                    }
-                }
+                buttons = listOf(
+                    Triple(
+                        {
+                            if (formViewModel.currentDevice.id != "") {
+                                formViewModel.setConnectionStatus(ConnectionStatus.CONNECTING)
+                                //TODO: Code for connecting to the selected device
+                                onConnectButtonClicked()
+                            } else {
+                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
+                            }
+                        },
+                        stringResource(R.string.connect),
+                        ButtonType.Filled
+                    )
+                )
             )
         }
     ) { innerPadding ->
