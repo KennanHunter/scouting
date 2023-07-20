@@ -1,0 +1,23 @@
+{
+  "editor.tabSize": 2,
+  "material-icon-theme.folders.associations": {
+    "relay": "upload",
+    "thebluealliance": "plugin",
+    "stores": "container"
+  },
+  "material-icon-theme.files.associations": {
+    "*.vars": "tune",
+    "*.vars.example": "tune"
+  },
+  "cSpell.words": [
+    "hono",
+    "Kennnan",
+    "mantine",
+    "tabler",
+    "thebluealliance",
+    "zustand"
+  ],
+  "files.associations": {
+    "*.vars*": "env"
+  }
+}

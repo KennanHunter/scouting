@@ -1,0 +1,19 @@
+{
+  "name": "scouting",
+  "description": "Indiana Scouting Alliance Monorepo",
+  "author": {
+    "name": "Kennan Hunter",
+    "email": "kennanhunter5@gmail.com",
+    "url": "https://kennan.tech"
+  },
+  "scripts": {
+    "dev-api": "cd api && pnpm run dev",
+    "dev-web": "cd web && pnpm run dev",
+    "dev": "concurrently -c blue,green pnpm:dev-*",
+    "format": "prettier -w ."
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.1.0"
+  }
+}

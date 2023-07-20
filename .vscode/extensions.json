@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "orta.vscode-twoslash-queries",
+    "irongeek.vscode-env",
+    "aaron-bond.better-comments",
+    "pkief.material-icon-theme",
+    "esbenp.prettier-vscode",
+    "streetsidesoftware.code-spell-checker",
+    "tamasfe.even-better-toml"
+  ]
+}
