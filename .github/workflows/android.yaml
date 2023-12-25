@@ -1,0 +1,27 @@
+name: Build Android application
+on:
+  push:
+    branches:
+      - '**'
+jobs:
+  build-for-commit:
+    runs-on: ubuntu-latest
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Setup gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Execute Gradle build
+        run: ./gradlew build
+
+      # # TODO: set up once build errors are fixed 
+      # - name: Upload APK
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: app-apk
+      #     path: path/to/artifact/world.txt

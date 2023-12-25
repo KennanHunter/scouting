@@ -1,3 +1,6 @@
 node_modules
 .vs
 .pnpm-store
+
+# We preserve .idea in the app directory but not in root
+./.idea
