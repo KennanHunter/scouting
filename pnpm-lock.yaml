@@ -19,13 +19,13 @@ importers:
     dependencies:
       '@hono/graphql-server':
         specifier: ^0.4.1
-        version: 0.4.1(hono@3.11.1)
+        version: 0.4.1(hono@3.11.7)
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
       hono:
-        specifier: ^3.11.1
-        version: 3.11.1
+        specifier: ^3.11.7
+        version: 3.11.7
       jose:
         specifier: ^4.15.4
         version: 4.15.4
@@ -820,14 +820,14 @@ packages:
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
     dev: false
 
-  /@hono/graphql-server@0.4.1(hono@3.11.1):
+  /@hono/graphql-server@0.4.1(hono@3.11.7):
     resolution: {integrity: sha512-lp27VsxyakfBH+tgUaLaed6ivGfTa0r80jlszJS84/7qGy2+1MGnLl5N5GJImyOxy7VVEky1JVvLxnRap7KA3w==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       hono: ^3.0.0
     dependencies:
       graphql: 16.8.1
-      hono: 3.11.1
+      hono: 3.11.7
     dev: false
 
   /@humanwhocodes/config-array@0.11.13:
@@ -2039,8 +2039,8 @@ packages:
       react-is: 16.13.1
     dev: false
 
-  /hono@3.11.1:
-    resolution: {integrity: sha512-8FNUh8p/dkw8qYFxy8IJA500iW9NSeuvuwRfLw0FGkE/blCxtqWqxWTB+NaLSK3qGpaudzKur6s40Q0kpO0E+w==}
+  /hono@3.11.7:
+    resolution: {integrity: sha512-TcfAq7IdipF+9coxnuzYlSSBXbm9mTyWjjagLCv/2ampboNcKJdi+XCK5G48mHQtpI5+9Rj3J4FfcGgw9vzIww==}
     engines: {node: '>=16.0.0'}
     dev: false
 
