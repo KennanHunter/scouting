@@ -20,7 +20,11 @@ export const SelectEvent: FC = () => {
         </Button>
       </Flex>
       <Divider py={"lg"} />
-      <SimpleGrid cols={3}>
+      <SimpleGrid
+        cols={{ base: 1, sm: 2, lg: 5 }}
+        spacing={{ base: 10, sm: "xl" }}
+        verticalSpacing={{ base: "md", sm: "xl" }}
+      >
         {new Array(10).fill(
           <Link style={{ all: "unset" }} to="/event/2023inmis/">
             <EventCard

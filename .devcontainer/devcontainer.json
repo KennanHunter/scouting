@@ -23,8 +23,10 @@
     }
   },
 
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [5173, 8787],
+  // 4174 - Web Ui Production
+  // 5173 - Web Ui Development
+  // 8787 - Web Api
+  "forwardPorts": [4173, 5173, 8787],
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "pnpm create-environment & pnpm install",

@@ -3,7 +3,6 @@ import { modals } from "@mantine/modals";
 import { IconKey } from "@tabler/icons-react";
 import { FC } from "react";
 import { create } from "zustand";
-import { apiFetcher } from "../../data/apiFetcher";
 
 const useImportEventKeyStore = create<{
   key: string;
@@ -30,7 +29,7 @@ const ImportEventModal: FC<{ errors?: string[] }> = ({ errors }) => {
         value={key}
         onChange={(e) => setKey(e.target.value)}
         error={errors ? errors.join(" ") : undefined}
-        icon={<IconKey />}
+        leftSection={<IconKey />}
       />
     </Stack>
   );
@@ -44,8 +43,6 @@ export const openImportEventModal = () => {
     onConfirm: () => {
       const key = useImportEventKeyStore.getState().key;
       console.log(key);
-
-      apiFetcher("/api/event/" + key + "/").then();
 
       useImportEventKeyStore.getState().clear();
     },
