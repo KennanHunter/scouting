@@ -22,5 +22,6 @@
   ],
   "files.associations": {
     "*.vars*": "env"
-  }
+  },
+  "java.configuration.updateBuildConfiguration": "automatic"
 }
