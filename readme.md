@@ -1,3 +1,8 @@
+# Indiana Scouting Alliance Monorepo
+
+[![Build Android application](https://img.shields.io/github/actions/workflow/status/kennanhunter/scouting/android.yaml?style=for-the-badge&label=Android)](https://github.com/KennanHunter/scouting/actions/workflows/android.yaml)
+[![Deploy API & Web](https://img.shields.io/github/actions/workflow/status/kennanhunter/scouting/javascript.yaml?style=for-the-badge&label=Web%20%2B%20API)](https://github.com/KennanHunter/scouting/actions/workflows/javascript.yaml)
+
 # Setup
 
 ## Dev Container
