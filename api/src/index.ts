@@ -1,11 +1,10 @@
 import { Context, Handler, Hono, MiddlewareHandler } from "hono";
 import { cors } from "hono/cors";
-import { newEventHandler } from "./routes/api/event";
-import { generateHandler } from "./routes/auth/generate";
-import { statusResolver } from "./routes/graphql/status";
 import { addTrailingSlash } from "./middleware/addTrailingSlash";
 import { handle404 } from "./routes/404";
+import { generateHandler } from "./routes/auth/generate";
 import { graphqlHandler } from "./routes/graphql";
+import { graphqlViewerHandler } from "./routes/graphql/viewer";
 
 export type Bindings = {
   DB: D1Database;
@@ -28,6 +27,7 @@ app
   .use("/*", cors()) // TODO: limit cors allowed origins
   // .use("/api/*", protect) // TODO: Fix Authentication
   .post("/auth/generate/", generateHandler)
+  .get("/viewer/", graphqlViewerHandler)
   .use("/graphql/", graphqlHandler);
 
 export default app;

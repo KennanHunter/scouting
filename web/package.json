@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
+    "@garph/gqty": "^0.4.5",
     "@mantine/core": "^7.3.2",
     "@mantine/hooks": "^7.3.2",
     "@mantine/modals": "^7.3.2",

@@ -1,22 +1,28 @@
 import { graphqlServer } from "@hono/graphql-server";
-import { makeSchema, queryType } from "nexus";
-import { RouteHandler } from "../..";
-import { statusResolver, statusType } from "./status";
+import { APIContext, RouteHandler } from "../..";
+import { InferResolvers, g, buildSchema } from "garph";
 
-const Query = queryType({
-  definition(t) {
-    t.field("status", {
-      type: statusType,
-      resolve: statusResolver,
-    });
+const queryType = g.type("Query", {
+  greet: g
+    .string()
+    .args({
+      name: g.string().optional().default("Kennan"),
+    })
+    .description("Greets a person"),
+});
+
+const resolvers: InferResolvers<
+  { Query: typeof queryType },
+  { context: APIContext }
+> = {
+  Query: {
+    greet: (parent, args, context, info) => `Hello, ${args.name}`,
   },
-});
+};
 
-const schema = makeSchema({
-  types: [Query],
-});
+const schema = buildSchema({ g, resolvers });
 
-export const graphqlHandler: RouteHandler = (c) =>
-  graphqlServer({
-    schema,
-  });
+export const graphqlHandler: RouteHandler = graphqlServer({
+  schema,
+  pretty: true,
+});

@@ -1,0 +1,19 @@
+import { InferClient, createClient } from "@garph/gqty";
+import {
+  createScalarsEnumsHash,
+  createGeneratedSchema,
+} from "@garph/gqty/dist/utils";
+import { schema, queryType } from "./schema.ts";
+
+type ClientTypes = InferClient<{ query: typeof queryType }>;
+
+export const { useQuery, query } = createClient<ClientTypes>({
+  generatedSchema: createGeneratedSchema(schema),
+  scalarsEnumsHash: createScalarsEnumsHash(schema),
+  url: "http://localhost:4000/graphql",
+});
+
+// Needed for the babel plugin
+export { schema as compiledSchema };
+
+// TODO: replace runtime issues with https://garph.dev/docs/integration/client/gqty.html#babel-plugin
