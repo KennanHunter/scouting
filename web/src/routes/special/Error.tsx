@@ -20,7 +20,7 @@ export const ErrorPage: FC = () => {
           If this is important, dm <Code>kennnan</Code> on discord and include
           the error below.
         </Text>
-        <Code block >{JSON.stringify(error, null, 4)}</Code>
+        <Code block>{JSON.stringify(error, null, 4)}</Code>
       </Stack>
     </Center>
   );

@@ -1,31 +1,22 @@
-import { z } from "zod";
-import { APIContext, RouteHandler } from "../..";
+import { Infer, g } from "garph";
+import { APIContext } from "../..";
 import { protect } from "../../auth/protected";
-import { FieldResolver, enumType, objectType } from "nexus";
-import { AbstractTypeResolver } from "nexus/dist/core";
 
-export const zStatusEnum = () => z.enum(["operational", "online", "offline"]);
-export type ZStatusEnum = ReturnType<typeof zStatusEnum>;
+export const statusEnum = g.enumType("StatusEnum", [
+  "operational",
+  "online",
+  "offline",
+] as const);
 
-export const statusEnum = enumType({
-  members: ["operational", "online", "offline"],
-  name: "StatusEnum",
-});
-
-export const statusType = objectType({
-  name: "Status",
-  definition: (t) => {
-    t.string("runtime");
-    t.string("authentication");
-    t.field("api", {
-      type: statusEnum,
-    });
-  },
+export const statusType = g.type("Status", {
+  runtime: g.string(),
+  authentication: g.string(),
+  api: statusEnum,
 });
 
 const checkDBConnection = () => {
   // TODO:
-  return statusEnum.value.members;
+  return "operational";
 };
 
 const checkAuthentication = async (
@@ -40,28 +31,24 @@ const checkAuthentication = async (
 
 const checkTheBlueAlliance = async (
   c: APIContext
-): Promise<z.infer<ZStatusEnum>> => {
+): Promise<Infer<typeof statusEnum>> => {
   const status = await fetch("https://www.thebluealliance.com/api/v3/status", {
     headers: {
       "x-tba-auth-key": c.env.TBA_KEY,
     },
   }).then((val) => val.status);
 
-  if (status === 200) return zStatusEnum().enum.operational;
+  if (status === 200) return "operational";
 
-  return zStatusEnum().enum.offline;
+  return "offline";
 };
 
-export const statusResolver: FieldResolver<"Query", "status"> = async (
-  root,
-  c,
-  info
-) => ({
-  status: {
-    api: zStatusEnum().Enum.operational,
-    db: checkDBConnection(),
-    thebluealliance: await checkTheBlueAlliance(c),
-  },
-  authentication: await checkAuthentication(c),
-  environment: Object.keys(c.env),
-});
+// export const statusResolver = async (parent, args, context, info) => ({
+//   status: {
+//     api: zStatusEnum().Enum.operational,
+//     db: checkDBConnection(),
+//     thebluealliance: await checkTheBlueAlliance(c),
+//   },
+//   authentication: await checkAuthentication(c),
+//   environment: Object.keys(c.env),
+// });

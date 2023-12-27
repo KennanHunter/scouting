@@ -1,8 +1,7 @@
 import * as jose from "jose";
-import { JwtPayload } from "types";
 import { RouteHandler } from "../..";
-import { successfulResponse } from "../../util/generateResponse";
 import { z } from "zod";
+import { JwtPayload } from "../../auth/protected";
 
 export const generateHandler: RouteHandler = async (c) => {
   const secret = jose.base64url.decode(c.env.JWT_SECRET);
@@ -17,7 +16,7 @@ export const generateHandler: RouteHandler = async (c) => {
 
   console.log(JSON.stringify(await jose.jwtDecrypt(jwt, secret), null, 4));
 
-  return successfulResponse(z.object({ jwt: z.string() }), {
+  return {
     jwt,
-  });
+  };
 };

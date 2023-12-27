@@ -25,8 +25,8 @@ export const SelectEvent: FC = () => {
         spacing={{ base: 10, sm: "xl" }}
         verticalSpacing={{ base: "md", sm: "xl" }}
       >
-        {new Array(10).fill(
-          <Link style={{ all: "unset" }} to="/event/2023inmis/">
+        {new Array(10).fill(null).map((_, i) => (
+          <Link style={{ all: "unset" }} key={i} to="/event/2023inmis/">
             <EventCard
               currentlyActive={true}
               eventName={"FIN District Mishawaka Event"}
@@ -34,7 +34,7 @@ export const SelectEvent: FC = () => {
               startDate={"Mar 3rd"}
             />
           </Link>
-        )}
+        ))}
       </SimpleGrid>
     </>
   );
