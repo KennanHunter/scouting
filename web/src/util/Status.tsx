@@ -1,11 +1,17 @@
 import { Box, Loader, Text } from "@mantine/core";
 import { FC, useEffect, useState } from "react";
+import { query } from "../client";
 
 export const Status: FC = () => {
   const [status, _setStatus] = useState<unknown>();
   const [authenticated, _setAuthenticated] = useState<string>();
+  console.log("Greeting")
+  console.dir(query.greet({
+    name: "Kennan :)"
+  }))
 
   useEffect(() => {
+
     // apiFetcher("/status/", statusResponse()).then((val) => {
     //   if (val.status === "error") return;
     //   setStatus(val.data.status.api);

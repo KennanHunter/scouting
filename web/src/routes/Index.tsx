@@ -3,7 +3,6 @@ import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import { Status } from "../util/Status";
 
-
 export const Index: FC = () => {
   return (
     <Box

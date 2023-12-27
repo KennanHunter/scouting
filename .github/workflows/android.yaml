@@ -1,11 +1,16 @@
 name: Build Android application
+
 on:
   push:
     branches:
-      - '**'
+      - "**"
+  workflow_dispatch:
+
 jobs:
-  build-for-commit:
+  build:
     runs-on: ubuntu-latest
+    name: Build and upload
+    steps:
       - name: checkout
         uses: actions/checkout@v2
 
@@ -19,9 +24,9 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew build
 
-      # # TODO: set up once build errors are fixed 
-      # - name: Upload APK
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: app-apk
-      #     path: path/to/artifact/world.txt
+    # # TODO: set up once build errors are fixed
+    # - name: Upload APK
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: app-apk
+    #     path: path/to/artifact/world.txt

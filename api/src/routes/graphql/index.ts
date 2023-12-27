@@ -2,7 +2,7 @@ import { graphqlServer } from "@hono/graphql-server";
 import { APIContext, RouteHandler } from "../..";
 import { InferResolvers, g, buildSchema } from "garph";
 
-const queryType = g.type("Query", {
+export const queryType = g.type("Query", {
   greet: g
     .string()
     .args({
@@ -20,7 +20,7 @@ const resolvers: InferResolvers<
   },
 };
 
-const schema = buildSchema({ g, resolvers });
+export const schema = buildSchema({ g, resolvers });
 
 export const graphqlHandler: RouteHandler = graphqlServer({
   schema,

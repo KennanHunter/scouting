@@ -6,7 +6,7 @@
 
 The easiest way to start contributing is to open this repository in a codespace. Either **press the button above**, or go to [the repository](https://github.com/kennanhunter/scouting) and select the big green button labeled `<> Code`. In the resulting drop down menu, press `Codespaces` and press `Create Codespace on main`.
 
-When the codespace is open, run `pnpm dev` in the terminal. 
+When the codespace is open, run `pnpm dev` in the terminal.
 
 ## System Diagram
 

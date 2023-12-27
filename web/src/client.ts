@@ -3,7 +3,7 @@ import {
   createScalarsEnumsHash,
   createGeneratedSchema,
 } from "@garph/gqty/dist/utils";
-import { schema, queryType } from "./schema.ts";
+import { schema, queryType } from "api/src/routes/graphql/index";
 
 type ClientTypes = InferClient<{ query: typeof queryType }>;
 
