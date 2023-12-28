@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -23,9 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.isaproject.ui.theme.ISAProjectTheme
 
 @Composable
 fun formItem(
@@ -110,11 +110,12 @@ fun FormDivider(
 
 @Composable
 fun FormSpace(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    height: Dp = dimensionResource(R.dimen.form_element_space)
 ) {
     Spacer(
         modifier = modifier
-            .height(dimensionResource(R.dimen.form_element_space))
+            .height(height)
             .fillMaxWidth()
     )
 }
@@ -213,15 +214,19 @@ fun RadioInput(
         )
     ) {
         if (label != "") { FormLabel(label = label) }
-        Column(modifier = modifier.padding(0.dp)) {
+        Column() {
             for (j in options) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.option_space))
                 ) {
                     RadioButton(
                         selected = j == value,
-                        onClick = { onValueChange(j) }
+                        onClick = { onValueChange(j) },
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.option_button_size))
                     )
+                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
                     Text(j)
                 }
             }
@@ -245,8 +250,9 @@ fun CheckboxInput(
         Checkbox(
             checked = value.toBoolean(),
             onCheckedChange = { onValueChange((!value.toBoolean()).toString()) },
-            modifier = Modifier
+            modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
         )
+        Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
         Text(text = label)
     }
 }
