@@ -19,8 +19,11 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.isaproject.ui.theme.ISAProjectTheme
 
 @Composable
 fun formItem(
@@ -76,10 +79,6 @@ fun formItem(
     }
 }
 
-val margin = 20.dp
-val spaceBetweenElements = 8.dp
-val numberInputButtonSize = 40.dp
-
 @Composable
 fun FormLabel(
     label: String,
@@ -88,7 +87,7 @@ fun FormLabel(
 ) {
     Text(
         text = label,
-        modifier = modifier.padding(horizontal = if (doMargin) margin else 0.dp)
+        modifier = modifier.padding(horizontal = if (doMargin) dimensionResource(R.dimen.margin) else 0.dp)
     )
 }
 
@@ -98,10 +97,18 @@ fun FormDivider(
 ) {
     HorizontalDivider(
         modifier = modifier.padding(
-            horizontal = margin,
-            vertical = spaceBetweenElements
+            horizontal = dimensionResource(R.dimen.margin),
+            vertical = dimensionResource(R.dimen.form_element_space)
         )
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FormDividerPreview() {
+    ISAProjectTheme {
+        FormDivider()
+    }
 }
 
 @Composable
@@ -114,9 +121,9 @@ fun TextInput(
 ) {
     Column(
         modifier = Modifier.padding(
-            bottom = spaceBetweenElements,
-            start = margin,
-            end = margin
+            bottom = dimensionResource(R.dimen.form_element_space),
+            start = dimensionResource(R.dimen.margin),
+            end = dimensionResource(R.dimen.margin)
         )
     ) {
         if (label != "") { FormLabel(label = label) }
@@ -140,9 +147,9 @@ fun NumberInput(
 ) {
     Column(
         modifier = Modifier.padding(
-            bottom = spaceBetweenElements,
-            start = margin,
-            end = margin
+            bottom = dimensionResource(R.dimen.form_element_space),
+            start = dimensionResource(R.dimen.margin),
+            end = dimensionResource(R.dimen.margin)
         )
     ) {
         if (label != "") { FormLabel(label = label) }
@@ -152,7 +159,7 @@ fun NumberInput(
         ) {
             IconButton(
                 onClick = { onValueChange(((value.toIntOrNull() ?: 0) - 1).toString()) },
-                modifier = Modifier.size(numberInputButtonSize)
+                modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
@@ -171,7 +178,7 @@ fun NumberInput(
             )
             IconButton(
                 onClick = { onValueChange(((value.toIntOrNull() ?: 0) + 1).toString()) },
-                modifier = Modifier.size(numberInputButtonSize)
+                modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowUp,
@@ -192,9 +199,9 @@ fun RadioInput(
 ) {
     Column(
         modifier = Modifier.padding(
-            bottom = spaceBetweenElements,
-            start = margin,
-            end = margin
+            bottom = dimensionResource(R.dimen.form_element_space),
+            start = dimensionResource(R.dimen.margin),
+            end = dimensionResource(R.dimen.margin)
         )
     ) {
         if (label != "") { FormLabel(label = label) }
@@ -223,12 +230,14 @@ fun CheckboxInput(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = margin)
+        modifier = modifier.padding(
+            horizontal = dimensionResource(R.dimen.margin)
+        )
     ) {
         Checkbox(
             checked = value.toBoolean(),
             onCheckedChange = { onValueChange((!value.toBoolean()).toString()) },
-            modifier = modifier
+            modifier = Modifier
         )
         Text(text = label)
     }
