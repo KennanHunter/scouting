@@ -27,10 +27,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(
-    showBackground = true,
-    apiLevel = 34
-)
+@Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ISAProjectTheme {

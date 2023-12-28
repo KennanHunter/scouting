@@ -2,7 +2,9 @@ package com.example.isaproject
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -44,6 +46,9 @@ fun formItem(
         }
         "divider" -> {
             FormDivider()
+        }
+        "space" -> {
+            FormSpace()
         }
         "text" -> {
             TextInput(
@@ -103,12 +108,15 @@ fun FormDivider(
     )
 }
 
-@Preview(showBackground = true)
 @Composable
-fun FormDividerPreview() {
-    ISAProjectTheme {
-        FormDivider()
-    }
+fun FormSpace(
+    modifier: Modifier = Modifier
+) {
+    Spacer(
+        modifier = modifier
+            .height(dimensionResource(R.dimen.form_element_space))
+            .fillMaxWidth()
+    )
 }
 
 @Composable
