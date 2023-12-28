@@ -5,6 +5,7 @@ import { handle404 } from "./routes/404";
 import { generateHandler } from "./routes/auth/generate";
 import { graphqlHandler } from "./routes/graphql";
 import { graphqlViewerHandler } from "./routes/graphql/viewer";
+import { D1Database } from "@cloudflare/workers-types";
 
 export type Bindings = {
   DB: D1Database;

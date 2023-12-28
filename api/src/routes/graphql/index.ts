@@ -16,7 +16,7 @@ const resolvers: InferResolvers<
   { context: APIContext }
 > = {
   Query: {
-    greet: (parent, args, context, info) => `Hello, ${args.name}`,
+    greet: (_, args) => `Hello, ${args.name}`,
   },
 };
 

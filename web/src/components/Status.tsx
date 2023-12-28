@@ -8,19 +8,20 @@ export const Status: FC = () => {
   const query = apiClient.useQuery();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URI}/graphql/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: "{ greet }",
-      }),
-    })
-      .then((val) => val.json())
-      .then(console.dir);
+    // fetch(`${import.meta.env.VITE_API_URI}/graphql/`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     query: "{ greet }",
+    //   }),
+    // })
+    //   .then((val) => val.json())
+    //   .then(console.dir);
   }, []);
 
+  console.dir(query);
   if (!status || !authenticated) return <Loader />;
 
   return (

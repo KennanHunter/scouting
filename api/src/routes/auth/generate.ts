@@ -1,6 +1,5 @@
 import * as jose from "jose";
 import { RouteHandler } from "../..";
-import { z } from "zod";
 import { JwtPayload } from "../../auth/protected";
 
 export const generateHandler: RouteHandler = async (c) => {

@@ -1,7 +1,9 @@
 import { NotFoundHandler } from "hono";
 
-export const handle404: NotFoundHandler = (c) =>
-  c.html(
+export const handle404: NotFoundHandler = (c) => {
+  const CURRENT_URL = c.req.url;
+
+  return c.html(
     `<!doctype html>
 <html lang="en">
   <head>
@@ -25,10 +27,11 @@ export const handle404: NotFoundHandler = (c) =>
       </p>
       <p>
         current request url: 
-        <a href="{CURRENT_URL}">{CURRENT_URL}</a>
+        <a href="${CURRENT_URL}">${CURRENT_URL}</a>
       </p>
     </main>
   </body>
-</html>`.replaceAll("{CURRENT_URL}", c.req.url),
+</html>`,
     404
   );
+};
