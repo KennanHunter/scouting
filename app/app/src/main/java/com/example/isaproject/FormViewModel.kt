@@ -69,6 +69,12 @@ private val formJSON = """
             {
                 "type": "space",
                 "name": "sdlk"
+            },
+            {
+                "type": "number",
+                "name": "abcde",
+                "initialValue": "0",
+                "label": "Another number"
             }
         ]
     }
