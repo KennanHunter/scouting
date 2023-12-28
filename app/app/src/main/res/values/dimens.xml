@@ -2,5 +2,8 @@
 <resources>
     <dimen name="margin">20dp</dimen>
     <dimen name="form_element_space">8dp</dimen>
+    <dimen name="option_space">4dp</dimen>
     <dimen name="number_button_size">40dp</dimen>
+    <dimen name="option_button_size">20dp</dimen>
+    <dimen name="option_label_space">8dp</dimen>
 </resources>
