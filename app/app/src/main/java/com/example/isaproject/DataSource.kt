@@ -7,34 +7,35 @@ object DataSource {
             "id": "sldgjlkber"
         },
         {
-            "name": "Device1",
-            "id": "sldgjlkber"
+            "name": "Device2",
+            "id": "sldgjftjdrtlkber"
         },
         {
-            "name": "Device1",
-            "id": "sldgjlkber"
+            "name": "Device3",
+            "id": "ethesrh"
         },
         {
-            "name": "Device1",
-            "id": "sldgjlkber"
+            "name": "Device4",
+            "id": "tjdr6jkrt7"
         },
         {
-            "name": "Device1",
-            "id": "sldgjlkber"
+            "name": "Device5",
+            "id": "sdthrs5by"
         },
         {
-            "name": "Device1",
-            "id": "sldgjlkber"
+            "name": "Device6",
+            "id": "dtyjfntyr"
         },
         {
-            "name": "Device1",
-            "id": "sldgjlkber"
+            "name": "Device7",
+            "id": "sderybery"
         }
     ]""".trimIndent()
 
     val formJSON = """[
         {
             "name": "FormPage1",
+            "label": "Part 1: Auto",
             "page": [
                 {
                     "type": "text",
@@ -67,6 +68,7 @@ object DataSource {
         },
         {
             "name": "FormPage2",
+            "label": "Part 2: Teleop",
             "page": [
                 {
                     "type": "label",
