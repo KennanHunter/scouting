@@ -23,30 +23,7 @@ fun ISAScreen(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
-//        bottomBar = {
-//            BottomAppBar(
-//                actions = {
-//                    OutlinedButton(
-//                        onClick = { /*TODO*/ },
-//                        modifier = Modifier
-//                            .padding(horizontal = dimensionResource(R.dimen.margin))
-//                            .weight(1f)
-//                    ) {
-//                        Text(stringResource(R.string.previous))
-//                    }
-//                    Button(
-//                        onClick = { /*TODO*/ },
-//                        modifier = Modifier
-//                            .padding(horizontal = dimensionResource(R.dimen.margin))
-//                            .weight(1f)
-//                    ) {
-//                        Text(stringResource(R.string.next))
-//                    }
-//                }
-//            )
-//        }
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = "FormPage1",
@@ -58,11 +35,12 @@ fun ISAScreen(
             composable(route = "Loading") {
 
             }
-            for (i in formViewModel.form) {
-                composable(route = i.name) {
+            for (i in 0 until formViewModel.form.size) {
+                composable(route = formViewModel.form[i].name) {
                     FormScreen(
                         formViewModel = formViewModel,
-                        page = i
+                        page = formViewModel.form[i],
+//                        onNextButtonClicked = { navController.navigate() }
                     )
                 }
             }
