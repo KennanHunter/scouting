@@ -40,9 +40,25 @@ fun ISAScreen(
                     FormScreen(
                         formViewModel = formViewModel,
                         page = formViewModel.form[i],
-//                        onNextButtonClicked = { navController.navigate() }
+                        onNextButtonClicked = {
+                            if (i < formViewModel.form.size - 1) {
+                                navController.navigate(formViewModel.form[i + 1].name)
+                            } else {
+                                navController.navigate("Summary")
+                            }
+                        },
+                        onPreviousButtonClicked = {
+                            if (i > 0) {
+                                navController.navigateUp()
+                            }
+                        }
                     )
                 }
+            }
+            composable(route = "Summary") {
+                SummaryScreen(
+                    onPreviousButtonClicked = { navController.navigateUp() },
+                    onSubmitButtonClicked = { /*TODO*/ })
             }
         }
     }
