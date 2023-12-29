@@ -6,7 +6,15 @@ import androidx.compose.runtime.setValue
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Form(val form: List<FormElement>)
+data class Form(
+    val form: List<FormPage>
+)
+
+@Serializable
+data class FormPage(
+    val name: String,
+    val page: List<FormElement>
+)
 
 @Serializable
 class FormElement(
