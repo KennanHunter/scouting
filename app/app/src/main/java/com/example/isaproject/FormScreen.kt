@@ -8,7 +8,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun FormScreen(
-    formViewModel: FormViewModel = viewModel(),
+    formViewModel: FormViewModel,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
