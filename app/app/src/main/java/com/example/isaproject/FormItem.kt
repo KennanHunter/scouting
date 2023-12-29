@@ -39,10 +39,7 @@ fun formItem(
 ) {
     when (type) {
         "label" -> {
-            FormLabel(
-                label = label,
-                doMargin = true
-            )
+            FormLabel(label = label)
         }
         "divider" -> {
             FormDivider()
@@ -87,13 +84,9 @@ fun formItem(
 @Composable
 fun FormLabel(
     label: String,
-    doMargin: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        text = label,
-        modifier = modifier.padding(horizontal = if (doMargin) dimensionResource(R.dimen.margin) else 0.dp)
-    )
+    Text(text = label)
 }
 
 @Composable
@@ -101,10 +94,7 @@ fun FormDivider(
     modifier: Modifier = Modifier
 ) {
     HorizontalDivider(
-        modifier = modifier.padding(
-            horizontal = dimensionResource(R.dimen.margin),
-            vertical = dimensionResource(R.dimen.form_element_space)
-        )
+        modifier = modifier.padding(vertical = dimensionResource(R.dimen.form_element_space))
     )
 }
 
@@ -129,11 +119,7 @@ fun TextInput(
     label: String
 ) {
     Column(
-        modifier = Modifier.padding(
-            bottom = dimensionResource(R.dimen.form_element_space),
-            start = dimensionResource(R.dimen.margin),
-            end = dimensionResource(R.dimen.margin)
-        )
+        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
     ) {
         if (label != "") { FormLabel(label = label) }
         TextField(
@@ -155,11 +141,7 @@ fun NumberInput(
     label: String
 ) {
     Column(
-        modifier = Modifier.padding(
-            bottom = dimensionResource(R.dimen.form_element_space),
-            start = dimensionResource(R.dimen.margin),
-            end = dimensionResource(R.dimen.margin)
-        )
+        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
     ) {
         if (label != "") { FormLabel(label = label) }
         Row(
@@ -207,11 +189,7 @@ fun RadioInput(
     label: String
 ) {
     Column(
-        modifier = Modifier.padding(
-            bottom = dimensionResource(R.dimen.form_element_space),
-            start = dimensionResource(R.dimen.margin),
-            end = dimensionResource(R.dimen.margin)
-        )
+        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
     ) {
         if (label != "") { FormLabel(label = label) }
         Column() {
@@ -243,9 +221,7 @@ fun CheckboxInput(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(
-            horizontal = dimensionResource(R.dimen.margin)
-        )
+        modifier = modifier
     ) {
         Checkbox(
             checked = value.toBoolean(),
