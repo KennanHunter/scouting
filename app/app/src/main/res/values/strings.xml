@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Indiana Scouting Alliance App</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 </resources>
