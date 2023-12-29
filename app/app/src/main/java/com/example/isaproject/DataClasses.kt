@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FormPage(
     val name: String,
+    val label: String,
     val page: List<FormElement>
 )
 
