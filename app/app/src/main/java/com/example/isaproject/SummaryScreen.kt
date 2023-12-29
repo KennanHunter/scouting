@@ -4,9 +4,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -17,31 +20,35 @@ fun SummaryScreen(
     onSubmitButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.padding(all = dimensionResource(R.dimen.margin))
-    ) {
+    Column() {
         Text(
             text = "Congrats. You finished the form.",
-            modifier = Modifier.weight(1f)
+            style = MaterialTheme.typography.displayLarge,
+            modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterHorizontally)
+                .padding(all = dimensionResource(R.dimen.margin))
         )
-        Row(
-            modifier = modifier
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainer
         ) {
-            OutlinedButton(
-                onClick = onPreviousButtonClicked,
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(R.dimen.margin))
-                    .weight(1f)
-            ) {
-                Text(stringResource(R.string.previous))
-            }
-            Button(
-                onClick = onSubmitButtonClicked,
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(R.dimen.margin))
-                    .weight(1f)
-            ) {
-                Text(stringResource(R.string.submit))
+            Row {
+                OutlinedButton(
+                    onClick = onPreviousButtonClicked,
+                    modifier = Modifier
+                        .padding(all = dimensionResource(R.dimen.margin))
+                        .weight(1f)
+                ) {
+                    Text(stringResource(R.string.previous))
+                }
+                Button(
+                    onClick = onSubmitButtonClicked,
+                    modifier = Modifier
+                        .padding(all = dimensionResource(R.dimen.margin))
+                        .weight(1f)
+                ) {
+                    Text(stringResource(R.string.submit))
+                }
             }
         }
     }

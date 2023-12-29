@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.serialization.json.Json
 
 class FormViewModel : ViewModel() {
-    private val _form = getForm().toMutableStateList()
+    private val _form = Json.decodeFromString<List<FormPage>>(DataSource.formJSON.trimIndent()).toMutableStateList()
     val form: List<FormPage>
         get() = _form
 
@@ -16,8 +16,8 @@ class FormViewModel : ViewModel() {
             }
         }
     }
-}
 
-private fun getForm(): List<FormPage> {
-    return Json.decodeFromString<Form>(DataSource.formJSON.trimIndent()).form
+    private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent()).toMutableStateList()
+    val devices: List<Device>
+        get() = _devices
 }

@@ -6,11 +6,6 @@ import androidx.compose.runtime.setValue
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Form(
-    val form: List<FormPage>
-)
-
-@Serializable
 data class FormPage(
     val name: String,
     val page: List<FormElement>
@@ -27,3 +22,9 @@ class FormElement(
 ) {
     var value by mutableStateOf(initialValue)
 }
+
+@Serializable
+data class Device(
+    val id: String,
+    val name: String
+)
