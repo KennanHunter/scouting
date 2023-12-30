@@ -22,11 +22,14 @@ fun ISAScreen(
 ) {
     NavHost(
             navController = navController,
-            startDestination = "FormPage1",
+            startDestination = AppScreens.SelectDevice.name,
             modifier = modifier
     ) {
         composable(route = AppScreens.SelectDevice.name) {
-
+            SelectDeviceScreen(
+                formViewModel = formViewModel,
+                onConnectButtonClicked = { navController.navigate(formViewModel.form[0].name) }
+            )
         }
         composable(route = AppScreens.Loading.name) {
 
@@ -46,6 +49,8 @@ fun ISAScreen(
                     onPreviousButtonClicked = {
                         if (i > 0) {
                             navController.navigateUp()
+                        } else {
+                            navController.popBackStack(AppScreens.SelectDevice.name, inclusive = false)
                         }
                     }
                 )
