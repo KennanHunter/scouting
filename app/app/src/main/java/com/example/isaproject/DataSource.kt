@@ -118,23 +118,25 @@ object DataSource {
             "page": [
                 {
                     "type": "label",
-                    "label": "hello",
-                    "name": "hello"
+                    "label": "hello"
                 },
                 {
                     "type": "checkbox",
                     "label": "sldkfhesoi;rhj",
-                    "name": "check"
+                    "name": "check",
+                    "initialValue": "false"
                 },
                 {
                     "type": "checkbox",
                     "label": "sldkfhesdsoi;rhj",
-                    "name": "check2"
+                    "name": "check2",
+                    "initialValue": "false"
                 },
                 {
                     "type": "checkbox",
                     "label": ";lkdfn",
-                    "name": "check3"
+                    "name": "check3",
+                    "initialValue": "false"
                 },
                 {
                     "type": "space"

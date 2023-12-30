@@ -1,6 +1,7 @@
 package com.example.isaproject
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
@@ -30,5 +31,13 @@ class FormViewModel : ViewModel() {
 
     fun setDevice(device: Device) {
         _currentDevice = _devices.first { it.id == device.id }
+    }
+
+    private var _answers = mutableStateMapOf<String, Any>()
+    val answers: Map<String, Any>
+        get() = _answers
+
+    fun setAnswer(name: String, value: Any) {
+        _answers[name] = value
     }
 }
