@@ -2,9 +2,12 @@ package com.example.isaproject
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -19,7 +22,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -41,6 +46,9 @@ fun formItem(
         }
         "divider" -> {
             FormDivider()
+        }
+        "space" -> {
+            FormSpace()
         }
         "text" -> {
             TextInput(
@@ -76,10 +84,6 @@ fun formItem(
     }
 }
 
-val margin = 20.dp
-val spaceBetweenElements = 8.dp
-val numberInputButtonSize = 40.dp
-
 @Composable
 fun FormLabel(
     label: String,
@@ -88,7 +92,7 @@ fun FormLabel(
 ) {
     Text(
         text = label,
-        modifier = modifier.padding(horizontal = if (doMargin) margin else 0.dp)
+        modifier = modifier.padding(horizontal = if (doMargin) dimensionResource(R.dimen.margin) else 0.dp)
     )
 }
 
@@ -98,9 +102,21 @@ fun FormDivider(
 ) {
     HorizontalDivider(
         modifier = modifier.padding(
-            horizontal = margin,
-            vertical = spaceBetweenElements
+            horizontal = dimensionResource(R.dimen.margin),
+            vertical = dimensionResource(R.dimen.form_element_space)
         )
+    )
+}
+
+@Composable
+fun FormSpace(
+    modifier: Modifier = Modifier,
+    height: Dp = dimensionResource(R.dimen.form_element_space)
+) {
+    Spacer(
+        modifier = modifier
+            .height(height)
+            .fillMaxWidth()
     )
 }
 
@@ -114,9 +130,9 @@ fun TextInput(
 ) {
     Column(
         modifier = Modifier.padding(
-            bottom = spaceBetweenElements,
-            start = margin,
-            end = margin
+            bottom = dimensionResource(R.dimen.form_element_space),
+            start = dimensionResource(R.dimen.margin),
+            end = dimensionResource(R.dimen.margin)
         )
     ) {
         if (label != "") { FormLabel(label = label) }
@@ -140,9 +156,9 @@ fun NumberInput(
 ) {
     Column(
         modifier = Modifier.padding(
-            bottom = spaceBetweenElements,
-            start = margin,
-            end = margin
+            bottom = dimensionResource(R.dimen.form_element_space),
+            start = dimensionResource(R.dimen.margin),
+            end = dimensionResource(R.dimen.margin)
         )
     ) {
         if (label != "") { FormLabel(label = label) }
@@ -152,7 +168,7 @@ fun NumberInput(
         ) {
             IconButton(
                 onClick = { onValueChange(((value.toIntOrNull() ?: 0) - 1).toString()) },
-                modifier = Modifier.size(numberInputButtonSize)
+                modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
@@ -171,7 +187,7 @@ fun NumberInput(
             )
             IconButton(
                 onClick = { onValueChange(((value.toIntOrNull() ?: 0) + 1).toString()) },
-                modifier = Modifier.size(numberInputButtonSize)
+                modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowUp,
@@ -192,21 +208,25 @@ fun RadioInput(
 ) {
     Column(
         modifier = Modifier.padding(
-            bottom = spaceBetweenElements,
-            start = margin,
-            end = margin
+            bottom = dimensionResource(R.dimen.form_element_space),
+            start = dimensionResource(R.dimen.margin),
+            end = dimensionResource(R.dimen.margin)
         )
     ) {
         if (label != "") { FormLabel(label = label) }
-        Column(modifier = modifier.padding(0.dp)) {
+        Column() {
             for (j in options) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.option_space))
                 ) {
                     RadioButton(
                         selected = j == value,
-                        onClick = { onValueChange(j) }
+                        onClick = { onValueChange(j) },
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.option_button_size))
                     )
+                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
                     Text(j)
                 }
             }
@@ -223,13 +243,16 @@ fun CheckboxInput(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = margin)
+        modifier = modifier.padding(
+            horizontal = dimensionResource(R.dimen.margin)
+        )
     ) {
         Checkbox(
             checked = value.toBoolean(),
             onCheckedChange = { onValueChange((!value.toBoolean()).toString()) },
-            modifier = modifier
+            modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
         )
+        Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
         Text(text = label)
     }
 }

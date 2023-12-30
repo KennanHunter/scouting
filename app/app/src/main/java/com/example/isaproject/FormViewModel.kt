@@ -65,6 +65,16 @@ private val formJSON = """
                 "type": "checkbox",
                 "label": ";lkdfn",
                 "name": "check3"
+            },
+            {
+                "type": "space",
+                "name": "sdlk"
+            },
+            {
+                "type": "number",
+                "name": "abcde",
+                "initialValue": "0",
+                "label": "Another number"
             }
         ]
     }

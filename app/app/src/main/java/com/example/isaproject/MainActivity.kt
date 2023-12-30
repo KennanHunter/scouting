@@ -20,20 +20,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    FormScreen()
+                    ISAScreen()
                 }
             }
         }
     }
 }
 
-@Preview(
-    showBackground = true,
-    apiLevel = 34
-)
+@Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ISAProjectTheme {
-        FormScreen()
+        ISAScreen()
     }
 }
