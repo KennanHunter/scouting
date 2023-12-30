@@ -6,4 +6,5 @@
     <dimen name="number_button_size">40dp</dimen>
     <dimen name="option_button_size">20dp</dimen>
     <dimen name="option_label_space">8dp</dimen>
+    <dimen name="select_device_space">8dp</dimen>
 </resources>
