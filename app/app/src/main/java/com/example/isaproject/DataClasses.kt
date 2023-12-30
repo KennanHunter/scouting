@@ -26,7 +26,7 @@ class FormElement(
 
 @Serializable
 data class FormRadioOption(
-    val name: String,
+    val value: String,
     val label: String
 )
 
