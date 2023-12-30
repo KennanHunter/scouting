@@ -63,6 +63,26 @@ object DataSource {
                       "two",
                       "three"
                     ]
+                },
+                {
+                    "type": "radio",
+                    "label": "Another lorem ipsum sit dolor amet",
+                    "name": "radio2",
+                    "options": [
+                      "alpha",
+                      "beta",
+                      "whatever comes after beta"
+                    ]
+                },
+                {
+                    "type": "radio",
+                    "label": "lorem ipsum sit dolor amet #3",
+                    "name": "radio3",
+                    "options": [
+                      "one",
+                      "beta",
+                      "C"
+                    ]
                 }
             ]
         },
