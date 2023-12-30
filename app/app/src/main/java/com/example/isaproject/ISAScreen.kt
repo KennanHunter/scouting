@@ -58,8 +58,21 @@ fun ISAScreen(
         }
         composable(route = AppScreens.Summary.name) {
             SummaryScreen(
+                formViewModel = formViewModel,
                 onPreviousButtonClicked = { navController.navigateUp() },
-                onSubmitButtonClicked = { /*TODO*/ })
+                onSubmitButtonClicked = {
+                    for (i in formViewModel.form) {
+                        for (j in i.page) {
+                            if (j.name != "") {
+                                formViewModel.setAnswer(
+                                    name = j.name,
+                                    value = j.value.toIntOrNull() ?: j.value.toBooleanStrictOrNull() ?: j.value
+                                )
+                            }
+                        }
+                    }
+                }
+            )
         }
     }
 }

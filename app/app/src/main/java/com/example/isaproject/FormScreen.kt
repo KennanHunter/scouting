@@ -59,10 +59,7 @@ fun FormScreen(
                 .padding(innerPadding)
                 .padding(all = dimensionResource(R.dimen.margin))
         ) {
-            items(
-                items = page.page,
-                key = { item -> item.name }
-            ) { item ->
+            items(page.page) { item ->
                 formItem(
                     label = item.label,
                     type = item.type,

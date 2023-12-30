@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SummaryScreen(
+    formViewModel: FormViewModel,
     onPreviousButtonClicked: () -> Unit,
     onSubmitButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -31,8 +32,8 @@ fun SummaryScreen(
         modifier = modifier
     ) { innerPadding ->
         Text(
-            text = "Congrats. You finished the form.",
-            style = MaterialTheme.typography.displayLarge,
+            text = "${formViewModel.answers.entries.associate { it.key to it.value }}",
+            style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(all = dimensionResource(R.dimen.margin))
