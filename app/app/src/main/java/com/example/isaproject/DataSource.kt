@@ -60,15 +60,15 @@ object DataSource {
                     "options": [
                         {
                             "label": "one",
-                            "name": "1"
+                            "value": "1"
                         },
                         {
                             "label": "two",
-                            "name": "2"
+                            "value": "2"
                         },
                         {
                             "label": "three",
-                            "name": "3"
+                            "value": "3"
                         }
                     ]
                 },
@@ -79,15 +79,15 @@ object DataSource {
                     "options": [
                         {
                             "label": "alpha",
-                            "name": "alpha",
+                            "value": "alpha"
                         },
                         {
                             "label": "beta",
-                            "name": "beta"
+                            "value": "beta"
                         },
                         {
                             "label": "whatever comes after beta",
-                            "name": "gamma"
+                            "value": "gamma"
                         }
                     ]
                 },
@@ -96,9 +96,18 @@ object DataSource {
                     "label": "lorem ipsum sit dolor amet #3",
                     "name": "radio3",
                     "options": [
-                        "one",
-                        "beta",
-                        "C"
+                        {
+                            "label": "one",
+                            "value": "a"
+                        },
+                        {
+                            "label": "beta",
+                            "value": "b"
+                        },
+                        {
+                            "label": "C",
+                            "value": "c"
+                        }
                     ]
                 }
             ]

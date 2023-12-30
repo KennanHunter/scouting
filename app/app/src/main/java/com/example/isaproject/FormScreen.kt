@@ -261,11 +261,11 @@ fun RadioInput(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(bottom = dimensionResource(R.dimen.option_space))
-                        .clickable {onValueChange(j.name)}
+                        .clickable {onValueChange(j.value)}
                 ) {
                     RadioButton(
-                        selected = j.name == value,
-                        onClick = { onValueChange(j.name) },
+                        selected = j.value == value,
+                        onClick = { onValueChange(j.value) },
                         modifier = Modifier
                             .size(dimensionResource(R.dimen.option_button_size))
                     )
