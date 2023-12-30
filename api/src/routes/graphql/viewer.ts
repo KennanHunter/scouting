@@ -69,7 +69,7 @@ export const graphqlViewerHandler: RouteHandler = (c) => {
        const root = ReactDOM.createRoot(document.getElementById('graphiql'));
        // cspell:words graphi
        const fetcher = GraphiQL.createFetcher({
-         url: '/graphql',
+         url: '/graphql/',
        });
        const explorerPlugin = GraphiQLPluginExplorer.explorerPlugin();
        root.render(
