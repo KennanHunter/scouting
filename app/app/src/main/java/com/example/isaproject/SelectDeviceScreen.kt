@@ -1,5 +1,6 @@
 package com.example.isaproject
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -59,7 +60,9 @@ fun DeviceListItem(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.padding(bottom = dimensionResource(R.dimen.select_device_space)),
+        modifier = modifier
+            .padding(bottom = dimensionResource(R.dimen.select_device_space))
+            .clickable(onClick = onValueChange),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(

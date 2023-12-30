@@ -1,5 +1,6 @@
 package com.example.isaproject
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -244,7 +245,9 @@ fun RadioInput(
             for (j in options) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.option_space))
+                    modifier = Modifier
+                        .padding(bottom = dimensionResource(R.dimen.option_space))
+                        .clickable {onValueChange(j)}
                 ) {
                     RadioButton(
                         selected = j == value,
@@ -269,7 +272,7 @@ fun CheckboxInput(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+        modifier = modifier.clickable { onValueChange((!value.toBoolean()).toString()) }
     ) {
         Checkbox(
             checked = value.toBoolean(),
