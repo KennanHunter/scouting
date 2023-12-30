@@ -70,10 +70,10 @@ fun DeviceListItem(
         ) {
             Text(
                 text = item.name,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = item.id,
+                text = "id: ${item.id}",
                 style = MaterialTheme.typography.labelMedium
             )
         }

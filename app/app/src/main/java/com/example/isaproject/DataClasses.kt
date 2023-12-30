@@ -14,15 +14,21 @@ data class FormPage(
 
 @Serializable
 class FormElement(
-    val type: String = "",
+    val type: String,
     val name: String = "",
     val label: String = "",
     val placeholder: String = "",
-    val options: List<String> = listOf(""),
+    val options: List<FormRadioOption> = listOf(FormRadioOption("", "")),
     private val initialValue: String = ""
 ) {
     var value by mutableStateOf(initialValue)
 }
+
+@Serializable
+data class FormRadioOption(
+    val name: String,
+    val label: String
+)
 
 @Serializable
 data class Device(
