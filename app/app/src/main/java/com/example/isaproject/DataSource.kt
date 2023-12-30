@@ -51,17 +51,25 @@ object DataSource {
                     "initialValue": "0"
                 },
                 {
-                    "type": "divider",
-                    "name": "divider"
+                    "type": "divider"
                 },
                 {
                     "type": "radio",
                     "label": "lorem ipsum sit dolor amet",
                     "name": "radio",
                     "options": [
-                      "one",
-                      "two",
-                      "three"
+                        {
+                            "label": "one",
+                            "name": "1"
+                        },
+                        {
+                            "label": "two",
+                            "name": "2"
+                        },
+                        {
+                            "label": "three",
+                            "name": "3"
+                        }
                     ]
                 },
                 {
@@ -69,9 +77,18 @@ object DataSource {
                     "label": "Another lorem ipsum sit dolor amet",
                     "name": "radio2",
                     "options": [
-                      "alpha",
-                      "beta",
-                      "whatever comes after beta"
+                        {
+                            "label": "alpha",
+                            "name": "alpha",
+                        },
+                        {
+                            "label": "beta",
+                            "name": "beta"
+                        },
+                        {
+                            "label": "whatever comes after beta",
+                            "name": "gamma"
+                        }
                     ]
                 },
                 {
@@ -79,9 +96,9 @@ object DataSource {
                     "label": "lorem ipsum sit dolor amet #3",
                     "name": "radio3",
                     "options": [
-                      "one",
-                      "beta",
-                      "C"
+                        "one",
+                        "beta",
+                        "C"
                     ]
                 }
             ]
@@ -111,8 +128,7 @@ object DataSource {
                     "name": "check3"
                 },
                 {
-                    "type": "space",
-                    "name": "sdlk"
+                    "type": "space"
                 },
                 {
                     "type": "number",

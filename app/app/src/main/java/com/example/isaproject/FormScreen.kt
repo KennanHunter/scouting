@@ -83,25 +83,33 @@ fun formItem(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    options: List<String>,
+    options: List<FormRadioOption>,
     modifier: Modifier = Modifier
 ) {
     when (type) {
         "label" -> {
-            FormLabel(label = label)
+            FormLabel(
+                label = label,
+                modifier = modifier
+            )
         }
         "divider" -> {
-            FormDivider()
+            FormDivider(
+                modifier = modifier
+            )
         }
         "space" -> {
-            FormSpace()
+            FormSpace(
+                modifier = modifier
+            )
         }
         "text" -> {
             TextInput(
                 value = value,
                 onValueChange = onValueChange,
                 placeholder = placeholder,
-                label = label
+                label = label,
+                modifier = modifier
             )
         }
         "number" -> {
@@ -109,7 +117,8 @@ fun formItem(
                 value = value,
                 onValueChange = onValueChange,
                 placeholder = placeholder,
-                label = label
+                label = label,
+                modifier = modifier
             )
         }
         "radio" -> {
@@ -117,14 +126,16 @@ fun formItem(
                 value = value,
                 onValueChange = onValueChange,
                 options = options,
-                label = label
+                label = label,
+                modifier = modifier
             )
         }
         "checkbox" -> {
             CheckboxInput(
                 value = value,
                 onValueChange = onValueChange,
-                label = label
+                label = label,
+                modifier = modifier
             )
         }
     }
@@ -135,7 +146,10 @@ fun FormLabel(
     label: String,
     modifier: Modifier = Modifier
 ) {
-    Text(text = label)
+    Text(
+        text = label,
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -233,30 +247,30 @@ fun NumberInput(
 fun RadioInput(
     value: String,
     onValueChange: (String) -> Unit,
-    options: List<String>,
+    options: List<FormRadioOption>,
     modifier: Modifier = Modifier,
     label: String
 ) {
     Column(
-        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+        modifier = modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
     ) {
         if (label != "") { FormLabel(label = label) }
-        Column() {
+        Column {
             for (j in options) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(bottom = dimensionResource(R.dimen.option_space))
-                        .clickable {onValueChange(j)}
+                        .clickable {onValueChange(j.name)}
                 ) {
                     RadioButton(
-                        selected = j == value,
-                        onClick = { onValueChange(j) },
+                        selected = j.name == value,
+                        onClick = { onValueChange(j.name) },
                         modifier = Modifier
                             .size(dimensionResource(R.dimen.option_button_size))
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
-                    Text(j)
+                    Text(j.label)
                 }
             }
         }
