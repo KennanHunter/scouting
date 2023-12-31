@@ -50,7 +50,9 @@ object DataSource {
                     "label": "foo",
                     "name": "number",
                     "placeholder": "number",
-                    "initialValue": "0"
+                    "initialValue": "0",
+                    "min": 0,
+                    "max": 5
                 },
                 {
                     "type": "divider"
@@ -147,7 +149,9 @@ object DataSource {
                     "type": "number",
                     "name": "abcde",
                     "initialValue": "0",
-                    "label": "Another number"
+                    "label": "Another number",
+                    "min": -4,
+                    "max": 2
                 }
             ]
         }
