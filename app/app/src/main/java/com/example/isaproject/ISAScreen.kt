@@ -28,11 +28,15 @@ fun ISAScreen(
         composable(route = AppScreens.SelectDevice.name) {
             SelectDeviceScreen(
                 formViewModel = formViewModel,
-                onConnectButtonClicked = { navController.navigate(formViewModel.form[0].name) }
+                onConnectButtonClicked = { navController.navigate(AppScreens.Loading.name) }
             )
         }
         composable(route = AppScreens.Loading.name) {
-
+            LoadingScreen(
+                formViewModel = formViewModel,
+                onConnectionSuccess = { navController.navigate(formViewModel.form[0].name) },
+                onConnectionFail = { navController.navigate(AppScreens.SelectDevice.name) }
+            )
         }
         for (i in 0 until formViewModel.form.size) {
             composable(route = formViewModel.form[i].name) {
@@ -61,16 +65,7 @@ fun ISAScreen(
                 formViewModel = formViewModel,
                 onPreviousButtonClicked = { navController.navigateUp() },
                 onSubmitButtonClicked = {
-                    for (i in formViewModel.form) {
-                        for (j in i.page) {
-                            if (j.name != "") {
-                                formViewModel.setAnswer(
-                                    name = j.name,
-                                    value = j.value.toIntOrNull() ?: j.value.toBooleanStrictOrNull() ?: j.value
-                                )
-                            }
-                        }
-                    }
+                    //TODO: navigate back to AppScreens.SelectDevice or do something else, idk what
                 }
             )
         }

@@ -21,17 +21,27 @@ class FormViewModel : ViewModel() {
         }
     }
 
+
     private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent()).toMutableStateList()
     val devices: List<Device>
         get() = _devices
 
-    private var _currentDevice by mutableStateOf(Device("NONE", "NONE"))
+    private var _currentDevice by mutableStateOf(Device("", ""))
     val currentDevice: Device
         get() = _currentDevice
 
     fun setDevice(device: Device) {
         _currentDevice = _devices.first { it.id == device.id }
     }
+
+    private var _connectionStatus by mutableStateOf(ConnectionStatus.NOT_CONNECTED)
+    val connectionStatus: ConnectionStatus
+        get() = _connectionStatus
+
+    fun setConnectionStatus(status: ConnectionStatus) {
+        _connectionStatus = status
+    }
+
 
     private var _answers = mutableStateMapOf<String, Any>()
     val answers: Map<String, Any>
@@ -40,4 +50,12 @@ class FormViewModel : ViewModel() {
     fun setAnswer(name: String, value: Any) {
         _answers[name] = value
     }
+}
+
+//TODO: probably pick different names for statuses
+enum class ConnectionStatus {
+    CONNECTED,
+    NOT_CONNECTED,
+    CONNECTING,
+    ERROR
 }
