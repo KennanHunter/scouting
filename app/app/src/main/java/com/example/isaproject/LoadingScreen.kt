@@ -36,7 +36,10 @@ fun LoadingScreen(
                 nextButtonLabel = "Success",
                 onNextButtonClicked = { formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED) },
                 previousButtonLabel = "Fail",
-                onPreviousButtonClicked = { formViewModel.setConnectionStatus(ConnectionStatus.ERROR) }
+                onPreviousButtonClicked = {
+                    formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.connection_failed)))
+                    formViewModel.setConnectionStatus(ConnectionStatus.ERROR)
+                }
             )
         },
         modifier = modifier

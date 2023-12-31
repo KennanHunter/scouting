@@ -9,4 +9,5 @@
     <string name="no_device_selected">No Device Selected</string>
     <string name="connecting_to_device">"Connecting to device "</string>
     <string name="connection_error">Connection Error</string>
+    <string name="connection_failed">Connection Failed</string>
 </resources>
