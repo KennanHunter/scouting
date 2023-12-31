@@ -1,5 +1,7 @@
 package com.example.isaproject
 
+//TODO: put data about the form and devices into here or go change FormViewModel.kt
+
 object DataSource {
     val deviceJSON = """[
         {

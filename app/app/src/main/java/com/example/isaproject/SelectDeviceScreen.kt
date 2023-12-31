@@ -9,12 +9,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import kotlinx.coroutines.launch
 
 @Composable
 fun SelectDeviceScreen(
@@ -22,7 +28,11 @@ fun SelectDeviceScreen(
     onConnectButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             PageTitle(text = AppScreens.SelectDevice.label)
         },
@@ -31,7 +41,13 @@ fun SelectDeviceScreen(
                 canNavigateBack = false,
                 nextButtonLabel = stringResource(R.string.connect),
                 onNextButtonClicked = {
-                    onConnectButtonClicked()
+                    if (formViewModel.currentDevice.id != "") {
+                        formViewModel.setConnectionStatus(ConnectionStatus.CONNECTING)
+                        //TODO: Code for connecting to the selected device
+                        onConnectButtonClicked()
+                    } else {
+                        scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.no_device_selected)) }
+                    }
                 }
             )
         }
