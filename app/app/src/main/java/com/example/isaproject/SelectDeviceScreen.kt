@@ -33,9 +33,7 @@ fun SelectDeviceScreen(
     val context = LocalContext.current
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = {
-            PageTitle(text = AppScreens.SelectDevice.label)
-        },
+        topBar = { PageTitle(text = AppScreens.SelectDevice.label) },
         bottomBar = {
             BottomNavBar(
                 canNavigateBack = false,
@@ -46,12 +44,17 @@ fun SelectDeviceScreen(
                         //TODO: Code for connecting to the selected device
                         onConnectButtonClicked()
                     } else {
-                        scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.no_device_selected)) }
+                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
                     }
                 }
             )
         }
     ) { innerPadding ->
+        SingleEventEffect(formViewModel.sideEffectFlow) { sideEffect ->
+            when (sideEffect) {
+                is SideEffect.ShowToast -> scope.launch { snackbarHostState.showSnackbar(sideEffect.message) }
+            }
+        }
         LazyColumn(
             modifier = modifier
                 .padding(innerPadding)

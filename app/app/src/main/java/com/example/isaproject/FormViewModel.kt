@@ -6,6 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class FormViewModel : ViewModel() {
@@ -50,6 +55,17 @@ class FormViewModel : ViewModel() {
     fun setAnswer(name: String, value: Any) {
         _answers[name] = value
     }
+
+
+    private val _sideEffectChannel = Channel<SideEffect>(capacity = Channel.BUFFERED)
+    val sideEffectFlow: Flow<SideEffect>
+        get() = _sideEffectChannel.receiveAsFlow()
+
+    fun sendEvent(evt: SideEffect) {
+        viewModelScope.launch {
+            _sideEffectChannel.send(evt)
+        }
+    }
 }
 
 //TODO: probably pick different names for statuses
@@ -58,4 +74,8 @@ enum class ConnectionStatus {
     NOT_CONNECTED,
     CONNECTING,
     ERROR
+}
+
+sealed interface SideEffect {
+    data class ShowToast(val message: String) : SideEffect
 }
