@@ -20,8 +20,17 @@ class FormViewModel : ViewModel() {
 
     fun changeValue(page: FormPage, item: FormElement, value: String) {
         _form.find {it.name == page.name}?.let { i ->
-            i.page.find {it.name == item.name}?. let { j ->
+            i.page.find {it.name == item.name}?.let { j ->
                 j.value = value
+            }
+        }
+    }
+
+    fun setError(page: FormPage, item: FormElement, error: Boolean, errorText: String) {
+        _form.find { it.name == page.name }?.let { i ->
+            i.page.find { it.name == item.name }?.let { j ->
+                j.error = error
+                j.errorMessage = errorText
             }
         }
     }

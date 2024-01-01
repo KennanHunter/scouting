@@ -21,6 +21,8 @@ class FormElement(
     val options: List<FormRadioOption> = listOf(FormRadioOption("", "")),
     val min: Int = -9999,
     val max: Int = 9999,
+    var error: Boolean = false,
+    var errorMessage: String = "",
     private val initialValue: String = ""
 ) {
     var value by mutableStateOf(initialValue)
