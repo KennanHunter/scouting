@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.isaproject
 
 import androidx.compose.foundation.clickable
@@ -16,17 +18,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,7 +34,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
-import kotlinx.coroutines.launch
 
 @Composable
 fun FormScreen(
@@ -44,8 +43,6 @@ fun FormScreen(
     onPreviousButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     Scaffold(
         topBar = { PageTitle(text = page.label) },
@@ -60,11 +57,6 @@ fun FormScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        SingleEventEffect(formViewModel.sideEffectFlow) { sideEffect ->
-            when (sideEffect) {
-                is SideEffect.ShowToast -> scope.launch { snackbarHostState.showSnackbar(sideEffect.message) }
-            }
-        }
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
@@ -77,21 +69,18 @@ fun FormScreen(
                     placeholder = item.placeholder,
                     options = item.options,
                     value = item.value,
+                    error = item.error,
+                    errorMessage = item.errorMessage,
                     onValueChange = { value ->
                         if (item.type == "number") {
                             if ((value.toIntOrNull() ?: 0) < item.min) {
-                                formViewModel.sendEvent(
-                                    SideEffect.ShowToast(
-                                        context.getString(R.string.minimum_value_is) + item.min.toString()
-                                    )
-                                )
-                                formViewModel.changeValue(page, item, value)
+                                formViewModel.setError(page, item, true, context.getString(R.string.minimum_value_is) + item.min)
                             } else if ((value.toIntOrNull() ?: 0) > item.max) {
-                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.maximum_value_is) + item.max.toString()))
-                                formViewModel.changeValue(page, item, value)
-                            } else {
-                                formViewModel.changeValue(page, item, value)
+                                formViewModel.setError(page, item, true, context.getString(R.string.maximum_value_is) + item.max)
+                            } else if (item.error) {
+                                formViewModel.setError(page, item, false, "")
                             }
+                            formViewModel.changeValue(page, item, value)
                         } else {
                             formViewModel.changeValue(page, item, value)
                         }
@@ -110,6 +99,8 @@ fun formItem(
     onValueChange: (String) -> Unit,
     placeholder: String,
     options: List<FormRadioOption>,
+    error: Boolean,
+    errorMessage: String,
     modifier: Modifier = Modifier
 ) {
     when (type) {
@@ -144,6 +135,8 @@ fun formItem(
                 onValueChange = onValueChange,
                 placeholder = placeholder,
                 label = label,
+                error = error,
+                errorMessage = errorMessage,
                 modifier = modifier
             )
         }
@@ -226,6 +219,8 @@ fun NumberInput(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
+    error: Boolean,
+    errorMessage: String,
     modifier: Modifier = Modifier,
     label: String
 ) {
@@ -237,34 +232,38 @@ fun NumberInput(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = { onValueChange(((value.toIntOrNull() ?: 0) - 1).toString()) },
-                modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Minus 1",
-                )
-            }
             TextField(
                 value = value,
                 onValueChange = onValueChange,
                 singleLine = true,
                 placeholder = { Text(placeholder) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                isError = error,
+                supportingText = { if (error) { Text(errorMessage) } },
+                leadingIcon = {
+                    IconButton(
+                        onClick = { onValueChange(((value.toIntOrNull() ?: 0) - 1).toString()) },
+                        modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Minus 1",
+                        )
+                    }
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = { onValueChange(((value.toIntOrNull() ?: 0) + 1).toString()) },
+                        modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowUp,
+                            contentDescription = "Plus 1",
+                        )
+                    }
+                },
                 modifier = modifier.weight(1f)
             )
-            IconButton(
-                onClick = { onValueChange(((value.toIntOrNull() ?: 0) + 1).toString()) },
-                modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Plus 1",
-                )
-            }
         }
     }
 }
