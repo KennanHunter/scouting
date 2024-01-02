@@ -1,26 +1,9 @@
 import { graphqlServer } from "@hono/graphql-server";
-import { APIContext, RouteHandler } from "../..";
-import { InferResolvers, g, buildSchema } from "garph";
+import { buildSchema, g } from "garph";
+import { RouteHandler } from "../..";
+import { queryResolvers } from "./query";
 
-export const queryType = g.type("Query", {
-  greet: g
-    .string()
-    .args({
-      name: g.string().optional().default("Kennan"),
-    })
-    .description("Greets a person"),
-});
-
-const resolvers: InferResolvers<
-  { Query: typeof queryType },
-  { context: APIContext }
-> = {
-  Query: {
-    greet: (_, args) => `Hello, ${args.name}`,
-  },
-};
-
-export const schema = buildSchema({ g, resolvers });
+export const schema = buildSchema({ g, resolvers: queryResolvers });
 
 export const graphqlHandler: RouteHandler = graphqlServer({
   schema,
