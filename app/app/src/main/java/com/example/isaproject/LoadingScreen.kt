@@ -3,6 +3,7 @@ package com.example.isaproject
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,10 +56,14 @@ fun LoadingScreen(
             ) {
                 Text(
                     text = stringResource(R.string.loading),
-                    style = MaterialTheme.typography.displaySmall
+                    style = MaterialTheme.typography.displaySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = stringResource(R.string.connecting_to_device) + formViewModel.currentDevice.name
+                    text = stringResource(R.string.connecting_to_device) + formViewModel.currentDevice.name,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         } else if (formViewModel.connectionStatus == ConnectionStatus.CONNECTED) {
