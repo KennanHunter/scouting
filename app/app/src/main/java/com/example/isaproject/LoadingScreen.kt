@@ -46,31 +46,37 @@ fun LoadingScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        if (formViewModel.connectionStatus == ConnectionStatus.CONNECTING) {
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(dimensionResource(R.dimen.margin))
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.loading),
-                    style = MaterialTheme.typography.displaySmall,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = stringResource(R.string.connecting_to_device) + formViewModel.currentDevice.name,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
+        when (formViewModel.connectionStatus) {
+            ConnectionStatus.CONNECTING -> {
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .padding(dimensionResource(R.dimen.margin))
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.loading),
+                        style = MaterialTheme.typography.displaySmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        text = stringResource(R.string.connecting_to_device) + formViewModel.currentDevice.name,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
-        } else if (formViewModel.connectionStatus == ConnectionStatus.CONNECTED) {
-            onConnectionSuccess()
-        } else if (formViewModel.connectionStatus == ConnectionStatus.NOT_CONNECTED || formViewModel.connectionStatus == ConnectionStatus.ERROR) {
-            scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.connection_error)) }
-            onConnectionFail()
+
+            ConnectionStatus.CONNECTED -> {
+                onConnectionSuccess()
+            }
+
+            ConnectionStatus.NOT_CONNECTED, ConnectionStatus.ERROR -> {
+                scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.connection_error)) }
+                onConnectionFail()
+            }
         }
     }
 }
