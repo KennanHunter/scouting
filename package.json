@@ -10,6 +10,7 @@
     "dev-api": "cd api && pnpm run dev",
     "dev-web": "cd web && pnpm run dev",
     "dev": "concurrently -c blue,green pnpm:dev-*",
+    "validate": "cd resources/scripts && pnpm run validate",
     "create-environment": "cp web/.env.example web/.env & cp api/.dev.vars.example api/.dev.vars",
     "format": "prettier -w ."
   },

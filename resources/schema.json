@@ -1,1 +1,17 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/product.schema.json",
+  "title": "ISA Scouting Schema",
+  "description": "Defines the data for the years game",
+  "type": "object",
+  "properties": {
+    "productID": {
+      "description": "The unique identifier for a product",
+      "type": "integer"
+    },
+    "productName": {
+      "description": "Name of the product",
+      "type": "string"
+    }
+  }
+}
