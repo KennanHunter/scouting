@@ -129,6 +129,15 @@ fun formItem(
                 modifier = modifier
             )
         }
+        "textarea" -> {
+            TextAreaInput(
+                value = value,
+                onValueChange = onValueChange,
+                placeholder = placeholder,
+                label = label,
+                modifier = modifier
+            )
+        }
         "number" -> {
             NumberInput(
                 value = value,
@@ -212,6 +221,24 @@ fun TextInput(
             modifier = modifier.fillMaxWidth()
         )
     }
+}
+
+@Composable
+fun TextAreaInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    modifier: Modifier = Modifier,
+    label: String
+) {
+    if (label != "") { FormLabel(label = label) }
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        singleLine = false,
+        placeholder = { Text(placeholder) },
+        modifier = modifier.fillMaxWidth()
+    )
 }
 
 @Composable

@@ -69,7 +69,7 @@ class FormViewModel : ViewModel() {
 
         bluetoothManager.adapter.startDiscovery()
 
-        
+
     }
 
     private var _currentDevice by mutableStateOf(Device("", ""))

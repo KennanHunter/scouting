@@ -113,6 +113,11 @@ object DataSource {
                             "value": "c"
                         }
                     ]
+                },
+                {
+                    "type": "textarea",
+                    "label": "Comments",
+                    "name": "page1comments"
                 }
             ]
         },
