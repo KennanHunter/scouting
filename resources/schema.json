@@ -5,13 +5,24 @@
   "description": "Defines the data for the years game",
   "type": "object",
   "properties": {
-    "productID": {
-      "description": "The unique identifier for a product",
-      "type": "integer"
-    },
-    "productName": {
-      "description": "Name of the product",
+    "gameName": {
+      "description": "Name of current season",
       "type": "string"
+    },
+    "data": {
+      "description": "Different data points that will be collected",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": ["integer", "boolean"]
+          }
+        }
+      }
     }
   }
 }

@@ -1,4 +1,10 @@
 {
   "$schema": "./schema.json",
-  "productID": 0
+  "gameName": "Crescendo",
+  "data": [
+    {
+      "name": "Notes in speaker",
+      "type": "integer"
+    }
+  ]
 }
