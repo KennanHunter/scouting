@@ -36,127 +36,86 @@ object DataSource {
 
     val formJSON = """[
         {
-            "name": "FormPage1",
-            "label": "Part 1: Auto",
+            "name": "auto",
+            "label": "Part 1: Autonomous",
             "page": [
                 {
-                    "type": "text",
-                    "label": "bar",
-                    "name": "text",
-                    "placeholder": "text"
+                    "type": "number",
+                    "label": "Notes in Amp",
+                    "name": "autoamp",
+                    "initialValue": "0",
+                    "min": 0
                 },
                 {
                     "type": "number",
-                    "label": "foo",
-                    "name": "number",
-                    "placeholder": "number",
+                    "label": "Notes in Speaker",
+                    "name": "autospeaker",
                     "initialValue": "0",
                     "min": 0,
-                    "max": 5
                 },
                 {
                     "type": "divider"
                 },
                 {
-                    "type": "radio",
-                    "label": "lorem ipsum sit dolor amet",
-                    "name": "radio",
-                    "options": [
-                        {
-                            "label": "one",
-                            "value": "1"
-                        },
-                        {
-                            "label": "two",
-                            "value": "2"
-                        },
-                        {
-                            "label": "three",
-                            "value": "3"
-                        }
-                    ]
-                },
-                {
-                    "type": "radio",
-                    "label": "Another lorem ipsum sit dolor amet",
-                    "name": "radio2",
-                    "options": [
-                        {
-                            "label": "alpha",
-                            "value": "alpha"
-                        },
-                        {
-                            "label": "beta",
-                            "value": "beta"
-                        },
-                        {
-                            "label": "whatever comes after beta",
-                            "value": "gamma"
-                        }
-                    ]
-                },
-                {
-                    "type": "radio",
-                    "label": "lorem ipsum sit dolor amet #3",
-                    "name": "radio3",
-                    "options": [
-                        {
-                            "label": "one",
-                            "value": "a"
-                        },
-                        {
-                            "label": "beta",
-                            "value": "b"
-                        },
-                        {
-                            "label": "C",
-                            "value": "c"
-                        }
-                    ]
-                },
-                {
                     "type": "textarea",
                     "label": "Comments",
-                    "name": "page1comments"
+                    "name": "autocomments"
                 }
             ]
         },
         {
-            "name": "FormPage2",
+            "name": "teleop",
             "label": "Part 2: Teleop",
             "page": [
                 {
+                    "type": "number",
+                    "label": "Notes in Amp",
+                    "name": "teleopamp",
+                    "initialValue": "0",
+                    "min": 0
+                },
+                {
+                    "type": "number",
+                    "label": "Notes in Speaker",
+                    "name": "teleopspeaker",
+                    "initialValue": "0",
+                    "min": 0
+                },
+                {
+                    "type": "divider"
+                },
+                {
                     "type": "label",
-                    "label": "hello"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "sldkfhesoi;rhj",
-                    "name": "check",
-                    "initialValue": "false"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "sldkfhesdsoi;rhj",
-                    "name": "check2",
-                    "initialValue": "false"
-                },
-                {
-                    "type": "checkbox",
-                    "label": ";lkdfn",
-                    "name": "check3",
-                    "initialValue": "false"
+                    "label": "Endgame"
                 },
                 {
                     "type": "space"
                 },
                 {
-                    "type": "number",
-                    "name": "abcde",
-                    "initialValue": "0",
-                    "label": "Another number",
-                    "min": -4,
-                    "max": 2
+                    "type": "checkbox",
+                    "label": "Trap Scored",
+                    "name": "trap",
+                    "initialValue": "false"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Climbed",
+                    "name": "climbed",
+                    "initialValue": "false"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Harmonized",
+                    "name": "harmonized",
+                    "initialValue": "false"
+                },
+                {
+                    "type": "divider"
+                }
+                {
+                    "type": "textarea",
+                    "label": "Comments",
+                    "name": "teleopcomments"
                 }
             ]
         }
