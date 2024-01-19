@@ -103,6 +103,9 @@ object DataSource {
                     "name": "harmonized"
                 },
                 {
+                    "type": "space"
+                },
+                {
                     "type": "divider"
                 },
                 {
