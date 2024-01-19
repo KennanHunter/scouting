@@ -51,7 +51,7 @@ object DataSource {
                     "label": "Notes in Speaker",
                     "name": "autospeaker",
                     "initialValue": "0",
-                    "min": 0,
+                    "min": 0
                 },
                 {
                     "type": "divider"
@@ -111,7 +111,7 @@ object DataSource {
                 },
                 {
                     "type": "divider"
-                }
+                },
                 {
                     "type": "textarea",
                     "label": "Comments",
