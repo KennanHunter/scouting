@@ -25,7 +25,19 @@ class FormElement(
     var errorMessage: String = "",
     private val initialValue: String = ""
 ) {
-    var value by mutableStateOf(initialValue)
+    var value by mutableStateOf(
+        if (initialValue == "") {
+            if (type == "number") {
+                "0"
+            } else if (type == "checkbox") {
+                "false"
+            } else {
+                initialValue
+            }
+        } else {
+            initialValue
+        }
+    )
 }
 
 @Serializable

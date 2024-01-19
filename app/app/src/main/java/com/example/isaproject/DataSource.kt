@@ -43,14 +43,12 @@ object DataSource {
                     "type": "number",
                     "label": "Notes in Amp",
                     "name": "autoamp",
-                    "initialValue": "0",
                     "min": 0
                 },
                 {
                     "type": "number",
                     "label": "Notes in Speaker",
                     "name": "autospeaker",
-                    "initialValue": "0",
                     "min": 0
                 },
                 {
@@ -71,14 +69,12 @@ object DataSource {
                     "type": "number",
                     "label": "Notes in Amp",
                     "name": "teleopamp",
-                    "initialValue": "0",
                     "min": 0
                 },
                 {
                     "type": "number",
                     "label": "Notes in Speaker",
                     "name": "teleopspeaker",
-                    "initialValue": "0",
                     "min": 0
                 },
                 {
@@ -94,20 +90,17 @@ object DataSource {
                 {
                     "type": "checkbox",
                     "label": "Trap Scored",
-                    "name": "trap",
-                    "initialValue": "false"
+                    "name": "trap"
                 },
                 {
                     "type": "checkbox",
                     "label": "Climbed",
-                    "name": "climbed",
-                    "initialValue": "false"
+                    "name": "climbed"
                 },
                 {
                     "type": "checkbox",
                     "label": "Harmonized",
-                    "name": "harmonized",
-                    "initialValue": "false"
+                    "name": "harmonized"
                 },
                 {
                     "type": "divider"
