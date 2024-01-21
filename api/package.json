@@ -3,7 +3,8 @@
   "private": "true",
   "scripts": {
     "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "database:up": "sh ./db/bootstrap.sh"
   },
   "dependencies": {
     "@hono/graphql-server": "^0.4.1",
