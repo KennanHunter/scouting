@@ -36,6 +36,34 @@ object DataSource {
 
     val formJSON = """[
         {
+            "name": "prematch",
+            "label": "Part 0: Match Information",
+            "page": [
+                {
+                    "type": "text",
+                    "label": "Scout Name",
+                    "name": "scoutname"
+                },
+                {
+                    "type": "radio",
+                    "label": "Match Level",
+                    "name": "matchlevel",
+                    "options": [
+                        {
+                            "label": "Qualifications",
+                            "value": "qual"
+                        }
+                    ]
+                },
+                {
+                    "type": "number",
+                    "label": "Match Number",
+                    "name": "matchnumber",
+                    "min": 0
+                }
+            ]
+        },
+        {
             "name": "auto",
             "label": "Part 1: Autonomous",
             "page": [
@@ -101,6 +129,9 @@ object DataSource {
                     "type": "checkbox",
                     "label": "Harmonized",
                     "name": "harmonized"
+                },
+                {
+                    "type": "space"
                 },
                 {
                     "type": "divider"
