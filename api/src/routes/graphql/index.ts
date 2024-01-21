@@ -16,7 +16,11 @@ const resolvers: Resolvers = {
 
 export const schema = buildSchema({ g, resolvers });
 
-export const graphqlHandler: RouteHandler = graphqlServer({
-  schema,
-  pretty: true,
-});
+export const graphqlHandler: RouteHandler = async (c) => {
+  console.log(JSON.stringify({ "pretty cool": c.env.DB }));
+
+  return await graphqlServer({
+    schema,
+    pretty: true,
+  })(c);
+};

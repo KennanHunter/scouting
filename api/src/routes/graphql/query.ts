@@ -3,18 +3,15 @@ import { eventType } from "./event";
 import { Resolvers } from ".";
 
 export const queryType = g.type("Query", {
-  greet: g
-    .string()
-    .args({
-      name: g.string().optional().default("Kennan"),
-    })
-    .description("Greets a person"),
   allEvents: g.ref(eventType).list(),
 });
 
 export const queryResolvers: Resolvers["Query"] = {
-  greet: (_, args) => `Hello, ${args.name}`,
-  allEvents: () => {
-    return [];
+  allEvents: async (_parent, _args, context) => {
+    const getAllEvents = context.env.DB.prepare("SELECT * FROM Events").bind();
+
+    const allEvents = (await getAllEvents.all()).results;
+
+    return allEvents as any;
   },
 };
