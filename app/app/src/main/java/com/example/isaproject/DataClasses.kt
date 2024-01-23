@@ -18,9 +18,9 @@ class FormElement(
     val name: String = "",
     val label: String = "",
     val placeholder: String = "",
-    val options: List<FormRadioOption> = listOf(FormRadioOption("", "")),
-    val min: Int = -9999,
-    val max: Int = 9999,
+    val options: List<FormOption> = listOf(FormOption("", "")),
+    val min: String = "-9999",
+    val max: String = "9999",
     var error: Boolean = false,
     var errorMessage: String = "",
     private val initialValue: String = ""
@@ -38,16 +38,12 @@ class FormElement(
             initialValue
         }
     )
+    var expanded by mutableStateOf(false)
+    var filter by mutableStateOf("")
 }
 
 @Serializable
-data class FormRadioOption(
-    val value: String,
-    val label: String
-)
-
-@Serializable
-data class FormDropdownOption(
+data class FormOption(
     val value: String,
     val label: String
 )

@@ -40,9 +40,23 @@ object DataSource {
             "label": "Part 0: Match Information",
             "page": [
                 {
-                    "type": "text",
+                    "type": "dropdown",
                     "label": "Scout Name",
-                    "name": "scoutname"
+                    "name": "scoutname",
+                    "options": [
+                        {
+                            "value": "kennan",
+                            "label": "Kennan"
+                        },
+                        {
+                            "value": "jessica",
+                            "label": "Jessica"
+                        },
+                        {
+                            "value": "klee",
+                            "label": "Klee"
+                        }
+                    ]
                 },
                 {
                     "type": "radio",
@@ -59,7 +73,7 @@ object DataSource {
                     "type": "number",
                     "label": "Match Number",
                     "name": "matchnumber",
-                    "min": 0
+                    "min": "0"
                 }
             ]
         },
@@ -71,13 +85,13 @@ object DataSource {
                     "type": "number",
                     "label": "Notes in Amp",
                     "name": "autoamp",
-                    "min": 0
+                    "min": "0"
                 },
                 {
                     "type": "number",
                     "label": "Notes in Speaker",
                     "name": "autospeaker",
-                    "min": 0
+                    "min": "0"
                 },
                 {
                     "type": "divider"
@@ -97,13 +111,13 @@ object DataSource {
                     "type": "number",
                     "label": "Notes in Amp",
                     "name": "teleopamp",
-                    "min": 0
+                    "min": "0"
                 },
                 {
                     "type": "number",
                     "label": "Notes in Speaker",
                     "name": "teleopspeaker",
-                    "min": 0
+                    "min": "0"
                 },
                 {
                     "type": "divider"
