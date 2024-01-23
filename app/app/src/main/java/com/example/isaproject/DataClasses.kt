@@ -47,6 +47,12 @@ data class FormRadioOption(
 )
 
 @Serializable
+data class FormDropdownOption(
+    val value: String,
+    val label: String
+)
+
+@Serializable
 data class Device(
     val id: String,
     val name: String

@@ -18,7 +18,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -347,5 +350,47 @@ fun CheckboxInput(
         )
         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
         Text(text = label)
+    }
+}
+
+@Composable
+fun DropdownInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    options: List<FormDropdownOption>,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Column (
+        modifier = modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+    ) {
+        if (label != "") { FormLabel(label = label) }
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { onExpandedChange(it) }
+        ) {
+            TextField(
+                modifier = Modifier.menuAnchor(),
+                value = value,
+                onValueChange = {}
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { onExpandedChange(false) }
+            ) {
+                options.forEach { dropdownOption ->
+                    DropdownMenuItem(
+                        text = { dropdownOption.label },
+                        onClick = {
+                            onValueChange(dropdownOption.value)
+                            onExpandedChange(false)
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+            }
+        }
     }
 }
