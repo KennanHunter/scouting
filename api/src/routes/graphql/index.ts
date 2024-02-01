@@ -1,22 +1,23 @@
 import { graphqlServer } from "@hono/graphql-server";
-import { InferResolvers, buildSchema, g } from "garph";
-import { APIContext, RouteHandler } from "../..";
-import { mutationResolvers, mutationType } from "./mutation";
-import { queryResolvers, queryType } from "./query";
+import SchemaBuilder from "@pothos/core";
+import { Bindings, RouteHandler } from "../..";
+import { addQuery } from "./query";
 
-export type Resolvers = InferResolvers<
-  { Query: typeof queryType; Mutation: typeof mutationType },
-  { context: APIContext }
->;
+export const builder = new SchemaBuilder<{
+  Context: Bindings;
+}>({});
 
-const resolvers: Resolvers = {
-  Query: queryResolvers,
-  Mutation: mutationResolvers,
+export type typeAdder = (schema: typeof builder) => unknown;
+
+addQuery(builder);
+
+export const graphqlHandler: RouteHandler = (context) => {
+  // console.log(JSON.stringify(context, null, 4));
+
+  return graphqlServer<{ Bindings: Bindings }>({
+    schema: builder.toSchema({
+      sortSchema: true,
+    }),
+    pretty: true,
+  })(context);
 };
-
-export const schema = buildSchema({ g, resolvers });
-
-export const graphqlHandler: RouteHandler = graphqlServer({
-  schema,
-  pretty: true,
-});
