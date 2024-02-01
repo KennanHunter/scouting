@@ -25,10 +25,25 @@ class FormViewModel : ViewModel() {
     val form: List<FormPage>
         get() = _form
 
-    fun changeValue(page: FormPage, item: FormElement, value: String) {
+    fun setValue(page: FormPage, item: FormElement, value: String) {
         _form.find { it.name == page.name }?.let { i ->
             i.page.find { it.name == item.name }?.let { j ->
                 j.value = value
+            }
+        }
+    }
+
+    fun setExpanded(page: FormPage, item: FormElement, expanded: Boolean) {
+        _form.find { it.name == page.name }?.let { i ->
+            i.page.find { it.name == item.name }?.let { j ->
+                j.expanded = expanded
+            }
+        }
+    }
+    fun setFilter(page: FormPage, item: FormElement, filter: String) {
+        _form.find { it.name == page.name }?.let { i ->
+            i.page.find { it.name == item.name }?.let { j ->
+                j.filter = filter
             }
         }
     }

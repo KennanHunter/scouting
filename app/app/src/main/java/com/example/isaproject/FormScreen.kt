@@ -18,7 +18,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,7 +66,7 @@ fun FormScreen(
                 .padding(all = dimensionResource(R.dimen.margin))
         ) {
             items(page.page) { item ->
-                formItem(
+                FormItem(
                     label = item.label,
                     type = item.type,
                     placeholder = item.placeholder,
@@ -73,17 +76,26 @@ fun FormScreen(
                     errorMessage = item.errorMessage,
                     onValueChange = { value ->
                         if (item.type == "number") {
-                            if ((value.toIntOrNull() ?: 0) < item.min) {
+                            if ((value.toIntOrNull() ?: 0) < (item.min.toIntOrNull() ?: -9999)) {
                                 formViewModel.setError(page, item, true, context.getString(R.string.minimum_value_is) + item.min)
-                            } else if ((value.toIntOrNull() ?: 0) > item.max) {
+                            } else if ((value.toIntOrNull() ?: 0) > (item.max.toIntOrNull() ?: 9999)
+                            ) {
                                 formViewModel.setError(page, item, true, context.getString(R.string.maximum_value_is) + item.max)
                             } else if (item.error) {
                                 formViewModel.setError(page, item, false, "")
                             }
-                            formViewModel.changeValue(page, item, value)
+                            formViewModel.setValue(page, item, value)
                         } else {
-                            formViewModel.changeValue(page, item, value)
+                            formViewModel.setValue(page, item, value)
                         }
+                    },
+                    expanded = item.expanded,
+                    onExpandedChange = { expanded ->
+                        formViewModel.setExpanded(page, item, expanded)
+                    },
+                    filter = item.filter,
+                    onFilterChange = { filter ->
+                        formViewModel.setFilter(page, item, filter)
                     }
                 )
             }
@@ -92,15 +104,19 @@ fun FormScreen(
 }
 
 @Composable
-fun formItem(
+fun FormItem(
     label: String,
     type: String,
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    options: List<FormRadioOption>,
+    options: List<FormOption>,
     error: Boolean,
     errorMessage: String,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    filter: String,
+    onFilterChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (type) {
@@ -163,6 +179,19 @@ fun formItem(
                 value = value,
                 onValueChange = onValueChange,
                 label = label,
+                modifier = modifier
+            )
+        }
+        "dropdown" -> {
+            DropdownInput(
+                value = value,
+                onValueChange = onValueChange,
+                expanded = expanded,
+                onExpandedChange = onExpandedChange,
+                options = options,
+                label = label,
+                filter = filter,
+                onFilterChange = onFilterChange,
                 modifier = modifier
             )
         }
@@ -299,7 +328,7 @@ fun NumberInput(
 fun RadioInput(
     value: String,
     onValueChange: (String) -> Unit,
-    options: List<FormRadioOption>,
+    options: List<FormOption>,
     modifier: Modifier = Modifier,
     label: String
 ) {
@@ -347,5 +376,56 @@ fun CheckboxInput(
         )
         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
         Text(text = label)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DropdownInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    options: List<FormOption>,
+    label: String,
+    filter: String,
+    onFilterChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column (
+        modifier = modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+    ) {
+        if (label != "") { FormLabel(label = label) }
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = onExpandedChange
+        ) {
+            TextField(
+                modifier = Modifier.menuAnchor(),
+                value = filter,
+                onValueChange = onFilterChange,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                colors = ExposedDropdownMenuDefaults.textFieldColors()
+            )
+            val filteringOptions = options.filter { it.label.contains(filter, ignoreCase = true) }
+            if (filteringOptions.isNotEmpty()) {
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { onExpandedChange(false) }
+                ) {
+                    filteringOptions.forEach { dropdownOption ->
+                        DropdownMenuItem(
+                            text = { Text(dropdownOption.label) },
+                            onClick = {
+                                onValueChange(dropdownOption.value)
+                                onFilterChange(dropdownOption.label)
+                                onExpandedChange(false)
+                            },
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        )
+                    }
+                }
+            }
+        }
     }
 }
