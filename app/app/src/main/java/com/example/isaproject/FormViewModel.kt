@@ -20,10 +20,19 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class FormViewModel : ViewModel() {
-    private val _form =
-        Json.decodeFromString<List<FormPage>>(DataSource.formJSON.trimIndent()).toMutableStateList()
+    private var _form : List<FormPage> = Json.decodeFromString<List<FormPage>>(DataSource.formJSON.trimIndent()).toMutableStateList()
     val form: List<FormPage>
         get() = _form
+
+    fun getScouts() {
+        //TODO: send a request to relay computer for scout names
+        val scouts = Json.decodeFromString<List<FormOption>>(DataSource.scoutsJSON.trimIndent())
+        _form.find { it.name == "prematch" }?.let { i ->
+            i.page.find { it.name == "scoutname" }?.let { j ->
+                j.options = scouts
+            }
+        }
+    }
 
     fun setValue(page: FormPage, item: FormElement, value: String) {
         _form.find { it.name == page.name }?.let { i ->

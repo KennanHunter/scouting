@@ -28,13 +28,18 @@ fun ISAScreen(
         composable(route = AppScreens.SelectDevice.name) {
             SelectDeviceScreen(
                 formViewModel = formViewModel,
-                onConnectButtonClicked = { navController.navigate(AppScreens.Loading.name) }
+                onConnectButtonClicked = {
+                    navController.navigate(AppScreens.Loading.name)
+                }
             )
         }
         composable(route = AppScreens.Loading.name) {
             LoadingScreen(
                 formViewModel = formViewModel,
-                onConnectionSuccess = { navController.navigate(formViewModel.form[0].name) },
+                onConnectionSuccess = {
+                    formViewModel.getScouts()
+                    navController.navigate(formViewModel.form[0].name)
+                },
                 onConnectionFail = { navController.navigate(AppScreens.SelectDevice.name) }
             )
         }

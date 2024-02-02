@@ -43,37 +43,18 @@ object DataSource {
                     "type": "dropdown",
                     "label": "Scout Name",
                     "name": "scoutname",
-                    "options": [
-                        {
-                            "value": "kennan",
-                            "label": "Kennan"
-                        },
-                        {
-                            "value": "jessica",
-                            "label": "Jessica"
-                        },
-                        {
-                            "value": "klee",
-                            "label": "Klee"
-                        }
-                    ]
-                },
-                {
-                    "type": "radio",
-                    "label": "Match Level",
-                    "name": "matchlevel",
-                    "options": [
-                        {
-                            "label": "Qualifications",
-                            "value": "qual"
-                        }
-                    ]
+                    "options": []
                 },
                 {
                     "type": "number",
                     "label": "Match Number",
                     "name": "matchnumber",
                     "min": "0"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "No Show",
+                    "name": "noshow"
                 }
             ]
         },
@@ -81,6 +62,69 @@ object DataSource {
             "name": "auto",
             "label": "Part 1: Autonomous",
             "page": [
+                {
+                    "type": "radio",
+                    "label": "Starting Position",
+                    "name": "startingpos",
+                    "options": [
+                        {
+                            "value": "1",
+                            "label": "1"
+                        },
+                        {
+                            "value": "2",
+                            "label": "2"
+                        },
+                        {
+                            "value": "3",
+                            "label": "3"
+                        },
+                        {
+                            "value": "4",
+                            "label": "4"
+                        }
+                    ]
+                },
+                {
+                    "type": "checkbox",
+                    "label": "1",
+                    "name": "1"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "2",
+                    "name": "2"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "3",
+                    "name": "3"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "4",
+                    "name": "4"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "5",
+                    "name": "5"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "6",
+                    "name": "6"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "7",
+                    "name": "7"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "8",
+                    "name": "8"
+                },
                 {
                     "type": "number",
                     "label": "Notes in Amp",
@@ -92,14 +136,6 @@ object DataSource {
                     "label": "Notes in Speaker",
                     "name": "autospeaker",
                     "min": "0"
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "textarea",
-                    "label": "Comments",
-                    "name": "autocomments"
                 }
             ]
         },
@@ -120,42 +156,169 @@ object DataSource {
                     "min": "0"
                 },
                 {
-                    "type": "divider"
-                },
-                {
-                    "type": "label",
-                    "label": "Endgame"
-                },
-                {
-                    "type": "space"
+                    "type": "checkbox",
+                    "label": "From Subwoofer",
+                    "name": "subwoofer"
                 },
                 {
                     "type": "checkbox",
-                    "label": "Trap Scored",
-                    "name": "trap"
+                    "label": "From Podium",
+                    "name": "podium"
                 },
                 {
                     "type": "checkbox",
-                    "label": "Climbed",
-                    "name": "climbed"
+                    "label": "Within Wing",
+                    "name": "wing"
                 },
                 {
                     "type": "checkbox",
-                    "label": "Harmonized",
-                    "name": "harmonized"
+                    "label": "Outside Wing",
+                    "name": "outside"
                 },
                 {
-                    "type": "space"
+                    "type": "number",
+                    "label": "Notes in Trap",
+                    "name": "teleoptrap",
+                    "min": "0",
+                    "max": "3"
                 },
                 {
-                    "type": "divider"
+                    "type": "number",
+                    "label": "Time Climb Started",
+                    "name": "climbtime",
+                    "min": "0",
+                    "max": "135"
+                },
+                {
+                    "type": "radio",
+                    "label": "Onstage",
+                    "name": "onstage",
+                    "options": [
+                        {
+                            "value": "1",
+                            "label": "First"
+                        },
+                        {
+                            "value": "2",
+                            "label": "Second"
+                        },
+                        {
+                            "value": "3",
+                            "label": "Third"
+                        },
+                        {
+                            "value": "0",
+                            "label": "Park"
+                        }
+                    ]
+                },
+                {
+                    "type": "radio",
+                    "label": "Number of Other Robots on Same Stage",
+                    "name": "harmonize",
+                    "options": [
+                        {
+                            "value": "1",
+                            "label": "1"
+                        },
+                        {
+                            "value": "2",
+                            "label": "2"
+                        }
+                    ]
+                },
+                {
+                    "type":"checkbox",
+                    "label": "Buddy Climb",
+                    "name": "buddy"
+                },
+                {
+                    "type": "number",
+                    "label": "Spotlit by Your Team",
+                    "name": "spotlit",
+                    "min": "0",
+                    "max": "3"
+                },
+                {
+                    "type":"checkbox",
+                    "label": "Floor PU",
+                    "name": "floor"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Source PU",
+                    "name": "source"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Drove Under Stage",
+                    "name": "understage"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Played Defense",
+                    "name": "playeddefense"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Received Defense",
+                    "name": "receiveddefense"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Died (stopped moving due to comms issues, electrical problems or other)",
+                    "name": "died"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Tipped",
+                    "name": "tipped"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Broke (sustained damage)",
+                    "name": "broke"
+                },
+                {
+                    "type": "radio",
+                    "label": "Driver Rating (Amongst Same Alliance)",
+                    "name": "rating",
+                    "options": [
+                        {
+                            "value": "1",
+                            "label": "1"
+                        },
+                        {
+                            "value": "2",
+                            "label": "2"
+                        },
+                        {
+                            "value": "3",
+                            "label": "3"
+                        }
+                    ]
                 },
                 {
                     "type": "textarea",
-                    "label": "Comments",
-                    "name": "teleopcomments"
+                    "label": "Comments (including excessive penalties received, A-stop usage, etc)",
+                    "name": "comments"
                 }
             ]
+        }
+    ]""".trimIndent()
+
+    val scoutsJSON = """[
+        {
+            "value": "kennan",
+            "label": "Kennan"
+        },
+        {
+            "value": "jessica",
+            "label": "Jessica"
+        },
+        {
+            "value": "klee",
+            "label": "Klee"
         }
     ]""".trimIndent()
 }
