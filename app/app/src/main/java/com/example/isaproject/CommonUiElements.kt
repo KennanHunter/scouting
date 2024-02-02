@@ -1,5 +1,6 @@
 package com.example.isaproject
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
@@ -13,6 +14,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,12 +25,13 @@ fun PageTitle(
 ) {
     TopAppBar(
         title = {
-            Text(text = text)
-        },
-        actions = {
-            if (nowScouting != "") {
-                Button(onClick = {}) {
-                    Text("Now Scouting: " + nowScouting)
+            Column {
+                Text(text = text)
+                if (nowScouting != "") {
+                    Text(
+                        text = stringResource(R.string.now_scouting) + nowScouting,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
         },

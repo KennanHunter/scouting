@@ -48,7 +48,12 @@ fun FormScreen(
 ) {
     val context = LocalContext.current
     Scaffold(
-        topBar = { PageTitle(text = page.label) },
+        topBar = {
+            PageTitle(
+                text = page.label,
+                nowScouting = formViewModel.nowScouting
+            )
+        },
         bottomBar = {
             BottomNavBar(
                 canNavigateBack = true,

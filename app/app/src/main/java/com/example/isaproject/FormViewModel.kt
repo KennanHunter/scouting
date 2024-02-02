@@ -151,7 +151,7 @@ class FormViewModel : ViewModel() {
 
     fun getNowScouting(matchNumber: Number) {
         //TODO: send a request to relay computer for team number based on match number
-        val team = "3494"
+        val team = DataSource.nowScouting
         _nowScouting = team
     }
 }

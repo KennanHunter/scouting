@@ -12,4 +12,5 @@
     <string name="connection_failed">Connection Failed</string>
     <string name="minimum_value_is">"Minimum value is "</string>
     <string name="maximum_value_is">"Maximum value is "</string>
+    <string name="now_scouting">"Now Scouting: "</string>
 </resources>
