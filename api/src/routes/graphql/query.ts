@@ -1,17 +1,30 @@
-import { g } from "garph";
-import { eventType } from "./event";
-import { Resolvers } from ".";
+import { typeAdder } from ".";
 
-export const queryType = g.type("Query", {
-  allEvents: g.ref(eventType).list(),
-});
+export const addQuery: typeAdder = (schema) =>
+  schema.queryType({
+    fields: (t) => ({
+      greet: t.string({
+        args: {
+          name: t.arg.string({
+            required: false,
+            defaultValue: "Kennan",
+            description: "ti's the name",
+          }),
+        },
+        resolve: (_source, { name }, context, _info) => {
+          console.log("Hi");
+          console.log(
+            JSON.stringify(
+              {
+                subResolverContext: context ?? "this shit is undefined",
+              },
+              undefined,
+              4
+            )
+          );
 
-export const queryResolvers: Resolvers["Query"] = {
-  allEvents: async (_parent, _args, context) => {
-    const getAllEvents = context.env.DB.prepare("SELECT * FROM Events").bind();
-
-    const allEvents = (await getAllEvents.all()).results;
-
-    return allEvents as any;
-  },
-};
+          return `Hello ${name}`;
+        },
+      }),
+    }),
+  });
