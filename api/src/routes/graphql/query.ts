@@ -1,4 +1,11 @@
 import { typeAdder } from ".";
+import {
+  StatusEnum,
+  checkAuthenticationStatus,
+  checkDBConnection,
+  checkTheBlueAllianceStatus,
+} from "./status";
+import { StatusType } from "./types";
 
 export const addQuery: typeAdder = (schema) =>
   schema.queryType({
@@ -12,19 +19,20 @@ export const addQuery: typeAdder = (schema) =>
           }),
         },
         resolve: (_source, { name }, context, _info) => {
-          console.log("Hi");
-          console.log(
-            JSON.stringify(
-              {
-                subResolverContext: context ?? "this shit is undefined",
-              },
-              undefined,
-              4
-            )
-          );
-
           return `Hello ${name}`;
         },
+      }),
+      status: t.field({
+        type: StatusType,
+        resolve: async (_, {}, c) => ({
+          status: {
+            api: "operational" as StatusEnum,
+            db: checkDBConnection(),
+            thebluealliance: await checkTheBlueAllianceStatus(c),
+          },
+          authentication: await checkAuthenticationStatus(c),
+          environment: Object.keys(c.env),
+        }),
       }),
     }),
   });

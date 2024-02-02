@@ -1,25 +1,24 @@
-import { Infer, g } from "garph";
+import { builder } from ".";
 import { APIContext } from "../..";
 import { protect } from "../../auth/protected";
 
-export const statusEnum = g.enumType("StatusEnum", [
-  "operational",
-  "online",
-  "offline",
-] as const);
-
-export const statusType = g.type("Status", {
-  runtime: g.string(),
-  authentication: g.string(),
-  api: statusEnum,
+export type StatusEnum = "operational" | "online" | "offline";
+export const StatusEnum = builder.enumType("StatusEnum", {
+  values: ["operational", "online", "offline"] as const,
 });
 
-const checkDBConnection = () => {
+export const statusType = builder.objectRef<{
+  runtime: string;
+  authentication: string;
+  api: StatusEnum;
+}>("Status");
+
+export const checkDBConnection = (): StatusEnum => {
   // TODO:
   return "operational";
 };
 
-const checkAuthentication = async (
+export const checkAuthenticationStatus = async (
   c: APIContext
 ): Promise<"valid" | "invalid"> => {
   const res = await protect(c, () => ({}) as any);
@@ -29,9 +28,9 @@ const checkAuthentication = async (
   return "valid";
 };
 
-const checkTheBlueAlliance = async (
+export const checkTheBlueAllianceStatus = async (
   c: APIContext
-): Promise<Infer<typeof statusEnum>> => {
+): Promise<StatusEnum> => {
   const status = await fetch("https://www.thebluealliance.com/api/v3/status", {
     headers: {
       "x-tba-auth-key": c.env.TBA_KEY,
@@ -42,13 +41,3 @@ const checkTheBlueAlliance = async (
 
   return "offline";
 };
-
-// export const statusResolver = async (parent, args, context, info) => ({
-//   status: {
-//     api: zStatusEnum().Enum.operational,
-//     db: checkDBConnection(),
-//     thebluealliance: await checkTheBlueAlliance(c),
-//   },
-//   authentication: await checkAuthentication(c),
-//   environment: Object.keys(c.env),
-// });
