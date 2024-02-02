@@ -154,6 +154,13 @@ class FormViewModel : ViewModel() {
         val team = DataSource.nowScouting
         _nowScouting = team
     }
+
+    private var _buttonPresses = listOf<ButtonPress>().toMutableStateList()
+    val buttonPresses: List<ButtonPress>
+        get() = _buttonPresses
+    fun addButtonPress(button: String, time: String) {
+        _buttonPresses.add(ButtonPress(button, time))
+    }
 }
 
 //TODO: probably pick different names for statuses

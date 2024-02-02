@@ -25,16 +25,6 @@ fun SummaryScreen(
                 canNavigateBack = true,
                 nextButtonLabel = stringResource(R.string.submit),
                 onNextButtonClicked = {
-                    for (i in formViewModel.form) {
-                        for (j in i.page) {
-                            if (j.name != "") {
-                                formViewModel.setAnswer(
-                                    name = j.name,
-                                    value = j.value.toIntOrNull() ?: j.value.toBooleanStrictOrNull() ?: j.value
-                                )
-                            }
-                        }
-                    }
                     //TODO: send data
                     onSubmitButtonClicked()
                 },

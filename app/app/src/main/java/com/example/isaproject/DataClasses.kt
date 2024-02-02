@@ -53,3 +53,8 @@ data class Device(
     val id: String,
     val name: String
 )
+
+data class ButtonPress(
+    val button: String,
+    val time: String
+)
