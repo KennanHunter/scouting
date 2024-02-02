@@ -71,7 +71,7 @@ fun FormScreen(
                     type = item.type,
                     placeholder = item.placeholder,
                     options = item.options,
-                    value = item.value,
+                    value = formViewModel.answers[item.name].toString(),
                     error = item.error,
                     errorMessage = item.errorMessage,
                     onValueChange = { value ->
@@ -84,9 +84,9 @@ fun FormScreen(
                             } else if (item.error) {
                                 formViewModel.setError(page, item, false, "")
                             }
-                            formViewModel.setValue(page, item, value)
+                            formViewModel.setAnswer(item.name, value.toIntOrNull() ?: value.toBooleanStrictOrNull() ?: value)
                         } else {
-                            formViewModel.setValue(page, item, value)
+                            formViewModel.setAnswer(item.name, value.toIntOrNull() ?: value.toBooleanStrictOrNull() ?: value)
                         }
                     },
                     expanded = item.expanded,

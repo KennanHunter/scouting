@@ -18,11 +18,19 @@ import androidx.compose.ui.res.dimensionResource
 @Composable
 fun PageTitle(
     text: String,
+    nowScouting: String = "",
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
         title = {
             Text(text = text)
+        },
+        actions = {
+            if (nowScouting != "") {
+                Button(onClick = {}) {
+                    Text("Now Scouting: " + nowScouting)
+                }
+            }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,

@@ -115,7 +115,20 @@ class FormViewModel : ViewModel() {
 
     private var _answers = mutableStateMapOf<String, Any>()
     val answers: Map<String, Any>
-        get() = _answers
+        get() {
+            if (_answers.size == 0) {
+                for (i in form) {
+                    for (j in i.page) {
+                        if (j.name != "") {
+                            _answers[j.name] =
+                                j.value.toIntOrNull() ?: j.value.toBooleanStrictOrNull() ?: j.value
+                        }
+                    }
+                }
+            }
+            return _answers
+        }
+
 
     fun setAnswer(name: String, value: Any) {
         _answers[name] = value
@@ -130,6 +143,16 @@ class FormViewModel : ViewModel() {
         viewModelScope.launch {
             _sideEffectChannel.send(evt)
         }
+    }
+
+    private var _nowScouting by mutableStateOf("")
+    val nowScouting: String
+        get() = _nowScouting
+
+    fun getNowScouting(matchNumber: Number) {
+        //TODO: send a request to relay computer for team number based on match number
+        val team = "3494"
+        _nowScouting = team
     }
 }
 

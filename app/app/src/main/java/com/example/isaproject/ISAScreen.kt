@@ -49,6 +49,9 @@ fun ISAScreen(
                     formViewModel = formViewModel,
                     page = formViewModel.form[i],
                     onNextButtonClicked = {
+                        if (navController.currentBackStackEntry?.destination?.route == "prematch") {
+                            formViewModel.getNowScouting(formViewModel.answers["matchnumber"].toString().toIntOrNull() ?: 0)
+                        }
                         if (i < formViewModel.form.size - 1) {
                             navController.navigate(formViewModel.form[i + 1].name)
                         } else {

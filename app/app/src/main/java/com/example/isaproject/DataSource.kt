@@ -321,4 +321,6 @@ object DataSource {
             "label": "Klee"
         }
     ]""".trimIndent()
+
+    val nowScouting = "3494"
 }
