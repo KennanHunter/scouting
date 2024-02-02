@@ -86,6 +86,10 @@ object DataSource {
                     ]
                 },
                 {
+                    "type": "label",
+                    "label": "Note Pickup Locations"
+                },
+                {
                     "type": "checkbox",
                     "label": "1",
                     "name": "1"
@@ -126,6 +130,9 @@ object DataSource {
                     "name": "8"
                 },
                 {
+                    "type": "spacer"
+                },
+                {
                     "type": "number",
                     "label": "Notes in Amp",
                     "name": "autoamp",
@@ -156,13 +163,17 @@ object DataSource {
                     "min": "0"
                 },
                 {
+                    "type": "label",
+                    "label": "Scored From"
+                },
+                {
                     "type": "checkbox",
-                    "label": "From Subwoofer",
+                    "label": "Subwoofer",
                     "name": "subwoofer"
                 },
                 {
                     "type": "checkbox",
-                    "label": "From Podium",
+                    "label": "Podium",
                     "name": "podium"
                 },
                 {
@@ -176,11 +187,20 @@ object DataSource {
                     "name": "outside"
                 },
                 {
+                    "type": "spacer"
+                },
+                {
                     "type": "number",
                     "label": "Notes in Trap",
                     "name": "teleoptrap",
                     "min": "0",
                     "max": "3"
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "spacer"
                 },
                 {
                     "type": "number",
@@ -233,6 +253,9 @@ object DataSource {
                     "name": "buddy"
                 },
                 {
+                    "type": "spacer"
+                },
+                {
                     "type": "number",
                     "label": "Spotlit by Your Team",
                     "name": "spotlit",
@@ -240,14 +263,23 @@ object DataSource {
                     "max": "3"
                 },
                 {
+                    "type": "divider"
+                },
+                {
+                    "type": "spacer"
+                },
+                {
                     "type":"checkbox",
-                    "label": "Floor PU",
+                    "label": "Floor Pick Up",
                     "name": "floor"
                 },
                 {
                     "type": "checkbox",
-                    "label": "Source PU",
+                    "label": "Source Pick Up",
                     "name": "source"
+                },
+                {
+                    "type": "spacer"
                 },
                 {
                     "type": "checkbox",
@@ -265,6 +297,9 @@ object DataSource {
                     "name": "receiveddefense"
                 },
                 {
+                    "type": "spacer"
+                },
+                {
                     "type": "checkbox",
                     "label": "Died (stopped moving due to comms issues, electrical problems or other)",
                     "name": "died"
@@ -278,6 +313,9 @@ object DataSource {
                     "type": "checkbox",
                     "label": "Broke (sustained damage)",
                     "name": "broke"
+                },
+                {
+                    "type": "spacer"
                 },
                 {
                     "type": "radio",

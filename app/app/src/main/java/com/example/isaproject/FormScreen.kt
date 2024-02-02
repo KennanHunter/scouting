@@ -136,7 +136,7 @@ fun FormItem(
                 modifier = modifier
             )
         }
-        "space" -> {
+        "spacer" -> {
             FormSpace(
                 modifier = modifier
             )

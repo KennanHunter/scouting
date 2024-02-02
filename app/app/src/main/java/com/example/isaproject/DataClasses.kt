@@ -18,7 +18,7 @@ class FormElement(
     val name: String = "",
     val label: String = "",
     val placeholder: String = "",
-    var options: List<FormOption> = listOf(FormOption("", "")),
+    var options: List<FormOption> = listOf(),
     val min: String = "-9999",
     val max: String = "9999",
     var error: Boolean = false,
