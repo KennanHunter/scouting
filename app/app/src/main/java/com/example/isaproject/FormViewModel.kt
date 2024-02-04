@@ -57,7 +57,7 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    fun setError(page: FormPage, item: FormElement, error: Boolean, errorText: String) {
+    fun setError(page: FormPage, item: FormElement, error: String, errorText: String) {
         _form.find { it.name == page.name }?.let { i ->
             i.page.find { it.name == item.name }?.let { j ->
                 j.error = error

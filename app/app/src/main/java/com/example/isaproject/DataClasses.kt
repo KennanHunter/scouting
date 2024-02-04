@@ -27,12 +27,16 @@ class FormElement(
 ) {
     var value by mutableStateOf(
         if (initialValue == "") {
-            if (type == "number") {
-                "0"
-            } else if (type == "checkbox") {
-                "false"
-            } else {
-                initialValue
+            when (type) {
+                "number" -> {
+                    "0"
+                }
+                "checkbox" -> {
+                    "false"
+                }
+                else -> {
+                    initialValue
+                }
             }
         } else {
             initialValue
@@ -40,7 +44,7 @@ class FormElement(
     )
     var expanded by mutableStateOf(
         if (type == "column" || type == "row") {
-            "false;;;".repeat(max(0, content.size - 1)) + if (content.size > 0) { "false" }
+            "false;;;".repeat(max(0, content.size - 1)) + if (content.isNotEmpty()) { "false" } else {}
         } else {
             "false"
         }
@@ -48,7 +52,7 @@ class FormElement(
     var filter by mutableStateOf("")
     var error by mutableStateOf(
         if (type == "column" || type == "row") {
-            "false;;;".repeat(max(0, content.size - 1)) + if (content.size > 0) { "false" }
+            "false;;;".repeat(max(0, content.size - 1)) + if (content.isNotEmpty()) { "false" } else {}
         } else {
             "false"
         }

@@ -99,7 +99,7 @@ fun FormItem(
     onValueChange: (String) -> Unit,
     onExpandedChange: (String) -> Unit,
     onFilterChange: (String) -> Unit,
-    onErrorChange: (Boolean, String) -> Unit,
+    onErrorChange: (String, String) -> Unit,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -121,10 +121,34 @@ fun FormItem(
             )
         }
         "row" -> {
-
+            FormRow(
+                content = item.content,
+                value = item.value,
+                onValueChange = onValueChange,
+                expanded = item.expanded,
+                onExpandedChange = onExpandedChange,
+                filter = item.filter,
+                onFilterChange = onFilterChange,
+                error = item.error,
+                errorMessage = item.errorMessage,
+                onErrorChange = onErrorChange,
+                context = context
+            )
         }
         "column" -> {
-
+            FormColumn(
+                content = item.content,
+                value = item.value,
+                onValueChange = onValueChange,
+                expanded = item.expanded,
+                onExpandedChange = onExpandedChange,
+                filter = item.filter,
+                onFilterChange = onFilterChange,
+                error = item.error,
+                errorMessage = item.errorMessage,
+                onErrorChange = onErrorChange,
+                context = context
+            )
         }
         "text" -> {
             TextInput(
@@ -226,7 +250,7 @@ fun FormSpace(
 
 @Composable
 fun FormRow(
-    options: List<FormElement>,
+    content: List<FormElement>,
     value: String,
     onValueChange: (String) -> Unit,
     expanded: String,
@@ -242,9 +266,9 @@ fun FormRow(
     Row(
         modifier = modifier
     ) {
-        for (i in options.indices) {
+        for (i in content.indices) {
             FormItem(
-                item = options[i],
+                item = content[i],
                 onValueChange = {
                     var newValue = value.split(";;;").toMutableList()
                     newValue[i] = it
@@ -265,6 +289,56 @@ fun FormRow(
                     newError[i] = it1
                     var newErrorMessage = errorMessage.split(";;;").toMutableList()
                     newErrorMessage[i] = it2
+                    onErrorChange(newError.joinToString(";;;"), newErrorMessage.joinToString(";;;"))
+                },
+                context = context
+            )
+        }
+    }
+}
+
+@Composable
+fun FormColumn(
+    content: List<FormElement>,
+    value: String,
+    onValueChange: (String) -> Unit,
+    expanded: String,
+    onExpandedChange: (String) -> Unit,
+    filter: String,
+    onFilterChange: (String) -> Unit,
+    error: String,
+    errorMessage: String,
+    onErrorChange: (String, String) -> Unit,
+    context: Context,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        for (i in content.indices) {
+            FormItem(
+                item = content[i],
+                onValueChange = {
+                    var newValue = value.split(";;;").toMutableList()
+                    newValue[i] = it
+                    onValueChange(newValue.joinToString(";;;"))
+                },
+                onExpandedChange = {
+                    var newExpanded = expanded.split(";;;").toMutableList()
+                    newExpanded[i] = it
+                    onExpandedChange(newExpanded.joinToString(";;;"))
+                },
+                onFilterChange = {
+                    var newFilter = filter.split(";;;").toMutableList()
+                    newFilter[i] = it
+                    onFilterChange(newFilter.joinToString(";;;"))
+                },
+                onErrorChange = { it1, it2 ->
+                    var newError = error.split(";;;").toMutableList()
+                    newError[i] = it1
+                    var newErrorMessage = errorMessage.split(";;;").toMutableList()
+                    newErrorMessage[i] = it2
+                    onErrorChange(newError.joinToString(";;;"), newErrorMessage.joinToString(";;;"))
                 },
                 context = context
             )
@@ -317,9 +391,9 @@ fun NumberInput(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    error: Boolean,
+    error: String,
     errorMessage: String,
-    onErrorChange: (Boolean, String) -> Unit,
+    onErrorChange: (String, String) -> Unit,
     min: Int,
     max: Int,
     modifier: Modifier = Modifier,
@@ -330,51 +404,47 @@ fun NumberInput(
         modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
     ) {
         if (label != "") { FormLabel(label = label) }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextField(
-                value = value,
-                onValueChange = { value ->
-                    if ((value.toIntOrNull() ?: 0) < min) {
-                        onErrorChange(true, context.getString(R.string.minimum_value_is) + min)
-                    } else if ((value.toIntOrNull() ?: 0) > max) {
-                        onErrorChange(true, context.getString(R.string.maximum_value_is) + max)
-                    } else if (error) {
-                        onErrorChange(false, "")
-                    }
-                },
-                singleLine = true,
-                placeholder = { Text(placeholder) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                isError = error,
-                supportingText = { if (error) { Text(errorMessage) } },
-                leadingIcon = {
-                    IconButton(
-                        onClick = { onValueChange(((value.toIntOrNull() ?: 0) - 1).toString()) },
-                        modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Minus 1",
-                        )
-                    }
-                },
-                trailingIcon = {
-                    IconButton(
-                        onClick = { onValueChange(((value.toIntOrNull() ?: 0) + 1).toString()) },
-                        modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
-                            contentDescription = "Plus 1",
-                        )
-                    }
-                },
-                modifier = modifier.weight(1f)
-            )
-        }
+        TextField(
+            value = value,
+            onValueChange = {
+                if ((it.toIntOrNull() ?: 0) < min) {
+                    onErrorChange("true", context.getString(R.string.minimum_value_is) + min)
+                } else if ((it.toIntOrNull() ?: 0) > max) {
+                    onErrorChange("true", context.getString(R.string.maximum_value_is) + max)
+                } else if (error.toBoolean()) {
+                    onErrorChange("false", "")
+                }
+                onValueChange(value)
+            },
+            singleLine = true,
+            placeholder = { Text(placeholder) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isError = error.toBoolean(),
+            supportingText = { if (error.toBoolean()) { Text(errorMessage) } },
+            leadingIcon = {
+                IconButton(
+                    onClick = { onValueChange(((value.toIntOrNull() ?: 0) - 1).toString()) },
+                    modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Minus 1",
+                    )
+                }
+            },
+            trailingIcon = {
+                IconButton(
+                    onClick = { onValueChange(((value.toIntOrNull() ?: 0) + 1).toString()) },
+                    modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowUp,
+                        contentDescription = "Plus 1",
+                    )
+                }
+            },
+            modifier = modifier.weight(1f)
+        )
     }
 }
 
