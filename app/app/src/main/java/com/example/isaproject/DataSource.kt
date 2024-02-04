@@ -64,6 +64,7 @@ object DataSource {
             "page": [
                 {
                     "type": "row",
+                    "layersContained": "1",
                     "content": [
                         {
                             "type": "radio",
@@ -89,48 +90,54 @@ object DataSource {
                             ]
                         },
                         {
-                            "type": "label",
-                            "label": "Note Pickup Locations"
-                        },
-                        {
-                            "type": "checkbox",
-                            "label": "1",
-                            "name": "1"
-                        },
-                        {
-                            "type": "checkbox",
-                            "label": "2",
-                            "name": "2"
-                        },
-                        {
-                            "type": "checkbox",
-                            "label": "3",
-                            "name": "3"
-                        },
-                        {
-                            "type": "checkbox",
-                            "label": "4",
-                            "name": "4"
-                        },
-                        {
-                            "type": "checkbox",
-                            "label": "5",
-                            "name": "5"
-                        },
-                        {
-                            "type": "checkbox",
-                            "label": "6",
-                            "name": "6"
-                        },
-                        {
-                            "type": "checkbox",
-                            "label": "7",
-                            "name": "7"
-                        },
-                        {
-                            "type": "checkbox",
-                            "label": "8",
-                            "name": "8"
+                            "type": "column",
+                            "layersContained": "0",
+                            "content": [
+                                {
+                                    "type": "label",
+                                    "label": "Note Pickup Locations"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "1",
+                                    "name": "1"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "2",
+                                    "name": "2"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "3",
+                                    "name": "3"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "4",
+                                    "name": "4"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "5",
+                                    "name": "5"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "6",
+                                    "name": "6"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "7",
+                                    "name": "7"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "8",
+                                    "name": "8"
+                                }
+                            ]
                         }
                     ]
                 },

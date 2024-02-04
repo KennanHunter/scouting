@@ -132,6 +132,7 @@ fun FormItem(
                 error = item.error,
                 errorMessage = item.errorMessage,
                 onErrorChange = onErrorChange,
+                layersContained = item.layersContained,
                 context = context
             )
         }
@@ -147,6 +148,7 @@ fun FormItem(
                 error = item.error,
                 errorMessage = item.errorMessage,
                 onErrorChange = onErrorChange,
+                layersContained = item.layersContained,
                 context = context
             )
         }
@@ -261,35 +263,37 @@ fun FormRow(
     errorMessage: String,
     onErrorChange: (String, String) -> Unit,
     context: Context,
+    layersContained: String,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
     ) {
+        Text(value)
         for (i in content.indices) {
             FormItem(
                 item = content[i],
                 onValueChange = {
-                    var newValue = value.split(";;;").toMutableList()
+                    var newValue = value.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newValue[i] = it
-                    onValueChange(newValue.joinToString(";;;"))
+                    onValueChange(newValue.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
                 },
                 onExpandedChange = {
-                    var newExpanded = expanded.split(";;;").toMutableList()
+                    var newExpanded = expanded.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newExpanded[i] = it
-                    onExpandedChange(newExpanded.joinToString(";;;"))
+                    onExpandedChange(newExpanded.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
                 },
                 onFilterChange = {
-                    var newFilter = filter.split(";;;").toMutableList()
+                    var newFilter = filter.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newFilter[i] = it
-                    onFilterChange(newFilter.joinToString(";;;"))
+                    onFilterChange(newFilter.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
                 },
                 onErrorChange = { it1, it2 ->
-                    var newError = error.split(";;;").toMutableList()
+                    var newError = error.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newError[i] = it1
-                    var newErrorMessage = errorMessage.split(";;;").toMutableList()
+                    var newErrorMessage = errorMessage.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newErrorMessage[i] = it2
-                    onErrorChange(newError.joinToString(";;;"), newErrorMessage.joinToString(";;;"))
+                    onErrorChange(newError.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))), newErrorMessage.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
                 },
                 context = context
             )
@@ -310,6 +314,7 @@ fun FormColumn(
     errorMessage: String,
     onErrorChange: (String, String) -> Unit,
     context: Context,
+    layersContained: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -319,26 +324,26 @@ fun FormColumn(
             FormItem(
                 item = content[i],
                 onValueChange = {
-                    var newValue = value.split(";;;").toMutableList()
+                    var newValue = value.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newValue[i] = it
-                    onValueChange(newValue.joinToString(";;;"))
+                    onValueChange(newValue.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
                 },
                 onExpandedChange = {
-                    var newExpanded = expanded.split(";;;").toMutableList()
+                    var newExpanded = expanded.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newExpanded[i] = it
-                    onExpandedChange(newExpanded.joinToString(";;;"))
+                    onExpandedChange(newExpanded.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
                 },
                 onFilterChange = {
-                    var newFilter = filter.split(";;;").toMutableList()
+                    var newFilter = filter.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newFilter[i] = it
-                    onFilterChange(newFilter.joinToString(";;;"))
+                    onFilterChange(newFilter.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
                 },
                 onErrorChange = { it1, it2 ->
-                    var newError = error.split(";;;").toMutableList()
+                    var newError = error.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newError[i] = it1
-                    var newErrorMessage = errorMessage.split(";;;").toMutableList()
+                    var newErrorMessage = errorMessage.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
                     newErrorMessage[i] = it2
-                    onErrorChange(newError.joinToString(";;;"), newErrorMessage.joinToString(";;;"))
+                    onErrorChange(newError.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))), newErrorMessage.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
                 },
                 context = context
             )

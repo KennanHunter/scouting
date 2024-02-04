@@ -23,9 +23,10 @@ class FormElement(
     val min: String = "-9999",
     val max: String = "9999",
     val content: List<FormElement> = listOf(),
+    val layersContained: String = "",
     private val initialValue: String = ""
 ) {
-    var value by mutableStateOf(
+    var value: String by mutableStateOf(
         if (initialValue == "") {
             when (type) {
                 "number" -> {
@@ -33,6 +34,16 @@ class FormElement(
                 }
                 "checkbox" -> {
                     "false"
+                }
+                "column", "row" -> {
+                    var newValue = ""
+                    for (i in content.indices) {
+                        if (i != content.indices.first) {
+                            newValue += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
+                        }
+                        newValue += content[i].value
+                    }
+                    newValue
                 }
                 else -> {
                     initialValue
@@ -44,7 +55,7 @@ class FormElement(
     )
     var expanded by mutableStateOf(
         if (type == "column" || type == "row") {
-            "false;;;".repeat(max(0, content.size - 1)) + if (content.isNotEmpty()) { "false" } else {}
+            ("false" + ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).repeat(max(0, content.size - 1)) + if (content.isNotEmpty()) { "false" } else {}
         } else {
             "false"
         }
@@ -52,7 +63,7 @@ class FormElement(
     var filter by mutableStateOf("")
     var error by mutableStateOf(
         if (type == "column" || type == "row") {
-            "false;;;".repeat(max(0, content.size - 1)) + if (content.isNotEmpty()) { "false" } else {}
+            ("false" + ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).repeat(max(0, content.size - 1)) + if (content.isNotEmpty()) { "false" } else {}
         } else {
             "false"
         }
