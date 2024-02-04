@@ -75,7 +75,10 @@ fun FormScreen(
                 FormItem(
                     item = item,
                     onValueChange = { value ->
-                        formViewModel.setAnswer(item.name, value.toIntOrNull() ?: value.toBooleanStrictOrNull() ?: value)
+                        formViewModel.setAnswer(
+                            item.name,
+                            value.toIntOrNull() ?: value.toBooleanStrictOrNull() ?: value
+                        )
                     },
                     onExpandedChange = { expanded ->
                         formViewModel.setExpanded(page, item, expanded)
@@ -110,16 +113,19 @@ fun FormItem(
                 modifier = modifier
             )
         }
+
         "divider" -> {
             FormDivider(
                 modifier = modifier
             )
         }
+
         "spacer" -> {
             FormSpace(
                 modifier = modifier
             )
         }
+
         "row" -> {
             FormRow(
                 content = item.content,
@@ -136,6 +142,7 @@ fun FormItem(
                 context = context
             )
         }
+
         "column" -> {
             FormColumn(
                 content = item.content,
@@ -152,6 +159,7 @@ fun FormItem(
                 context = context
             )
         }
+
         "text" -> {
             TextInput(
                 value = item.value,
@@ -161,6 +169,7 @@ fun FormItem(
                 modifier = modifier
             )
         }
+
         "textarea" -> {
             TextAreaInput(
                 value = item.value,
@@ -170,6 +179,7 @@ fun FormItem(
                 modifier = modifier
             )
         }
+
         "number" -> {
             NumberInput(
                 value = item.value,
@@ -185,6 +195,7 @@ fun FormItem(
                 modifier = modifier
             )
         }
+
         "radio" -> {
             RadioInput(
                 value = item.value,
@@ -194,6 +205,7 @@ fun FormItem(
                 modifier = modifier
             )
         }
+
         "checkbox" -> {
             CheckboxInput(
                 value = item.value,
@@ -202,6 +214,7 @@ fun FormItem(
                 modifier = modifier
             )
         }
+
         "dropdown" -> {
             DropdownInput(
                 value = item.value,
@@ -274,26 +287,63 @@ fun FormRow(
             FormItem(
                 item = content[i],
                 onValueChange = {
-                    var newValue = value.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newValue = value.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                        .toMutableList()
                     newValue[i] = it
-                    onValueChange(newValue.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                    onValueChange(
+                        newValue.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        )
+                    )
                 },
                 onExpandedChange = {
-                    var newExpanded = expanded.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newExpanded =
+                        expanded.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                            .toMutableList()
                     newExpanded[i] = it
-                    onExpandedChange(newExpanded.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                    onExpandedChange(
+                        newExpanded.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        )
+                    )
                 },
                 onFilterChange = {
-                    var newFilter = filter.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newFilter =
+                        filter.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                            .toMutableList()
                     newFilter[i] = it
-                    onFilterChange(newFilter.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                    onFilterChange(
+                        newFilter.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        )
+                    )
                 },
                 onErrorChange = { it1, it2 ->
-                    var newError = error.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newError = error.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                        .toMutableList()
                     newError[i] = it1
-                    var newErrorMessage = errorMessage.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newErrorMessage =
+                        errorMessage.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                            .toMutableList()
                     newErrorMessage[i] = it2
-                    onErrorChange(newError.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))), newErrorMessage.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                    onErrorChange(
+                        newError.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        ),
+                        newErrorMessage.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        )
+                    )
                 },
                 context = context
             )
@@ -324,26 +374,63 @@ fun FormColumn(
             FormItem(
                 item = content[i],
                 onValueChange = {
-                    var newValue = value.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newValue = value.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                        .toMutableList()
                     newValue[i] = it
-                    onValueChange(newValue.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                    onValueChange(
+                        newValue.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        )
+                    )
                 },
                 onExpandedChange = {
-                    var newExpanded = expanded.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newExpanded =
+                        expanded.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                            .toMutableList()
                     newExpanded[i] = it
-                    onExpandedChange(newExpanded.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                    onExpandedChange(
+                        newExpanded.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        )
+                    )
                 },
                 onFilterChange = {
-                    var newFilter = filter.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newFilter =
+                        filter.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                            .toMutableList()
                     newFilter[i] = it
-                    onFilterChange(newFilter.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                    onFilterChange(
+                        newFilter.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        )
+                    )
                 },
                 onErrorChange = { it1, it2 ->
-                    var newError = error.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newError = error.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                        .toMutableList()
                     newError[i] = it1
-                    var newErrorMessage = errorMessage.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
+                    var newErrorMessage =
+                        errorMessage.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
+                            .toMutableList()
                     newErrorMessage[i] = it2
-                    onErrorChange(newError.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))), newErrorMessage.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                    onErrorChange(
+                        newError.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        ),
+                        newErrorMessage.joinToString(
+                            ";".repeat(
+                                3 + (layersContained.toIntOrNull() ?: 0)
+                            )
+                        )
+                    )
                 },
                 context = context
             )
@@ -362,7 +449,9 @@ fun TextInput(
     Column(
         modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
     ) {
-        if (label != "") { FormLabel(label = label) }
+        if (label != "") {
+            FormLabel(label = label)
+        }
         TextField(
             value = value,
             onValueChange = onValueChange,
@@ -381,7 +470,9 @@ fun TextAreaInput(
     modifier: Modifier = Modifier,
     label: String
 ) {
-    if (label != "") { FormLabel(label = label) }
+    if (label != "") {
+        FormLabel(label = label)
+    }
     TextField(
         value = value,
         onValueChange = onValueChange,
@@ -408,48 +499,56 @@ fun NumberInput(
     Column(
         modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
     ) {
-        if (label != "") { FormLabel(label = label) }
-        TextField(
-            value = value,
-            onValueChange = {
-                if ((it.toIntOrNull() ?: 0) < min) {
-                    onErrorChange("true", context.getString(R.string.minimum_value_is) + min)
-                } else if ((it.toIntOrNull() ?: 0) > max) {
-                    onErrorChange("true", context.getString(R.string.maximum_value_is) + max)
-                } else if (error.toBoolean()) {
-                    onErrorChange("false", "")
-                }
-                onValueChange(value)
-            },
-            singleLine = true,
-            placeholder = { Text(placeholder) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            isError = error.toBoolean(),
-            supportingText = { if (error.toBoolean()) { Text(errorMessage) } },
-            leadingIcon = {
-                IconButton(
-                    onClick = { onValueChange(((value.toIntOrNull() ?: 0) - 1).toString()) },
-                    modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Minus 1",
-                    )
-                }
-            },
-            trailingIcon = {
-                IconButton(
-                    onClick = { onValueChange(((value.toIntOrNull() ?: 0) + 1).toString()) },
-                    modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = "Plus 1",
-                    )
-                }
-            },
-            modifier = modifier.weight(1f)
-        )
+        if (label != "") {
+            FormLabel(label = label)
+        }
+        Row {
+            TextField(
+                value = value,
+                onValueChange = {
+                    if ((it.toIntOrNull() ?: 0) < min) {
+                        onErrorChange("true", context.getString(R.string.minimum_value_is) + min)
+                    } else if ((it.toIntOrNull() ?: 0) > max) {
+                        onErrorChange("true", context.getString(R.string.maximum_value_is) + max)
+                    } else if (error.toBoolean()) {
+                        onErrorChange("false", "")
+                    }
+                    onValueChange(it)
+                },
+                singleLine = true,
+                placeholder = { Text(placeholder) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                isError = error.toBoolean(),
+                supportingText = {
+                    if (error.toBoolean()) {
+                        Text(errorMessage)
+                    }
+                },
+                leadingIcon = {
+                    IconButton(
+                        onClick = { onValueChange(((value.toIntOrNull() ?: 0) - 1).toString()) },
+                        modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Minus 1",
+                        )
+                    }
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = { onValueChange(((value.toIntOrNull() ?: 0) + 1).toString()) },
+                        modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowUp,
+                            contentDescription = "Plus 1",
+                        )
+                    }
+                },
+                modifier = modifier.weight(1f)
+            )
+        }
     }
 }
 
@@ -464,7 +563,9 @@ fun RadioInput(
     Column(
         modifier = modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
     ) {
-        if (label != "") { FormLabel(label = label) }
+        if (label != "") {
+            FormLabel(label = label)
+        }
         Column {
             for (j in options) {
                 Row(
@@ -521,37 +622,44 @@ fun DropdownInput(
     onFilterChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column (
+    Column(
         modifier = modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
     ) {
-        if (label != "") { FormLabel(label = label) }
-        ExposedDropdownMenuBox(
-            expanded = expanded.toBoolean(),
-            onExpandedChange = { onExpandedChange(it.toString()) }
-        ) {
-            TextField(
-                modifier = Modifier.menuAnchor(),
-                value = filter,
-                onValueChange = onFilterChange,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.toBoolean()) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
-            )
-            val filteringOptions = options.filter { it.label.contains(filter, ignoreCase = true) }
-            if (filteringOptions.isNotEmpty()) {
-                ExposedDropdownMenu(
-                    expanded = expanded.toBoolean(),
-                    onDismissRequest = { onExpandedChange(false.toString()) }
-                ) {
-                    filteringOptions.forEach { dropdownOption ->
-                        DropdownMenuItem(
-                            text = { Text(dropdownOption.label) },
-                            onClick = {
-                                onValueChange(dropdownOption.value)
-                                onFilterChange(dropdownOption.label)
-                                onExpandedChange(false.toString())
-                            },
-                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                        )
+        if (label != "") {
+            FormLabel(label = label)
+        }
+        Row {
+            ExposedDropdownMenuBox(
+                expanded = expanded.toBoolean(),
+                onExpandedChange = { onExpandedChange(it.toString()) }
+            ) {
+                TextField(
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
+                    value = filter,
+                    onValueChange = onFilterChange,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.toBoolean()) },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors()
+                )
+                val filteringOptions =
+                    options.filter { it.label.contains(filter, ignoreCase = true) }
+                if (filteringOptions.isNotEmpty()) {
+                    ExposedDropdownMenu(
+                        expanded = expanded.toBoolean(),
+                        onDismissRequest = { onExpandedChange(false.toString()) }
+                    ) {
+                        filteringOptions.forEach { dropdownOption ->
+                            DropdownMenuItem(
+                                text = { Text(dropdownOption.label) },
+                                onClick = {
+                                    onValueChange(dropdownOption.value)
+                                    onFilterChange(dropdownOption.label)
+                                    onExpandedChange(false.toString())
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
+                        }
                     }
                 }
             }
