@@ -63,71 +63,76 @@ object DataSource {
             "label": "Part 1: Autonomous",
             "page": [
                 {
-                    "type": "radio",
-                    "label": "Starting Position",
-                    "name": "startingpos",
-                    "options": [
+                    "type": "row",
+                    "content": [
                         {
-                            "value": "1",
-                            "label": "1"
+                            "type": "radio",
+                            "label": "Starting Position",
+                            "name": "startingpos",
+                            "options": [
+                                {
+                                    "value": "1",
+                                    "label": "1"
+                                },
+                                {
+                                    "value": "2",
+                                    "label": "2"
+                                },
+                                {
+                                    "value": "3",
+                                    "label": "3"
+                                },
+                                {
+                                    "value": "4",
+                                    "label": "4"
+                                }
+                            ]
                         },
                         {
-                            "value": "2",
-                            "label": "2"
+                            "type": "label",
+                            "label": "Note Pickup Locations"
                         },
                         {
-                            "value": "3",
-                            "label": "3"
+                            "type": "checkbox",
+                            "label": "1",
+                            "name": "1"
                         },
                         {
-                            "value": "4",
-                            "label": "4"
+                            "type": "checkbox",
+                            "label": "2",
+                            "name": "2"
+                        },
+                        {
+                            "type": "checkbox",
+                            "label": "3",
+                            "name": "3"
+                        },
+                        {
+                            "type": "checkbox",
+                            "label": "4",
+                            "name": "4"
+                        },
+                        {
+                            "type": "checkbox",
+                            "label": "5",
+                            "name": "5"
+                        },
+                        {
+                            "type": "checkbox",
+                            "label": "6",
+                            "name": "6"
+                        },
+                        {
+                            "type": "checkbox",
+                            "label": "7",
+                            "name": "7"
+                        },
+                        {
+                            "type": "checkbox",
+                            "label": "8",
+                            "name": "8"
                         }
                     ]
-                },
-                {
-                    "type": "label",
-                    "label": "Note Pickup Locations"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "1",
-                    "name": "1"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "2",
-                    "name": "2"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "3",
-                    "name": "3"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "4",
-                    "name": "4"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "5",
-                    "name": "5"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "6",
-                    "name": "6"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "7",
-                    "name": "7"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "8",
-                    "name": "8"
                 },
                 {
                     "type": "spacer"

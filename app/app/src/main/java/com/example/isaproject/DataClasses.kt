@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import kotlinx.serialization.Serializable
+import kotlin.math.max
 
 @Serializable
 data class FormPage(
@@ -21,8 +22,7 @@ class FormElement(
     var options: List<FormOption> = listOf(),
     val min: String = "-9999",
     val max: String = "9999",
-    var error: Boolean = false,
-    var errorMessage: String = "",
+    val content: List<FormElement> = listOf(),
     private val initialValue: String = ""
 ) {
     var value by mutableStateOf(
@@ -38,8 +38,22 @@ class FormElement(
             initialValue
         }
     )
-    var expanded by mutableStateOf(false)
+    var expanded by mutableStateOf(
+        if (type == "column" || type == "row") {
+            "false;;;".repeat(max(0, content.size - 1)) + if (content.size > 0) { "false" }
+        } else {
+            "false"
+        }
+    )
     var filter by mutableStateOf("")
+    var error by mutableStateOf(
+        if (type == "column" || type == "row") {
+            "false;;;".repeat(max(0, content.size - 1)) + if (content.size > 0) { "false" }
+        } else {
+            "false"
+        }
+    )
+    var errorMessage by mutableStateOf("")
 }
 
 @Serializable

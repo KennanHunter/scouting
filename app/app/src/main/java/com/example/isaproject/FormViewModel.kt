@@ -42,7 +42,7 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    fun setExpanded(page: FormPage, item: FormElement, expanded: Boolean) {
+    fun setExpanded(page: FormPage, item: FormElement, expanded: String) {
         _form.find { it.name == page.name }?.let { i ->
             i.page.find { it.name == item.name }?.let { j ->
                 j.expanded = expanded

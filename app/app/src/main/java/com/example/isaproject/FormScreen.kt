@@ -2,6 +2,7 @@
 
 package com.example.isaproject
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -72,36 +73,20 @@ fun FormScreen(
         ) {
             items(page.page) { item ->
                 FormItem(
-                    label = item.label,
-                    type = item.type,
-                    placeholder = item.placeholder,
-                    options = item.options,
-                    value = formViewModel.answers[item.name].toString(),
-                    error = item.error,
-                    errorMessage = item.errorMessage,
+                    item = item,
                     onValueChange = { value ->
-                        if (item.type == "number") {
-                            if ((value.toIntOrNull() ?: 0) < (item.min.toIntOrNull() ?: -9999)) {
-                                formViewModel.setError(page, item, true, context.getString(R.string.minimum_value_is) + item.min)
-                            } else if ((value.toIntOrNull() ?: 0) > (item.max.toIntOrNull() ?: 9999)
-                            ) {
-                                formViewModel.setError(page, item, true, context.getString(R.string.maximum_value_is) + item.max)
-                            } else if (item.error) {
-                                formViewModel.setError(page, item, false, "")
-                            }
-                            formViewModel.setAnswer(item.name, value.toIntOrNull() ?: value.toBooleanStrictOrNull() ?: value)
-                        } else {
-                            formViewModel.setAnswer(item.name, value.toIntOrNull() ?: value.toBooleanStrictOrNull() ?: value)
-                        }
+                        formViewModel.setAnswer(item.name, value.toIntOrNull() ?: value.toBooleanStrictOrNull() ?: value)
                     },
-                    expanded = item.expanded,
                     onExpandedChange = { expanded ->
                         formViewModel.setExpanded(page, item, expanded)
                     },
-                    filter = item.filter,
                     onFilterChange = { filter ->
                         formViewModel.setFilter(page, item, filter)
-                    }
+                    },
+                    onErrorChange = { error, errorMessage ->
+                        formViewModel.setError(page, item, error, errorMessage)
+                    },
+                    context = context
                 )
             }
         }
@@ -110,24 +95,18 @@ fun FormScreen(
 
 @Composable
 fun FormItem(
-    label: String,
-    type: String,
-    value: String,
+    item: FormElement,
     onValueChange: (String) -> Unit,
-    placeholder: String,
-    options: List<FormOption>,
-    error: Boolean,
-    errorMessage: String,
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
-    filter: String,
+    onExpandedChange: (String) -> Unit,
     onFilterChange: (String) -> Unit,
+    onErrorChange: (Boolean, String) -> Unit,
+    context: Context,
     modifier: Modifier = Modifier
 ) {
-    when (type) {
+    when (item.type) {
         "label" -> {
             FormLabel(
-                label = label,
+                label = item.label,
                 modifier = modifier
             )
         }
@@ -141,61 +120,71 @@ fun FormItem(
                 modifier = modifier
             )
         }
+        "row" -> {
+
+        }
+        "column" -> {
+
+        }
         "text" -> {
             TextInput(
-                value = value,
+                value = item.value,
                 onValueChange = onValueChange,
-                placeholder = placeholder,
-                label = label,
+                placeholder = item.placeholder,
+                label = item.label,
                 modifier = modifier
             )
         }
         "textarea" -> {
             TextAreaInput(
-                value = value,
+                value = item.value,
                 onValueChange = onValueChange,
-                placeholder = placeholder,
-                label = label,
+                placeholder = item.placeholder,
+                label = item.label,
                 modifier = modifier
             )
         }
         "number" -> {
             NumberInput(
-                value = value,
+                value = item.value,
                 onValueChange = onValueChange,
-                placeholder = placeholder,
-                label = label,
-                error = error,
-                errorMessage = errorMessage,
+                placeholder = item.placeholder,
+                label = item.label,
+                error = item.error,
+                errorMessage = item.errorMessage,
+                onErrorChange = onErrorChange,
+                min = item.min.toIntOrNull() ?: -9999,
+                max = item.max.toIntOrNull() ?: 9999,
+                context = context,
                 modifier = modifier
             )
         }
         "radio" -> {
             RadioInput(
-                value = value,
+                value = item.value,
                 onValueChange = onValueChange,
-                options = options,
-                label = label,
+                options = item.options,
+                label = item.label,
                 modifier = modifier
             )
         }
         "checkbox" -> {
             CheckboxInput(
-                value = value,
+                value = item.value,
                 onValueChange = onValueChange,
-                label = label,
+                label = item.label,
                 modifier = modifier
             )
         }
         "dropdown" -> {
             DropdownInput(
-                value = value,
+                value = item.value,
                 onValueChange = onValueChange,
-                expanded = expanded,
+                expanded = item.expanded,
                 onExpandedChange = onExpandedChange,
-                options = options,
-                label = label,
-                filter = filter,
+                options = item.options,
+                label = item.label,
+                filter = item.filter,
                 onFilterChange = onFilterChange,
                 modifier = modifier
             )
@@ -233,6 +222,54 @@ fun FormSpace(
             .height(height)
             .fillMaxWidth()
     )
+}
+
+@Composable
+fun FormRow(
+    options: List<FormElement>,
+    value: String,
+    onValueChange: (String) -> Unit,
+    expanded: String,
+    onExpandedChange: (String) -> Unit,
+    filter: String,
+    onFilterChange: (String) -> Unit,
+    error: String,
+    errorMessage: String,
+    onErrorChange: (String, String) -> Unit,
+    context: Context,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+    ) {
+        for (i in options.indices) {
+            FormItem(
+                item = options[i],
+                onValueChange = {
+                    var newValue = value.split(";;;").toMutableList()
+                    newValue[i] = it
+                    onValueChange(newValue.joinToString(";;;"))
+                },
+                onExpandedChange = {
+                    var newExpanded = expanded.split(";;;").toMutableList()
+                    newExpanded[i] = it
+                    onExpandedChange(newExpanded.joinToString(";;;"))
+                },
+                onFilterChange = {
+                    var newFilter = filter.split(";;;").toMutableList()
+                    newFilter[i] = it
+                    onFilterChange(newFilter.joinToString(";;;"))
+                },
+                onErrorChange = { it1, it2 ->
+                    var newError = error.split(";;;").toMutableList()
+                    newError[i] = it1
+                    var newErrorMessage = errorMessage.split(";;;").toMutableList()
+                    newErrorMessage[i] = it2
+                },
+                context = context
+            )
+        }
+    }
 }
 
 @Composable
@@ -282,7 +319,11 @@ fun NumberInput(
     placeholder: String,
     error: Boolean,
     errorMessage: String,
+    onErrorChange: (Boolean, String) -> Unit,
+    min: Int,
+    max: Int,
     modifier: Modifier = Modifier,
+    context: Context,
     label: String
 ) {
     Column(
@@ -295,7 +336,15 @@ fun NumberInput(
         ) {
             TextField(
                 value = value,
-                onValueChange = onValueChange,
+                onValueChange = { value ->
+                    if ((value.toIntOrNull() ?: 0) < min) {
+                        onErrorChange(true, context.getString(R.string.minimum_value_is) + min)
+                    } else if ((value.toIntOrNull() ?: 0) > max) {
+                        onErrorChange(true, context.getString(R.string.maximum_value_is) + max)
+                    } else if (error) {
+                        onErrorChange(false, "")
+                    }
+                },
                 singleLine = true,
                 placeholder = { Text(placeholder) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -389,8 +438,8 @@ fun CheckboxInput(
 fun DropdownInput(
     value: String,
     onValueChange: (String) -> Unit,
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
+    expanded: String,
+    onExpandedChange: (String) -> Unit,
     options: List<FormOption>,
     label: String,
     filter: String,
@@ -402,21 +451,21 @@ fun DropdownInput(
     ) {
         if (label != "") { FormLabel(label = label) }
         ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = onExpandedChange
+            expanded = expanded.toBoolean(),
+            onExpandedChange = { onExpandedChange(it.toString()) }
         ) {
             TextField(
                 modifier = Modifier.menuAnchor(),
                 value = filter,
                 onValueChange = onFilterChange,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.toBoolean()) },
                 colors = ExposedDropdownMenuDefaults.textFieldColors()
             )
             val filteringOptions = options.filter { it.label.contains(filter, ignoreCase = true) }
             if (filteringOptions.isNotEmpty()) {
                 ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { onExpandedChange(false) }
+                    expanded = expanded.toBoolean(),
+                    onDismissRequest = { onExpandedChange(false.toString()) }
                 ) {
                     filteringOptions.forEach { dropdownOption ->
                         DropdownMenuItem(
@@ -424,7 +473,7 @@ fun DropdownInput(
                             onClick = {
                                 onValueChange(dropdownOption.value)
                                 onFilterChange(dropdownOption.label)
-                                onExpandedChange(false)
+                                onExpandedChange(false.toString())
                             },
                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                         )
