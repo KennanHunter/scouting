@@ -5,10 +5,12 @@ import { Notifications } from "@mantine/notifications";
 import { FC } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Index } from "./routes/Index";
-import { SelectEvent } from "./routes/SelectEvent";
+import { SelectEvent, selectEventLoader } from "./routes/SelectEvent";
 import { EventOverview, eventLoader } from "./routes/event/Index";
 import { EventLayout, eventLayoutLoader } from "./routes/event/Layout";
 import { ErrorPage } from "./routes/special/Error";
+import { TeamsPage, teamsLoader } from "./routes/event/Teams";
+import { ExportPage } from "./routes/event/Export";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +21,7 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <SelectEvent />,
+        loader: selectEventLoader,
       },
       {
         path: "event/:id/",
@@ -29,6 +32,15 @@ const router = createBrowserRouter([
             path: "",
             element: <EventOverview />,
             loader: eventLoader,
+          },
+          {
+            path: "teams/",
+            element: <TeamsPage />,
+            loader: teamsLoader,
+          },
+          {
+            path: "export/",
+            element: <ExportPage />,
           },
         ],
       },

@@ -8,7 +8,7 @@ export const eventType = g
     name: g.string(),
     startTime: g
       .ref(dateType)
-      .description("UTF Timestamp of day of competition"),
-    teams: g.ref(() => teamType).list(),
+      .description("UTC Timestamp of day of competition"),
+    teams: g.ref(teamType).list(),
   })
   .description("An FRC Event");

@@ -1,14 +1,33 @@
 import { Button, Divider, Flex, SimpleGrid, Text } from "@mantine/core";
 import { FC } from "react";
-import { Link } from "react-router-dom";
+import { Link, LoaderFunction, useLoaderData } from "react-router-dom";
 import { EventCard } from "../components/EventCard";
 import { openImportEventModal } from "../components/modals/ImportEvent";
+import { apiClient } from "../client";
 
-export const selectEventLoader = () => {
-  fetch("");
-};
+export const selectEventLoader = (async () => {
+  const data = await apiClient<{
+    allEvents: {
+      name: string;
+      startTime: number;
+      key: string;
+    }[];
+  }>(`query {
+    allEvents {
+      name,
+      startTime,
+      key
+    }
+  }`);
+
+  return data.allEvents;
+}) satisfies LoaderFunction;
 
 export const SelectEvent: FC = () => {
+  const eventsData = useLoaderData() as Awaited<
+    ReturnType<typeof selectEventLoader>
+  >;
+
   return (
     <>
       <Flex align={"center"} justify={"space-between"}>
@@ -24,14 +43,19 @@ export const SelectEvent: FC = () => {
         cols={{ base: 1, sm: 2, lg: 5 }}
         spacing={{ base: 10, sm: "xl" }}
         verticalSpacing={{ base: "md", sm: "xl" }}
+        px={"sm"}
       >
-        {new Array(10).fill(null).map((_, i) => (
-          <Link style={{ all: "unset" }} key={i} to="/event/2023inmis/">
+        {eventsData.map((event, i) => (
+          <Link
+            style={{ all: "unset" }}
+            key={event.key}
+            to={`/event/${event.key}/`}
+          >
             <EventCard
               currentlyActive={true}
-              eventName={"FIN District Mishawaka Event"}
-              eventKey={"2023inmis"}
-              startDate={"Mar 3rd"}
+              eventName={event.name}
+              eventKey={event.key}
+              startDate={new Date(event.startTime).toLocaleDateString()}
             />
           </Link>
         ))}

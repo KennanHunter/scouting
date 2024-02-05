@@ -1,18 +1,26 @@
 import { ActionIcon, Divider, Flex, Text, Title } from "@mantine/core";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { LoaderFunction, useLoaderData } from "react-router-dom";
+import { apiClient } from "../../client";
 
-export const eventLoader = (({ params }) => {
-  console.dir(params);
+export const eventLoader = (async ({ params }) => {
+  const data = await apiClient<{
+    getEvent: { name: string; startTime: number };
+  }>(`{
+    getEvent(id: "${params.id}") {
+      name
+      startTime
+    }
+  }`);
 
   return {
     id: params.id,
-    name: "FIN Competition",
+    name: data.getEvent.name,
   };
 }) satisfies LoaderFunction;
 
 export const EventOverview = () => {
-  const eventData = useLoaderData() as ReturnType<typeof eventLoader>;
+  const eventData = useLoaderData() as Awaited<ReturnType<typeof eventLoader>>;
 
   return (
     <>
