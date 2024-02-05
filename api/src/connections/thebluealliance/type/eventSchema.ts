@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const simpleEventSchema = z.object({
+export const TBAEventSchema = z.object({
   key: z.string(),
   name: z.string(),
   event_code: z.string(),

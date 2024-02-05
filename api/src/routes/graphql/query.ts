@@ -16,16 +16,13 @@ const databaseEvent = z.object({
 
 export const queryResolvers: Resolvers["Query"] = {
   allEvents: async (_parent, _args, context) => {
-    console.log(JSON.stringify(context, null, 4));
-
     const getAllEvents = context.env.DB.prepare("SELECT * FROM Events").bind();
 
     const allEventsRaw = (await getAllEvents.all()).results;
 
-    console.log(JSON.stringify(allEventsRaw, null, 4));
-
     const events = databaseEvent.array().parse(allEventsRaw);
 
+    // TODO: use DB.batch
     const eventPromises = events.map(async (event) => {
       const teams = (
         await context.env.DB.prepare(
@@ -38,7 +35,7 @@ export const queryResolvers: Resolvers["Query"] = {
       return {
         key: event.eventKey,
         name: event.eventName,
-        startTime: event.startTime,
+        startTime: new Date(event.startTime),
         teams: teamTypeZodSchema.array().parse(teams),
       };
     });

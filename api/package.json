@@ -4,6 +4,8 @@
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy",
+    "migrate": "wrangler d1 migrations apply scouting-db",
+    "migrate:local": "pnpm migrate --local",
     "database:up": "sh ./db/bootstrap.sh"
   },
   "dependencies": {

@@ -4,11 +4,17 @@ export const fetchTBA = async (
   path: string,
   key: Bindings["TBA_KEY"]
 ): Promise<unknown> => {
-  console.log(key);
+  if (!key) throw new Error("No Blue Alliance Key has been defined");
 
   return await fetch("https://www.thebluealliance.com/api/v3" + path, {
     headers: {
       "x-tba-auth-key": key,
     },
   }).then((val) => val.json());
+  // .then((data) => {
+  //   console.log(`Querying ${path} with key: ${key}\nResults:`);
+  //   console.log(data);
+
+  //   return data;
+  // });
 };
