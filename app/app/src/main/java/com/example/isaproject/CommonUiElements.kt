@@ -1,6 +1,5 @@
 package com.example.isaproject
 
-import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -77,8 +76,4 @@ fun BottomNavBar(
             }
         }
     }
-}
-
-fun Context.getInt(resId: Int): Int {
-    return this.resources.getInteger(resId)
 }

@@ -136,6 +136,20 @@ object DataSource {
                                     "type": "checkbox",
                                     "label": "8",
                                     "name": "8"
+                                },
+                                {
+                                    "type": "dropdown",
+                                    "name": "something",
+                                    "options": [
+                                        {
+                                            "label": "alsdfj",
+                                            "value": "a"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "number",
+                                    "name": "somtsd"
                                 }
                             ]
                         }

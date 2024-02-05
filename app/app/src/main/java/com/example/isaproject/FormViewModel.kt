@@ -34,7 +34,7 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    fun setValue(page: FormPage, item: FormElement, value: String) {
+    fun setValue(page: FormPage, item: FormElement, value: Any) {
         _form.find { it.name == page.name }?.let { i ->
             i.page.find { it.name == item.name }?.let { j ->
                 j.value = value
@@ -120,8 +120,7 @@ class FormViewModel : ViewModel() {
                 for (i in form) {
                     for (j in i.page) {
                         if (j.name != "") {
-                            _answers[j.name] =
-                                j.value.toIntOrNull() ?: j.value.toBooleanStrictOrNull() ?: j.value
+                            _answers[j.name] = j.value
                         }
                     }
                 }

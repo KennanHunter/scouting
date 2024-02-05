@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import kotlinx.serialization.Serializable
-import kotlin.math.max
 
 @Serializable
 data class FormPage(
@@ -26,49 +25,91 @@ class FormElement(
     val layersContained: String = "",
     private val initialValue: String = ""
 ) {
-    var value: String by mutableStateOf(
+    var value: Any by mutableStateOf(
         if (initialValue == "") {
             when (type) {
                 "number" -> {
-                    "0"
+                    0
                 }
                 "checkbox" -> {
-                    "false"
+                    false
                 }
                 "column", "row" -> {
-                    var newValue = ""
-                    for (i in content.indices) {
-                        if (i != content.indices.first) {
-                            newValue += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
-                        }
-                        newValue += content[i].value
-                    }
-                    newValue
+                    List(content.size) { content[it].value }
                 }
                 else -> {
-                    initialValue
+                    initialValue.toIntOrNull() ?: initialValue.toBooleanStrictOrNull() ?: initialValue
                 }
             }
         } else {
-            initialValue
+            initialValue.toIntOrNull() ?: initialValue.toBooleanStrictOrNull() ?: initialValue
         }
     )
-    var expanded by mutableStateOf(
+    var expanded: String by mutableStateOf(
         if (type == "column" || type == "row") {
-            ("false" + ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).repeat(max(0, content.size - 1)) + if (content.isNotEmpty()) { "false" } else {}
+            run {
+                // "false;;;true;;;false"
+                var newExpanded = ""
+                for (i in content.indices) {
+                    if (i != content.indices.first) {
+                        newExpanded += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
+                    }
+                    newExpanded += content[i].expanded
+                }
+                newExpanded
+            }
         } else {
             "false"
         }
     )
-    var filter by mutableStateOf("")
-    var error by mutableStateOf(
+    var filter: String by mutableStateOf(
+        if (type == "column" || type == "row" && content.isNotEmpty()) {
+            run {
+                var newFilter = ""
+                for (i in content.indices) {
+                    if (i != content.indices.first) {
+                        newFilter += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
+                    }
+                    newFilter += content[i].filter
+                }
+                newFilter
+            }
+        } else {
+            ""
+        }
+    )
+    var error: String by mutableStateOf(
         if (type == "column" || type == "row") {
-            ("false" + ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).repeat(max(0, content.size - 1)) + if (content.isNotEmpty()) { "false" } else {}
+            run {
+                var newError = ""
+                for (i in content.indices) {
+                    if (i != content.indices.first) {
+                        newError += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
+                    }
+                    newError += content[i].error
+                }
+                newError
+            }
         } else {
             "false"
         }
     )
-    var errorMessage by mutableStateOf("")
+    var errorMessage: String by mutableStateOf(
+        if (type == "column" || type == "row" && content.isNotEmpty()) {
+            run {
+                var newErrorMessage = ""
+                for (i in content.indices) {
+                    if (i != content.indices.first) {
+                        newErrorMessage += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
+                    }
+                    newErrorMessage += content[i].errorMessage
+                }
+                newErrorMessage
+            }
+        } else {
+            ""
+        }
+    )
 }
 
 @Serializable
