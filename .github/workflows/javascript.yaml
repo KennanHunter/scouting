@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "app/**"
+      - ".vscode/**"
+      - ".devcontainer/**"
+      - "readme.md"
   workflow_dispatch:
 
 jobs:
