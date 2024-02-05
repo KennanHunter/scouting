@@ -1,8 +1,13 @@
 -- Migration number: 0001 	 2024-02-04T23:58:56.311Z
-INSERT INTO Events (eventKey, eventName, startTime)
-VALUES ("2024mock", "Mock Event", 1707541200000);
-INSERT INTO Teams (teamName, teamNumber, nickname)
-VALUES ("Off-Season Demo 1", 9991, "Demo 1"),
+INSERT INTO
+  Events (eventKey, eventName, startTime)
+VALUES
+  ("2024mock", "Mock Event", 1707541200000);
+
+INSERT INTO
+  Teams (teamName, teamNumber, nickname)
+VALUES
+  ("Off-Season Demo 1", 9991, "Demo 1"),
   ("Off-Season Demo 2", 9992, "Demo 2"),
   ("Off-Season Demo 3", 9993, "Demo 3"),
   ("Off-Season Demo 4", 9994, "Demo 4"),
@@ -10,9 +15,12 @@ VALUES ("Off-Season Demo 1", 9991, "Demo 1"),
   ("Off-Season Demo 6", 9996, "Demo 6"),
   ("Off-Season Demo 7", 9997, "Demo 7"),
   ("Off-Season Demo 8", 9998, "Demo 8"),
-  ("Off-Season Demo 8", 9999, "Demo 9");
-INSERT INTO TeamEventAppearance (eventKey, teamNumber)
-VALUES ("2024mock", 9991),
+  ("Off-Season Demo 9", 9999, "Demo 9");
+
+INSERT INTO
+  TeamEventAppearance (eventKey, teamNumber)
+VALUES
+  ("2024mock", 9991),
   ("2024mock", 9992),
   ("2024mock", 9993),
   ("2024mock", 9994),
