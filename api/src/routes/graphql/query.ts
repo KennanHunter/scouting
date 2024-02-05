@@ -6,6 +6,9 @@ import { teamTypeZodSchema } from "./team";
 
 export const queryType = g.type("Query", {
   allEvents: g.ref(eventType).list(),
+  getEvent: g.ref(eventType).args({
+    id: g.string(),
+  }),
 });
 
 const databaseEvent = z.object({
@@ -41,5 +44,27 @@ export const queryResolvers: Resolvers["Query"] = {
     });
 
     return await Promise.all(eventPromises);
+  },
+  getEvent: async (_parent, { id }, context) => {
+    const eventRaw = context.env.DB.prepare(
+      "SELECT * FROM Events WHERE eventKey = ?"
+    ).bind(id);
+
+    const event = databaseEvent.parse(await eventRaw.first());
+
+    const teams = (
+      await context.env.DB.prepare(
+        "SELECT * FROM TeamEventAppearance, Teams WHERE Teams.teamNumber = TeamEventAppearance.teamNumber AND eventKey = ?"
+      )
+        .bind(event.eventKey)
+        .all()
+    ).results;
+
+    return {
+      key: event.eventKey,
+      name: event.eventName,
+      startTime: new Date(event.startTime),
+      teams: teamTypeZodSchema.array().parse(teams),
+    };
   },
 };
