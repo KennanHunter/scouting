@@ -3,6 +3,7 @@ import { modals } from "@mantine/modals";
 import { IconKey } from "@tabler/icons-react";
 import { FC } from "react";
 import { create } from "zustand";
+import { apiClient } from "../../client";
 
 const useImportEventKeyStore = create<{
   key: string;
@@ -25,7 +26,7 @@ const ImportEventModal: FC<{ errors?: string[] }> = ({ errors }) => {
     <Stack>
       <TextInput
         label={"Event Key"}
-        placeholder="2023inpri"
+        placeholder="2024inmis"
         value={key}
         onChange={(e) => setKey(e.target.value)}
         error={errors ? errors.join(" ") : undefined}
@@ -40,9 +41,16 @@ export const openImportEventModal = () => {
     title: "Import a new Event",
     children: <ImportEventModal />,
     labels: { confirm: "Import", cancel: "Cancel" },
-    onConfirm: () => {
+    onConfirm: async () => {
       const key = useImportEventKeyStore.getState().key;
-      console.log(key);
+
+      const { importEvent } = await apiClient<{
+        importEvent: { key: string };
+      }>(`mutation {
+        importEvent (id:"${key}") {
+          key
+        }
+      }`);
 
       useImportEventKeyStore.getState().clear();
     },

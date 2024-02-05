@@ -16,9 +16,9 @@
     "vscode": {
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
-        // cspell: words kennanhunter kennans tamasfe
         "kennanhunter.kennans-extension-pack",
-        "tamasfe.even-better-toml"
+        "tamasfe.even-better-toml",
+        "qwtel.sqlite-viewer"
       ]
     }
   },

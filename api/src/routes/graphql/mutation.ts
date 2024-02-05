@@ -42,7 +42,7 @@ export const mutationResolvers: Resolvers["Mutation"] = {
         .map((team) => [
           context.env.DB.prepare(
             "INSERT OR IGNORE INTO Teams (teamNumber, teamName, nickname) VALUES (?, ?, ?) "
-          ).bind(team.team_number, team.name, team.name ?? team.nickname),
+          ).bind(team.team_number, team.name, team.nickname ?? team.name),
           context.env.DB.prepare(
             "INSERT OR IGNORE INTO TeamEventAppearance (eventKey, teamNumber) VALUES (?, ?)"
           ).bind(event.key, team.team_number),

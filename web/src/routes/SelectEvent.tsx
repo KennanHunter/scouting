@@ -12,7 +12,7 @@ export const selectEventLoader = (async () => {
       startTime: number;
       key: string;
     }[];
-  }>(`query {
+  }>(`{
     allEvents {
       name,
       startTime,

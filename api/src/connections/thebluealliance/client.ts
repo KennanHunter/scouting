@@ -10,7 +10,12 @@ export const fetchTBA = async (
     headers: {
       "x-tba-auth-key": key,
     },
-  }).then((val) => val.json());
+  }).then((val) => {
+    console.log(JSON.stringify(val, null, 4));
+    if (val.status >= 400) throw new Error(val.statusText);
+
+    return val.json();
+  });
   // .then((data) => {
   //   console.log(`Querying ${path} with key: ${key}\nResults:`);
   //   console.log(data);

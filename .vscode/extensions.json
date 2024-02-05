@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "kennanhunter.kennans-extension-pack",
-    "tamasfe.even-better-toml"
+    "tamasfe.even-better-toml",
+    "qwtel.sqlite-viewer"
   ]
 }

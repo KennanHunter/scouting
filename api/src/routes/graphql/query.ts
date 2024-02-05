@@ -3,6 +3,7 @@ import { Resolvers } from ".";
 import { eventType } from "./event";
 import { z } from "zod";
 import { teamTypeZodSchema } from "./team";
+import { GraphQLError } from "graphql";
 
 export const queryType = g.type("Query", {
   allEvents: g.ref(eventType).list(),
@@ -50,7 +51,11 @@ export const queryResolvers: Resolvers["Query"] = {
       "SELECT * FROM Events WHERE eventKey = ?"
     ).bind(id);
 
-    const event = databaseEvent.parse(await eventRaw.first());
+    const eventResult = databaseEvent.safeParse(await eventRaw.first());
+
+    if (!eventResult.success) throw new GraphQLError("Event not found");
+
+    const event = eventResult.data;
 
     const teams = (
       await context.env.DB.prepare(
