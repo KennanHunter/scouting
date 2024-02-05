@@ -45,7 +45,7 @@ export const SelectEvent: FC = () => {
         verticalSpacing={{ base: "md", sm: "xl" }}
         px={"sm"}
       >
-        {eventsData.map((event, i) => (
+        {eventsData.map((event) => (
           <Link
             style={{ all: "unset" }}
             key={event.key}

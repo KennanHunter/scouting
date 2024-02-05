@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const apiClient = <T extends unknown>(gqlString: string): Promise<T> => {
+export const apiClient = <T>(gqlString: string): Promise<T> => {
   return fetch(import.meta.env.VITE_API_URI + "/graphql/", {
     method: "POST",
     headers: {
