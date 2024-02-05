@@ -8,8 +8,9 @@
   },
   "dependencies": {
     "@hono/graphql-server": "^0.4.1",
-    "@pothos/core": "^3.41.0",
+    "garph": "^0.6.6",
     "graphql": "^16.8.1",
+    "graphql-yoga": "^5.1.1",
     "hono": "^3.11.7",
     "jose": "^4.15.4",
     "zod": "^3.22.4"

@@ -1,32 +1,24 @@
-import SchemaBuilder from "@pothos/core";
+import { InferResolvers, buildSchema, g } from "garph";
 import { createYoga } from "graphql-yoga";
 import { APIContext, RouteHandler } from "../..";
-import { addMutation } from "./mutation";
-import { addQuery } from "./query";
-import { addTypes } from "./types";
+import { mutationResolvers, mutationType } from "./mutation";
+import { queryResolvers, queryType } from "./query";
 
-export const builder = new SchemaBuilder<{
-  Context: APIContext;
-}>({});
+export type Resolvers = InferResolvers<
+  { Query: typeof queryType; Mutation: typeof mutationType },
+  { context: APIContext }
+>;
 
-export type typeAdder = (schema: typeof builder) => unknown;
+const resolvers: Resolvers = {
+  Query: queryResolvers,
+  Mutation: mutationResolvers,
+};
 
-addQuery(builder);
-addMutation(builder);
-addTypes(builder);
+export const schema = buildSchema({ g, resolvers });
 
-const schema = builder.toSchema();
 export const graphqlHandler: RouteHandler = (context) => {
-  // console.log(JSON.stringify(context, null, 4));
-
-  // return graphqlServer<{ Bindings: Bindings }>({
-  //   schema: builder.toSchema({
-  //     sortSchema: true,
-  //   }),
-  //   pretty: true,
-  // })(context);
-
   return createYoga({
     schema,
+    context: () => context,
   }).handle(context.req, context.env);
 };

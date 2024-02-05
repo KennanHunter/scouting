@@ -1,27 +1,30 @@
-import { builder } from ".";
+import { g } from "garph";
 import { APIContext } from "../..";
 import { protect } from "../../auth/protected";
 
-export type StatusEnum = "operational" | "online" | "offline";
-export const StatusEnum = builder.enumType("StatusEnum", {
-  values: ["operational", "online", "offline"] as const,
-});
+enum StatusEnum {
+  operational,
+  online,
+  offline,
+}
 
-export const statusType = builder.objectRef<{
-  runtime: string;
-  authentication: string;
-  api: StatusEnum;
-}>("Status");
+export const statusEnum = g.enumType("StatusEnum", StatusEnum);
+
+export const statusType = g.type("Status", {
+  runtime: g.string(),
+  authentication: g.string(),
+  api: statusEnum,
+});
 
 export const checkDBConnection = (): StatusEnum => {
   // TODO:
-  return "operational";
+  return StatusEnum.operational;
 };
 
 export const checkAuthenticationStatus = async (
   c: APIContext
 ): Promise<"valid" | "invalid"> => {
-  const res = await protect(c, () => ({}) as any);
+  const res = await protect(c as any, () => ({}) as any);
 
   if (res) return "invalid";
 
@@ -37,7 +40,7 @@ export const checkTheBlueAllianceStatus = async (
     },
   }).then((val) => val.status);
 
-  if (status === 200) return "operational";
+  if (status === 200) return StatusEnum.operational;
 
-  return "offline";
+  return StatusEnum.offline;
 };
