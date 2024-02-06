@@ -23,7 +23,7 @@ export const Index: FC = () => {
           padding: "1em",
         })}
       >
-        <Link style={{ all: "unset" }} to={""}>
+        <Link style={{ all: "unset" }} to={"/"}>
           <Text p="lg">Indiana Scouting Alliance Explorer</Text>
         </Link>
         <Status />

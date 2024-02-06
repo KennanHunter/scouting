@@ -29,7 +29,6 @@ DROP TABLE IF EXISTS Match;
 
 CREATE TABLE IF NOT EXISTS Match (
   matchKey TEXT UNIQUE PRIMARY KEY,
-  eventName TEXT,
   startTime INTEGER,
   eventKey TEXT,
   FOREIGN KEY(eventKey) REFERENCES Events(eventKey)
@@ -46,3 +45,4 @@ CREATE TABLE IF NOT EXISTS TeamMatchEntry (
   FOREIGN KEY(matchKey) REFERENCES Match(matchKey),
   FOREIGN KEY(teamNumber) REFERENCES Teams(teamNumber)
 );
+
