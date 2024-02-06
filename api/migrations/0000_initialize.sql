@@ -39,6 +39,7 @@ DROP TABLE IF EXISTS TeamMatchEntry;
 CREATE TABLE IF NOT EXISTS TeamMatchEntry (
   matchKey TEXT,
   teamNumber INTEGER,
+  alliance TEXT,
   -- Match data is in JSON 
   matchData TEXT,
   PRIMARY KEY (matchKey, teamNumber),
