@@ -50,16 +50,16 @@ export const mutationResolvers: Resolvers["Mutation"] = {
         .flat()
     );
 
-    // TODO: Fix as any
     return {
       key: event.key,
       name: event.name,
       startTime: new Date(startTime),
       teams: teams.map((team) => ({
         teamName: team.name,
-        nickname: team.nickname ?? "",
+        nickname: team.nickname ?? team.name,
         teamNumber: team.team_number,
       })),
+      matches: [],
     };
   },
 };

@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS TeamEventAppearance (
   FOREIGN KEY(teamNumber) REFERENCES Teams(teamNumber)
 );
 
-DROP TABLE IF EXISTS Match;
+DROP TABLE IF EXISTS Matches;
 
-CREATE TABLE IF NOT EXISTS Match (
+CREATE TABLE IF NOT EXISTS Matches (
   matchKey TEXT UNIQUE PRIMARY KEY,
   startTime INTEGER,
   eventKey TEXT,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS TeamMatchEntry (
   -- Match data is in JSON 
   matchData TEXT,
   PRIMARY KEY (matchKey, teamNumber),
-  FOREIGN KEY(matchKey) REFERENCES Match(matchKey),
+  FOREIGN KEY(matchKey) REFERENCES Matches(matchKey),
   FOREIGN KEY(teamNumber) REFERENCES Teams(teamNumber)
 );
 
