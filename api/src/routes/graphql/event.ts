@@ -14,7 +14,9 @@ export const eventType = g
       .ref(dateType)
       .description("UTC Timestamp of day of competition"),
     teams: g.ref(teamType).list().omitResolver(),
-    matches: g.ref(matchType).list().omitResolver(),
+    matches: g.ref(matchType).list().omitResolver().args({
+      teamNumber: g.int().optional(),
+    }),
   })
   .description("An FRC Event");
 
@@ -23,31 +25,39 @@ const matchEntryJoinResult = z.object({
   startTime: z.number(),
   eventKey: z.string(),
   teamNumber: z.number(),
-  alliance: z.string(),
+  alliance: z.literal("red").or(z.literal("blue")),
   matchData: z.string(),
 });
 
 export const eventResolvers: Resolvers["Event"] = {
-  teams: async (parent, _args, context, info) => {
-    const teams = (
-      await context.env.DB.prepare(
-        "SELECT * FROM TeamEventAppearance, Teams WHERE Teams.teamNumber = TeamEventAppearance.teamNumber AND eventKey = ?"
-      )
-        .bind(parent.key)
-        .all()
-    ).results;
+  teams: async (parent, _args, context) => {
+    const teamsQuery = await context.env.DB.prepare(
+      "SELECT * FROM TeamEventAppearance, Teams WHERE Teams.teamNumber = TeamEventAppearance.teamNumber AND eventKey = ?"
+    )
+      .bind(parent.key)
+      .all();
 
-    return teamTypeZodSchema.array().parse(teams);
+    if (!teamsQuery.success)
+      throw new GraphQLError(teamsQuery.error || "Something broke");
+
+    return teamTypeZodSchema.array().parse(teamsQuery.results);
   },
-  matches: async (parent, _args, context, info) => {
-    const matchEntryParseResult = matchEntryJoinResult.array().safeParse(
-      await context.env.DB.prepare(
-        "SELECT * FROM Matches INNER JOIN TeamMatchEntry ON TeamMatchEntry.matchKey = Matches.matchKey WHERE Matches.eventKey = ?"
-      )
-        .bind(parent.key)
-        .all()
-        .then((result) => result.results)
-    );
+  matches: async (parent, { teamNumber }, context) => {
+    const queryWithTeamNumber = context.env.DB.prepare(
+      "SELECT * FROM Matches INNER JOIN TeamMatchEntry ON TeamMatchEntry.matchKey = Matches.matchKey WHERE Matches.eventKey = ? AND TeamMatchEntry.teamNumber = ?"
+    ).bind(parent.key, teamNumber ?? 0);
+
+    const queryWithout = context.env.DB.prepare(
+      "SELECT * FROM Matches INNER JOIN TeamMatchEntry ON TeamMatchEntry.matchKey = Matches.matchKey WHERE Matches.eventKey = ?"
+    ).bind(parent.key);
+
+    const matchEntryParseResult = matchEntryJoinResult
+      .array()
+      .safeParse(
+        await (teamNumber ? queryWithTeamNumber : queryWithout)
+          .all()
+          .then((result) => result.results)
+      );
 
     if (!matchEntryParseResult.success)
       throw new GraphQLError("Failed join :(");
