@@ -44,15 +44,19 @@ export const MatchPage: FC = () => {
   console.dir(matchData.matchEntries);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        overflowX: "scroll",
-      }}
-    >
+    <div>
       <Title>{extractTitleFromMatchKey(matchData.matchKey)}</Title>
       <Divider py={"md"} />
-      <Table>
+      <Table
+        style={{
+          width: "100%",
+          overflowX: "scroll",
+        }}
+        striped
+        highlightOnHover
+        withTableBorder
+        withColumnBorders
+      >
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Team Number</Table.Th>
