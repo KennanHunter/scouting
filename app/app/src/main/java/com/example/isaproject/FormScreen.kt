@@ -36,6 +36,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -283,13 +284,16 @@ fun FormImage(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+        modifier = Modifier
+            .padding(bottom = dimensionResource(R.dimen.form_element_space))
+            .fillMaxWidth()
     ) {
         if (label != "") { FormLabel(label = label) }
         Image(
             painter = painterResource(imageId),
             contentDescription = null,
-            modifier = modifier.fillMaxWidth()
+            contentScale = ContentScale.FillWidth,
+            modifier = modifier
         )
     }
 }
