@@ -2,7 +2,9 @@
 
 package com.example.isaproject
 
+import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
@@ -97,6 +100,7 @@ fun FormScreen(
     }
 }
 
+@SuppressLint("DiscouragedApi")
 @Composable
 fun FormItem(
     item: FormElement,
@@ -125,6 +129,13 @@ fun FormItem(
         "spacer" -> {
             FormSpace(
                 modifier = modifier
+            )
+        }
+
+        "image" -> {
+            FormImage(
+                imageId = context.resources.getIdentifier(item.contentId, "drawable", context.packageName),
+                label = item.label
             )
         }
 
@@ -263,6 +274,24 @@ fun FormSpace(
             .height(height)
             .fillMaxWidth()
     )
+}
+
+@Composable
+fun FormImage(
+    imageId: Int,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+    ) {
+        if (label != "") { FormLabel(label = label) }
+        Image(
+            painter = painterResource(imageId),
+            contentDescription = null,
+            modifier = modifier.fillMaxWidth()
+        )
+    }
 }
 
 @Composable
@@ -415,16 +444,20 @@ fun TextAreaInput(
     modifier: Modifier = Modifier,
     label: String
 ) {
-    if (label != "") {
-        FormLabel(label = label)
+    Column(
+        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+    ) {
+        if (label != "") {
+            FormLabel(label = label)
+        }
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            singleLine = false,
+            placeholder = { Text(placeholder) },
+            modifier = modifier.fillMaxWidth()
+        )
     }
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = false,
-        placeholder = { Text(placeholder) },
-        modifier = modifier.fillMaxWidth()
-    )
 }
 
 @Composable
@@ -464,11 +497,7 @@ fun NumberInput(
                 placeholder = { Text(placeholder) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 isError = error,
-                supportingText = {
-                    if (error) {
-                        Text(errorMessage)
-                    }
-                },
+                supportingText = { if (error) { Text(errorMessage) } },
                 leadingIcon = {
                     IconButton(
                         onClick = { onValueChange(value - 1) },

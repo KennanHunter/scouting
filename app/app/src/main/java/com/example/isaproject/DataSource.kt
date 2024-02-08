@@ -160,6 +160,10 @@ object DataSource {
                             ]
                         }
                     ]
+                },
+                {
+                    "type": "image",
+                    "contentId": "example_image"
                 }
             ]
         },

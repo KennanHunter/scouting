@@ -22,7 +22,8 @@ class FormElement(
     val min: String = "-9999",
     val max: String = "9999",
     val content: List<FormElement> = listOf(),
-    var initialValue: String = ""
+    val contentId: String = "",
+    private var initialValue: String = ""
 ) {
     var value: List<*> by mutableStateOf(
         if (type == "row" || type == "column") {
