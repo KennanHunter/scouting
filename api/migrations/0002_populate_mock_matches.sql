@@ -1,5 +1,5 @@
 -- Migration number: 0002 	 2024-02-05T01:35:20.772Z
-DELETE Matches;
+DELETE FROM Matches;
 
 INSERT INTO 
   Matches (matchKey, startTime, eventKey, reportedWinningAlliance, reportedRedScore, reportedBlueScore)
@@ -8,7 +8,7 @@ VALUES
   ("2024mock_qm2", 1707541200780, "2024mock", "blue", 60, 80),
   ("2024mock_qm3", 1707541200840, "2024mock", "red", 100, 80);
 
-DELETE TeamMatchEntry;
+DELETE FROM TeamMatchEntry;
 
 INSERT INTO 
   TeamMatchEntry (matchKey, teamNumber, alliance, matchData)
