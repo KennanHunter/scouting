@@ -26,6 +26,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -74,8 +75,8 @@ fun FormScreen(
             items(page.page) { item ->
                 FormItem(
                     item = item,
-                    onValueChange = {
-                        formViewModel.setAnswer(item.name, it)
+                    onValueChange = { it1, it2 ->
+                        formViewModel.setAnswer(it1, it2)
                     },
                     onExpandedChange = {
                         formViewModel.setExpanded(page, item, it)
@@ -99,7 +100,7 @@ fun FormScreen(
 @Composable
 fun FormItem(
     item: FormElement,
-    onValueChange: (Any) -> Unit,
+    onValueChange: (String, Any) -> Unit,
     onExpandedChange: (List<*>) -> Unit,
     onFilterChange: (List<*>) -> Unit,
     onErrorChange: (List<*>, List<*>) -> Unit,
@@ -139,7 +140,8 @@ fun FormItem(
                 error = item.error,
                 errorMessage = item.errorMessage,
                 onErrorChange = onErrorChange,
-                context = context
+                context = context,
+                modifier = modifier
             )
         }
 
@@ -155,14 +157,15 @@ fun FormItem(
                 error = item.error,
                 errorMessage = item.errorMessage,
                 onErrorChange = onErrorChange,
-                context = context
+                context = context,
+                modifier = modifier
             )
         }
 
         "text" -> {
             TextInput(
                 value = getValue(item.name).toString(),
-                onValueChange = onValueChange,
+                onValueChange = { onValueChange(item.name, it) },
                 placeholder = item.placeholder,
                 label = item.label,
                 modifier = modifier
@@ -172,7 +175,7 @@ fun FormItem(
         "textarea" -> {
             TextAreaInput(
                 value = getValue(item.name).toString(),
-                onValueChange = onValueChange,
+                onValueChange = { onValueChange(item.name, it) },
                 placeholder = item.placeholder,
                 label = item.label,
                 modifier = modifier
@@ -182,7 +185,7 @@ fun FormItem(
         "number" -> {
             NumberInput(
                 value = getValue(item.name).toString().toIntOrNull() ?: 5,
-                onValueChange = onValueChange,
+                onValueChange = { onValueChange(item.name, it) },
                 placeholder = item.placeholder,
                 label = item.label,
                 error = item.error[0].toString().toBooleanStrictOrNull() ?: true,
@@ -198,7 +201,7 @@ fun FormItem(
         "radio" -> {
             RadioInput(
                 value = getValue(item.name).toString(),
-                onValueChange = onValueChange,
+                onValueChange = { onValueChange(item.name, it) },
                 options = item.options,
                 label = item.label,
                 modifier = modifier
@@ -208,7 +211,7 @@ fun FormItem(
         "checkbox" -> {
             CheckboxInput(
                 value = getValue(item.name).toString().toBooleanStrictOrNull() ?: true,
-                onValueChange = onValueChange,
+                onValueChange = { onValueChange(item.name, it) },
                 label = item.label,
                 modifier = modifier
             )
@@ -216,7 +219,7 @@ fun FormItem(
 
         "dropdown" -> {
             DropdownInput(
-                onValueChange = onValueChange,
+                onValueChange = { onValueChange(item.name, it) },
                 expanded = item.expanded[0].toString().toBooleanStrictOrNull() ?: true,
                 onExpandedChange = { onExpandedChange(listOf(it)) },
                 options = item.options,
@@ -236,7 +239,8 @@ fun FormLabel(
 ) {
     Text(
         text = label,
-        modifier = modifier
+        modifier = modifier,
+        style = MaterialTheme.typography.bodyLarge
     )
 }
 
@@ -265,7 +269,7 @@ fun FormSpace(
 fun FormRow(
     content: List<FormElement>,
     getValue: (String) -> Any,
-    onValueChange: (Any) -> Unit,
+    onValueChange: (String, Any) -> Unit,
     expanded: List<*>,
     onExpandedChange: (List<*>) -> Unit,
     filter: List<*>,
@@ -290,7 +294,9 @@ fun FormRow(
             error = error,
             errorMessage = errorMessage,
             onErrorChange = onErrorChange,
-            context = context
+            context = context,
+            row = true,
+            modifier = Modifier.weight(1f)
         )
     }
 }
@@ -299,7 +305,7 @@ fun FormRow(
 fun FormColumn(
     content: List<FormElement>,
     getValue: (String) -> Any,
-    onValueChange: (Any) -> Unit,
+    onValueChange: (String, Any) -> Unit,
     expanded: List<*>,
     onExpandedChange: (List<*>) -> Unit,
     filter: List<*>,
@@ -324,6 +330,7 @@ fun FormColumn(
             error = error,
             errorMessage = errorMessage,
             onErrorChange = onErrorChange,
+            row = false,
             context = context
         )
     }
@@ -333,7 +340,7 @@ fun FormColumn(
 fun FormGroup(
     content: List<FormElement>,
     getValue: (String) -> Any,
-    onValueChange: (Any) -> Unit,
+    onValueChange: (String, Any) -> Unit,
     expanded: List<*>,
     onExpandedChange: (List<*>) -> Unit,
     filter: List<*>,
@@ -341,15 +348,14 @@ fun FormGroup(
     error: List<*>,
     errorMessage: List<*>,
     onErrorChange: (List<*>, List<*>) -> Unit,
+    row: Boolean,
     context: Context,
     modifier: Modifier = Modifier
 ) {
     for (i in 0 until content.size) {
         FormItem(
             item = content[i],
-            onValueChange = {
-                onValueChange(it)
-            },
+            onValueChange = onValueChange,
             onExpandedChange = {
                 var newExpanded = expanded.toMutableList()
                 newExpanded[i] = it
@@ -371,6 +377,9 @@ fun FormGroup(
             context = context,
             modifier = modifier
         )
+        if (row) {
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.margin)))
+        }
     }
 }
 
@@ -516,7 +525,10 @@ fun RadioInput(
                         modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
-                    Text(j.label)
+                    Text(
+                        text = j.label,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
             }
         }
@@ -540,7 +552,10 @@ fun CheckboxInput(
             modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
         )
         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
-        Text(text = label)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 

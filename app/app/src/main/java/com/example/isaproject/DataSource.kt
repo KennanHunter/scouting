@@ -66,31 +66,31 @@ object DataSource {
                     "type": "row",
                     "content": [
                         {
-                            "type": "radio",
-                            "label": "Starting Position",
-                            "name": "startingpos",
-                            "options": [
-                                {
-                                    "value": "1",
-                                    "label": "1"
-                                },
-                                {
-                                    "value": "2",
-                                    "label": "2"
-                                },
-                                {
-                                    "value": "3",
-                                    "label": "3"
-                                },
-                                {
-                                    "value": "4",
-                                    "label": "4"
-                                }
-                            ]
-                        },
-                        {
                             "type": "column",
                             "content": [
+                                {
+                                    "type": "radio",
+                                    "label": "Starting Position",
+                                    "name": "startingpos",
+                                    "options": [
+                                        {
+                                            "value": "1",
+                                            "label": "1"
+                                        },
+                                        {
+                                            "value": "2",
+                                            "label": "2"
+                                        },
+                                        {
+                                            "value": "3",
+                                            "label": "3"
+                                        },
+                                        {
+                                            "value": "4",
+                                            "label": "4"
+                                        }
+                                    ]
+                                },
                                 {
                                     "type": "label",
                                     "label": "Note Pickup Locations"
@@ -136,28 +136,30 @@ object DataSource {
                                     "name": "8"
                                 }
                             ]
+                        },
+                        {
+                            "type": "column",
+                            "content": [
+                                {
+                                    "type": "number",
+                                    "label": "Notes in Amp",
+                                    "name": "autoamp",
+                                    "min": "0"
+                                },
+                                {
+                                    "type": "number",
+                                    "label": "Notes in Speaker",
+                                    "name": "autospeaker",
+                                    "min": "0"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Leave",
+                                    "name": "leave"
+                                }
+                            ]
                         }
                     ]
-                },
-                {
-                    "type": "spacer"
-                },
-                {
-                    "type": "number",
-                    "label": "Notes in Amp",
-                    "name": "autoamp",
-                    "min": "0"
-                },
-                {
-                    "type": "number",
-                    "label": "Notes in Speaker",
-                    "name": "autospeaker",
-                    "min": "0"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Leave",
-                    "name": "leave"
                 }
             ]
         },
@@ -166,50 +168,62 @@ object DataSource {
             "label": "Part 2: Teleop",
             "page": [
                 {
-                    "type": "number",
-                    "label": "Notes in Amp",
-                    "name": "teleopamp",
-                    "min": "0"
-                },
-                {
-                    "type": "number",
-                    "label": "Notes in Speaker",
-                    "name": "teleopspeaker",
-                    "min": "0"
-                },
-                {
-                    "type": "label",
-                    "label": "Scored From"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Subwoofer",
-                    "name": "subwoofer"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Podium",
-                    "name": "podium"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Within Wing",
-                    "name": "wing"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Outside Wing",
-                    "name": "outside"
-                },
-                {
-                    "type": "spacer"
-                },
-                {
-                    "type": "number",
-                    "label": "Notes in Trap",
-                    "name": "teleoptrap",
-                    "min": "0",
-                    "max": "3"
+                    "type": "row",
+                    "content": [
+                        {
+                            "type": "column",
+                            "content": [
+                                {
+                                    "type": "number",
+                                    "label": "Notes in Amp",
+                                    "name": "teleopamp",
+                                    "min": "0"
+                                },
+                                {
+                                    "type": "number",
+                                    "label": "Notes in Speaker",
+                                    "name": "teleopspeaker",
+                                    "min": "0"
+                                },
+                                {
+                                    "type": "number",
+                                    "label": "Notes in Trap",
+                                    "name": "teleoptrap",
+                                    "min": "0",
+                                    "max": "3"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "column",
+                            "content": [
+                                {
+                                    "type": "label",
+                                    "label": "Scored From"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Subwoofer",
+                                    "name": "subwoofer"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Podium",
+                                    "name": "podium"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Within Wing",
+                                    "name": "wing"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Outside Wing",
+                                    "name": "outside"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
                     "type": "divider"
@@ -218,64 +232,79 @@ object DataSource {
                     "type": "spacer"
                 },
                 {
-                    "type": "number",
-                    "label": "Time Climb Started",
-                    "name": "climbtime",
-                    "min": "0",
-                    "max": "135"
-                },
-                {
-                    "type": "radio",
-                    "label": "Onstage",
-                    "name": "onstage",
-                    "options": [
+                    "type": "row",
+                    "content": [
                         {
-                            "value": "1",
-                            "label": "First"
+                            "type": "column",
+                            "content": [
+                                {
+                                    "type": "number",
+                                    "label": "Time Climb Started",
+                                    "name": "climbtime",
+                                    "min": "0",
+                                    "max": "135"
+                                },
+                                {
+                                    "type": "radio",
+                                    "label": "Onstage",
+                                    "name": "onstage",
+                                    "options": [
+                                        {
+                                            "value": "1",
+                                            "label": "First"
+                                        },
+                                        {
+                                            "value": "2",
+                                            "label": "Second"
+                                        },
+                                        {
+                                            "value": "3",
+                                            "label": "Third"
+                                        },
+                                        {
+                                            "value": "0",
+                                            "label": "Park"
+                                        }
+                                    ]
+                                }
+                            ]
                         },
                         {
-                            "value": "2",
-                            "label": "Second"
-                        },
-                        {
-                            "value": "3",
-                            "label": "Third"
-                        },
-                        {
-                            "value": "0",
-                            "label": "Park"
+                            "type": "column",
+                            "content": [
+                                {
+                                    "type": "radio",
+                                    "label": "Number of Other Robots on Same Stage",
+                                    "name": "harmonize",
+                                    "options": [
+                                        {
+                                            "value": "1",
+                                            "label": "1"
+                                        },
+                                        {
+                                            "value": "2",
+                                            "label": "2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type":"checkbox",
+                                    "label": "Buddy Climb",
+                                    "name": "buddy"
+                                },
+                                {
+                                    "type": "spacer"
+                                },
+                                {
+                                    "type": "number",
+                                    "label": "Spotlit by Your Team",
+                                    "name": "spotlit",
+                                    "min": "0",
+                                    "max": "3"
+                                }
+                            ]
                         }
                     ]
-                },
-                {
-                    "type": "radio",
-                    "label": "Number of Other Robots on Same Stage",
-                    "name": "harmonize",
-                    "options": [
-                        {
-                            "value": "1",
-                            "label": "1"
-                        },
-                        {
-                            "value": "2",
-                            "label": "2"
-                        }
-                    ]
-                },
-                {
-                    "type":"checkbox",
-                    "label": "Buddy Climb",
-                    "name": "buddy"
-                },
-                {
-                    "type": "spacer"
-                },
-                {
-                    "type": "number",
-                    "label": "Spotlit by Your Team",
-                    "name": "spotlit",
-                    "min": "0",
-                    "max": "3"
                 },
                 {
                     "type": "divider"
@@ -284,77 +313,89 @@ object DataSource {
                     "type": "spacer"
                 },
                 {
-                    "type":"checkbox",
-                    "label": "Floor Pick Up",
-                    "name": "floor"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Source Pick Up",
-                    "name": "source"
-                },
-                {
-                    "type": "spacer"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Drove Under Stage",
-                    "name": "understage"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Played Defense",
-                    "name": "playeddefense"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Received Defense",
-                    "name": "receiveddefense"
-                },
-                {
-                    "type": "spacer"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Died (stopped moving due to comms issues, electrical problems or other)",
-                    "name": "died"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Tipped",
-                    "name": "tipped"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "Broke (sustained damage)",
-                    "name": "broke"
-                },
-                {
-                    "type": "spacer"
-                },
-                {
-                    "type": "radio",
-                    "label": "Driver Rating (Amongst Same Alliance)",
-                    "name": "rating",
-                    "options": [
+                    "type": "row",
+                    "content": [
                         {
-                            "value": "1",
-                            "label": "1"
+                            "type": "column",
+                            "content": [
+                                {
+                                    "type":"checkbox",
+                                    "label": "Floor Pick Up",
+                                    "name": "floor"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Source Pick Up",
+                                    "name": "source"
+                                },
+                                {
+                                    "type": "spacer"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Drove Under Stage",
+                                    "name": "understage"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Played Defense",
+                                    "name": "playeddefense"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Received Defense",
+                                    "name": "receiveddefense"
+                                },
+                                {
+                                    "type": "spacer"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Died (stopped moving due to comms issues, electrical problems or other)",
+                                    "name": "died"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Tipped",
+                                    "name": "tipped"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Broke (sustained damage)",
+                                    "name": "broke"
+                                }
+                            ]
                         },
                         {
-                            "value": "2",
-                            "label": "2"
-                        },
-                        {
-                            "value": "3",
-                            "label": "3"
+                            "type": "column",
+                            "content": [
+                                {
+                                    "type": "radio",
+                                    "label": "Driver Rating (Amongst Same Alliance)",
+                                    "name": "rating",
+                                    "options": [
+                                        {
+                                            "value": "1",
+                                            "label": "1"
+                                        },
+                                        {
+                                            "value": "2",
+                                            "label": "2"
+                                        },
+                                        {
+                                            "value": "3",
+                                            "label": "3"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "textarea",
+                                    "label": "Comments (including excessive penalties received, A-stop usage, etc)",
+                                    "name": "comments"
+                                }
+                            ]
                         }
                     ]
-                },
-                {
-                    "type": "textarea",
-                    "label": "Comments (including excessive penalties received, A-stop usage, etc)",
-                    "name": "comments"
                 }
             ]
         }
