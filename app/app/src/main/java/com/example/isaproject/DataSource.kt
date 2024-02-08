@@ -64,7 +64,6 @@ object DataSource {
             "page": [
                 {
                     "type": "row",
-                    "layersContained": "1",
                     "content": [
                         {
                             "type": "radio",
@@ -91,7 +90,6 @@ object DataSource {
                         },
                         {
                             "type": "column",
-                            "layersContained": "0",
                             "content": [
                                 {
                                     "type": "label",
@@ -136,20 +134,6 @@ object DataSource {
                                     "type": "checkbox",
                                     "label": "8",
                                     "name": "8"
-                                },
-                                {
-                                    "type": "dropdown",
-                                    "name": "something",
-                                    "options": [
-                                        {
-                                            "label": "alsdfj",
-                                            "value": "a"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "number",
-                                    "name": "somtsd"
                                 }
                             ]
                         }
@@ -169,6 +153,11 @@ object DataSource {
                     "label": "Notes in Speaker",
                     "name": "autospeaker",
                     "min": "0"
+                },
+                {
+                    "type": "checkbox",
+                    "label": "Leave",
+                    "name": "leave"
                 }
             ]
         },

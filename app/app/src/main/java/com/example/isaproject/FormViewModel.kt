@@ -34,22 +34,14 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    fun setValue(page: FormPage, item: FormElement, value: Any) {
-        _form.find { it.name == page.name }?.let { i ->
-            i.page.find { it.name == item.name }?.let { j ->
-                j.value = value
-            }
-        }
-    }
-
-    fun setExpanded(page: FormPage, item: FormElement, expanded: String) {
+    fun setExpanded(page: FormPage, item: FormElement, expanded: List<*>) {
         _form.find { it.name == page.name }?.let { i ->
             i.page.find { it.name == item.name }?.let { j ->
                 j.expanded = expanded
             }
         }
     }
-    fun setFilter(page: FormPage, item: FormElement, filter: String) {
+    fun setFilter(page: FormPage, item: FormElement, filter: List<*>) {
         _form.find { it.name == page.name }?.let { i ->
             i.page.find { it.name == item.name }?.let { j ->
                 j.filter = filter
@@ -57,11 +49,11 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    fun setError(page: FormPage, item: FormElement, error: String, errorText: String) {
+    fun setError(page: FormPage, item: FormElement, error: List<*>, errorMessage: List<*>) {
         _form.find { it.name == page.name }?.let { i ->
             i.page.find { it.name == item.name }?.let { j ->
                 j.error = error
-                j.errorMessage = errorText
+                j.errorMessage = errorMessage
             }
         }
     }
@@ -112,19 +104,33 @@ class FormViewModel : ViewModel() {
         _connectionStatus = status
     }
 
-
-    private var _answers = mutableStateMapOf<String, Any>()
-    val answers: Map<String, Any>
-        get() {
-            if (_answers.size == 0) {
-                for (i in form) {
-                    for (j in i.page) {
-                        if (j.name != "") {
-                            _answers[j.name] = j.value
-                        }
-                    }
+    private fun scanForElements(element: FormElement) : List<FormElement> {
+        val result = mutableListOf<FormElement>()
+        if (element.type == "row" || element.type == "column") {
+            element.content.forEach {  it1 ->
+                scanForElements(it1).forEach { it2 ->
+                    result.add(it2)
                 }
             }
+        } else {
+            result.add(element)
+        }
+        return result
+    }
+    private var _answers = run {
+        val result = mutableStateMapOf<String, Any>()
+        for (i in form) {
+            for (j in i.page) {
+                scanForElements(j).forEach {
+                    if (it.name != "") { result[it.name] = it.value[0] as Any }
+                }
+            }
+        }
+        result
+    }
+
+    val answers: Map<String, Any>
+        get() {
             return _answers
         }
 

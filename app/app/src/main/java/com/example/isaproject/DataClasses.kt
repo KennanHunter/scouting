@@ -22,92 +22,47 @@ class FormElement(
     val min: String = "-9999",
     val max: String = "9999",
     val content: List<FormElement> = listOf(),
-    val layersContained: String = "",
-    private val initialValue: String = ""
+    var initialValue: String = ""
 ) {
-    var value: Any by mutableStateOf(
-        if (initialValue == "") {
-            when (type) {
-                "number" -> {
-                    0
-                }
-                "checkbox" -> {
-                    false
-                }
-                "column", "row" -> {
-                    List(content.size) { content[it].value }
-                }
-                else -> {
-                    initialValue.toIntOrNull() ?: initialValue.toBooleanStrictOrNull() ?: initialValue
-                }
-            }
+    var value: List<*> by mutableStateOf(
+        if (type == "row" || type == "column") {
+            List(content.size){ content[it].value }
         } else {
-            initialValue.toIntOrNull() ?: initialValue.toBooleanStrictOrNull() ?: initialValue
+            listOf(
+                when (type) {
+                    "number" -> 0
+                    "checkbox" -> false
+                    else -> initialValue.toIntOrNull() ?: initialValue.toBooleanStrictOrNull() ?: initialValue
+                }
+            )
         }
     )
-    var expanded: String by mutableStateOf(
-        if (type == "column" || type == "row") {
-            run {
-                // "false;;;true;;;false"
-                var newExpanded = ""
-                for (i in content.indices) {
-                    if (i != content.indices.first) {
-                        newExpanded += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
-                    }
-                    newExpanded += content[i].expanded
-                }
-                newExpanded
-            }
+    var expanded: List<*> by mutableStateOf(
+        if (type == "row" || type == "column") {
+            List(content.size){ content[it].expanded }
         } else {
-            "false"
+            listOf(false)
         }
     )
-    var filter: String by mutableStateOf(
-        if (type == "column" || type == "row" && content.isNotEmpty()) {
-            run {
-                var newFilter = ""
-                for (i in content.indices) {
-                    if (i != content.indices.first) {
-                        newFilter += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
-                    }
-                    newFilter += content[i].filter
-                }
-                newFilter
-            }
+    var filter: List<*> by mutableStateOf(
+        if (type == "row" || type == "column") {
+            List(content.size){ content[it].filter }
         } else {
-            ""
+            listOf("")
         }
     )
-    var error: String by mutableStateOf(
-        if (type == "column" || type == "row") {
-            run {
-                var newError = ""
-                for (i in content.indices) {
-                    if (i != content.indices.first) {
-                        newError += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
-                    }
-                    newError += content[i].error
-                }
-                newError
-            }
+    var error: List<*> by mutableStateOf(
+        if (type == "row" || type == "column") {
+            List(content.size){ content[it].error }
         } else {
-            "false"
+            listOf(false)
         }
     )
-    var errorMessage: String by mutableStateOf(
-        if (type == "column" || type == "row" && content.isNotEmpty()) {
-            run {
-                var newErrorMessage = ""
-                for (i in content.indices) {
-                    if (i != content.indices.first) {
-                        newErrorMessage += ";".repeat(3 + (layersContained.toIntOrNull() ?: 0))
-                    }
-                    newErrorMessage += content[i].errorMessage
-                }
-                newErrorMessage
-            }
+    var errorMessage: List<*> by mutableStateOf(
+        if (type == "row" || type == "column") {
+            List(content.size){ content[it].errorMessage }
         } else {
-            ""
+            listOf("")
         }
     )
 }

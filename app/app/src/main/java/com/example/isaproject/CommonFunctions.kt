@@ -20,3 +20,17 @@ fun <T : Any> SingleEventEffect(
         }
     }
 }
+
+fun <T> Iterable<T>.flattenNested(): ArrayList<T> {
+    var result = ArrayList<T>()
+    for (element in this) {
+        if (element is Iterable<*>) {
+            element.flattenNested().forEach {
+                result.add(it as T)
+            }
+        } else {
+            result.add(element)
+        }
+    }
+    return result
+}

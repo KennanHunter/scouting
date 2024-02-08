@@ -76,7 +76,6 @@ fun FormScreen(
                     item = item,
                     onValueChange = {
                         formViewModel.setAnswer(item.name, it)
-                        formViewModel.setValue(page, item, it)
                     },
                     onExpandedChange = {
                         formViewModel.setExpanded(page, item, it)
@@ -86,6 +85,9 @@ fun FormScreen(
                     },
                     onErrorChange = { error, errorMessage ->
                         formViewModel.setError(page, item, error, errorMessage)
+                    },
+                    getValue = {
+                        formViewModel.answers[it] ?: "No such key"
                     },
                     context = context
                 )
@@ -98,9 +100,10 @@ fun FormScreen(
 fun FormItem(
     item: FormElement,
     onValueChange: (Any) -> Unit,
-    onExpandedChange: (String) -> Unit,
-    onFilterChange: (String) -> Unit,
-    onErrorChange: (String, String) -> Unit,
+    onExpandedChange: (List<*>) -> Unit,
+    onFilterChange: (List<*>) -> Unit,
+    onErrorChange: (List<*>, List<*>) -> Unit,
+    getValue: (String) -> Any,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -127,7 +130,7 @@ fun FormItem(
         "row" -> {
             FormRow(
                 content = item.content,
-                value = item.value,
+                getValue = getValue,
                 onValueChange = onValueChange,
                 expanded = item.expanded,
                 onExpandedChange = onExpandedChange,
@@ -136,7 +139,6 @@ fun FormItem(
                 error = item.error,
                 errorMessage = item.errorMessage,
                 onErrorChange = onErrorChange,
-                layersContained = item.layersContained,
                 context = context
             )
         }
@@ -144,7 +146,7 @@ fun FormItem(
         "column" -> {
             FormColumn(
                 content = item.content,
-                value = item.value,
+                getValue = getValue,
                 onValueChange = onValueChange,
                 expanded = item.expanded,
                 onExpandedChange = onExpandedChange,
@@ -153,14 +155,13 @@ fun FormItem(
                 error = item.error,
                 errorMessage = item.errorMessage,
                 onErrorChange = onErrorChange,
-                layersContained = item.layersContained,
                 context = context
             )
         }
 
         "text" -> {
             TextInput(
-                value = item.value,
+                value = getValue(item.name).toString(),
                 onValueChange = onValueChange,
                 placeholder = item.placeholder,
                 label = item.label,
@@ -170,7 +171,7 @@ fun FormItem(
 
         "textarea" -> {
             TextAreaInput(
-                value = item.value,
+                value = getValue(item.name).toString(),
                 onValueChange = onValueChange,
                 placeholder = item.placeholder,
                 label = item.label,
@@ -180,13 +181,13 @@ fun FormItem(
 
         "number" -> {
             NumberInput(
-                value = item.value,
+                value = getValue(item.name).toString().toIntOrNull() ?: 5,
                 onValueChange = onValueChange,
                 placeholder = item.placeholder,
                 label = item.label,
-                error = item.error,
-                errorMessage = item.errorMessage,
-                onErrorChange = onErrorChange,
+                error = item.error[0].toString().toBooleanStrictOrNull() ?: true,
+                errorMessage = item.errorMessage[0].toString(),
+                onErrorChange = {it1, it2 -> onErrorChange(listOf(it1), listOf(it2)) },
                 min = item.min.toIntOrNull() ?: -9999,
                 max = item.max.toIntOrNull() ?: 9999,
                 context = context,
@@ -196,7 +197,7 @@ fun FormItem(
 
         "radio" -> {
             RadioInput(
-                value = item.value,
+                value = getValue(item.name).toString(),
                 onValueChange = onValueChange,
                 options = item.options,
                 label = item.label,
@@ -206,7 +207,7 @@ fun FormItem(
 
         "checkbox" -> {
             CheckboxInput(
-                value = item.value,
+                value = getValue(item.name).toString().toBooleanStrictOrNull() ?: true,
                 onValueChange = onValueChange,
                 label = item.label,
                 modifier = modifier
@@ -216,12 +217,12 @@ fun FormItem(
         "dropdown" -> {
             DropdownInput(
                 onValueChange = onValueChange,
-                expanded = item.expanded,
-                onExpandedChange = onExpandedChange,
+                expanded = item.expanded[0].toString().toBooleanStrictOrNull() ?: true,
+                onExpandedChange = { onExpandedChange(listOf(it)) },
                 options = item.options,
                 label = item.label,
-                filter = item.filter,
-                onFilterChange = onFilterChange,
+                filter = item.filter[0].toString(),
+                onFilterChange = { onFilterChange(listOf(it)) },
                 modifier = modifier
             )
         }
@@ -263,17 +264,16 @@ fun FormSpace(
 @Composable
 fun FormRow(
     content: List<FormElement>,
-    value: Any,
+    getValue: (String) -> Any,
     onValueChange: (Any) -> Unit,
-    expanded: String,
-    onExpandedChange: (String) -> Unit,
-    filter: String,
-    onFilterChange: (String) -> Unit,
-    error: String,
-    errorMessage: String,
-    onErrorChange: (String, String) -> Unit,
+    expanded: List<*>,
+    onExpandedChange: (List<*>) -> Unit,
+    filter: List<*>,
+    onFilterChange: (List<*>) -> Unit,
+    error: List<*>,
+    errorMessage: List<*>,
+    onErrorChange: (List<*>, List<*>) -> Unit,
     context: Context,
-    layersContained: String,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -281,7 +281,7 @@ fun FormRow(
     ) {
         FormGroup(
             content = content,
-            value = value,
+            getValue = getValue,
             onValueChange = onValueChange,
             expanded = expanded,
             onExpandedChange = onExpandedChange,
@@ -290,8 +290,7 @@ fun FormRow(
             error = error,
             errorMessage = errorMessage,
             onErrorChange = onErrorChange,
-            context = context,
-            layersContained = layersContained
+            context = context
         )
     }
 }
@@ -299,17 +298,16 @@ fun FormRow(
 @Composable
 fun FormColumn(
     content: List<FormElement>,
-    value: Any,
+    getValue: (String) -> Any,
     onValueChange: (Any) -> Unit,
-    expanded: String,
-    onExpandedChange: (String) -> Unit,
-    filter: String,
-    onFilterChange: (String) -> Unit,
-    error: String,
-    errorMessage: String,
-    onErrorChange: (String, String) -> Unit,
+    expanded: List<*>,
+    onExpandedChange: (List<*>) -> Unit,
+    filter: List<*>,
+    onFilterChange: (List<*>) -> Unit,
+    error: List<*>,
+    errorMessage: List<*>,
+    onErrorChange: (List<*>, List<*>) -> Unit,
     context: Context,
-    layersContained: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -317,7 +315,7 @@ fun FormColumn(
     ) {
         FormGroup(
             content = content,
-            value = value,
+            getValue = getValue,
             onValueChange = onValueChange,
             expanded = expanded,
             onExpandedChange = onExpandedChange,
@@ -326,8 +324,7 @@ fun FormColumn(
             error = error,
             errorMessage = errorMessage,
             onErrorChange = onErrorChange,
-            context = context,
-            layersContained = layersContained
+            context = context
         )
     }
 }
@@ -335,92 +332,51 @@ fun FormColumn(
 @Composable
 fun FormGroup(
     content: List<FormElement>,
-    value: Any,
+    getValue: (String) -> Any,
     onValueChange: (Any) -> Unit,
-    expanded: String,
-    onExpandedChange: (String) -> Unit,
-    filter: String,
-    onFilterChange: (String) -> Unit,
-    error: String,
-    errorMessage: String,
-    onErrorChange: (String, String) -> Unit,
+    expanded: List<*>,
+    onExpandedChange: (List<*>) -> Unit,
+    filter: List<*>,
+    onFilterChange: (List<*>) -> Unit,
+    error: List<*>,
+    errorMessage: List<*>,
+    onErrorChange: (List<*>, List<*>) -> Unit,
     context: Context,
-    layersContained: String
+    modifier: Modifier = Modifier
 ) {
-    for (i in content.indices) {
-        var newElement = content[i]
-        if (value is List<*>) {
-            newElement.value = value[i] ?: "Index out of range"
-        } else {
-            newElement.value = "Value is not an array"
-        }
-        if (i < expanded.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).size){
-            newElement.expanded = expanded.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))[i]
-        } else {
-            newElement.expanded = "false"
-        }
-        if (i < filter.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).size){
-            newElement.filter = filter.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))[i]
-        } else {
-            newElement.filter = filter
-        }
-        if (i < error.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).size){
-            newElement.error = error.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))[i]
-        } else {
-            newElement.error = "false"
-        }
-        if (i < errorMessage.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).size){
-            newElement.errorMessage = errorMessage.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))[i]
-        } else {
-            newElement.errorMessage = "false"
-        }
+    for (i in 0 until content.size) {
         FormItem(
-            item = newElement,
+            item = content[i],
             onValueChange = {
-                if (value is List<*>) {
-                    var newValue = value.toMutableList()
-                    newValue[i] = it
-                    onValueChange(newValue)
-                } else {
-                    onValueChange("Value is not a list")
-                }
+                onValueChange(it)
             },
             onExpandedChange = {
-                var newExpanded = expanded.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
-                if (i < newExpanded.size) {
-                    newExpanded[i] = it
-                }
-                onExpandedChange(newExpanded.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                var newExpanded = expanded.toMutableList()
+                newExpanded[i] = it
+                onExpandedChange(newExpanded)
             },
             onFilterChange = {
-                var newFilter = filter.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
-                if (i < newFilter.size) {
-                    newFilter[i] = it
-                }
-                onFilterChange(newFilter.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))))
+                var newFilter = filter.toMutableList()
+                newFilter[i] = it
+                onFilterChange(newFilter)
             },
             onErrorChange = { it1, it2 ->
-                var newError = error.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
-                if (i < newError.size) {
-                    newError[i] = it1
-                }
-                var newErrorMessage = errorMessage.split(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))).toMutableList()
-                if (i < newErrorMessage.size) {
-                    newErrorMessage[i] = it2
-                }
-                onErrorChange(
-                    newError.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0))),
-                    newErrorMessage.joinToString(";".repeat(3 + (layersContained.toIntOrNull() ?: 0)))
-                )
+                var newError = error.toMutableList()
+                newError[i] = it1
+                var newErrorMessage = errorMessage.toMutableList()
+                newErrorMessage[i] = it2
+                onErrorChange(newError, newErrorMessage)
             },
-            context = context
+            getValue = getValue,
+            context = context,
+            modifier = modifier
         )
     }
 }
 
 @Composable
 fun TextInput(
-    value: Any,
+    value: String,
     onValueChange: (Any) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
@@ -433,7 +389,7 @@ fun TextInput(
             FormLabel(label = label)
         }
         TextField(
-            value = value.toString(),
+            value = value,
             onValueChange = onValueChange,
             singleLine = true,
             placeholder = { Text(placeholder) },
@@ -444,7 +400,7 @@ fun TextInput(
 
 @Composable
 fun TextAreaInput(
-    value: Any,
+    value: String,
     onValueChange: (Any) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
@@ -454,7 +410,7 @@ fun TextAreaInput(
         FormLabel(label = label)
     }
     TextField(
-        value = value.toString(),
+        value = value,
         onValueChange = onValueChange,
         singleLine = false,
         placeholder = { Text(placeholder) },
@@ -464,12 +420,12 @@ fun TextAreaInput(
 
 @Composable
 fun NumberInput(
-    value: Any,
+    value: Int,
     onValueChange: (Any) -> Unit,
     placeholder: String,
-    error: String,
+    error: Boolean,
     errorMessage: String,
-    onErrorChange: (String, String) -> Unit,
+    onErrorChange: (Boolean, String) -> Unit,
     min: Int,
     max: Int,
     modifier: Modifier = Modifier,
@@ -487,26 +443,26 @@ fun NumberInput(
                 value = value.toString(),
                 onValueChange = {
                     if ((it.toIntOrNull() ?: 0) < min) {
-                        onErrorChange("true", context.getString(R.string.minimum_value_is) + min)
+                        onErrorChange(true, context.getString(R.string.minimum_value_is) + min)
                     } else if ((it.toIntOrNull() ?: 0) > max) {
-                        onErrorChange("true", context.getString(R.string.maximum_value_is) + max)
-                    } else if (error.toBoolean()) {
-                        onErrorChange("false", "")
+                        onErrorChange(true, context.getString(R.string.maximum_value_is) + max)
+                    } else if (error) {
+                        onErrorChange(false, "")
                     }
                     onValueChange(it.toIntOrNull() ?: 0)
                 },
                 singleLine = true,
                 placeholder = { Text(placeholder) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                isError = error.toBoolean(),
+                isError = error,
                 supportingText = {
-                    if (error.toBoolean()) {
+                    if (error) {
                         Text(errorMessage)
                     }
                 },
                 leadingIcon = {
                     IconButton(
-                        onClick = { onValueChange(((value.toString().toIntOrNull() ?: 0) - 1).toString()) },
+                        onClick = { onValueChange(value - 1) },
                         modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
                     ) {
                         Icon(
@@ -517,7 +473,7 @@ fun NumberInput(
                 },
                 trailingIcon = {
                     IconButton(
-                        onClick = { onValueChange(((value.toString().toIntOrNull() ?: 0) + 1).toString()) },
+                        onClick = { onValueChange(value + 1) },
                         modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
                     ) {
                         Icon(
@@ -534,7 +490,7 @@ fun NumberInput(
 
 @Composable
 fun RadioInput(
-    value: Any,
+    value: String,
     onValueChange: (Any) -> Unit,
     options: List<FormOption>,
     modifier: Modifier = Modifier,
@@ -557,8 +513,7 @@ fun RadioInput(
                     RadioButton(
                         selected = j.value == value,
                         onClick = { onValueChange(j.value) },
-                        modifier = Modifier
-                            .size(dimensionResource(R.dimen.option_button_size))
+                        modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
                     Text(j.label)
@@ -570,18 +525,18 @@ fun RadioInput(
 
 @Composable
 fun CheckboxInput(
-    value: Any,
+    value: Boolean,
     onValueChange: (Any) -> Unit,
     label: String,
     modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.clickable { onValueChange((!value.toString().toBoolean())) }
+        modifier = modifier.clickable { onValueChange(!value) }
     ) {
         Checkbox(
-            checked = value.toString().toBoolean(),
-            onCheckedChange = { onValueChange((!value.toString().toBoolean())) },
+            checked = value,
+            onCheckedChange = { onValueChange(!value) },
             modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
         )
         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
@@ -592,9 +547,9 @@ fun CheckboxInput(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropdownInput(
-    onValueChange: (String) -> Unit,
-    expanded: String,
-    onExpandedChange: (String) -> Unit,
+    onValueChange: (Any) -> Unit,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
     options: List<FormOption>,
     label: String,
     filter: String,
@@ -609,21 +564,23 @@ fun DropdownInput(
         }
         Row {
             ExposedDropdownMenuBox(
-                expanded = expanded.toBoolean(),
-                onExpandedChange = { onExpandedChange(it.toString()) }
+                expanded = expanded,
+                onExpandedChange = { onExpandedChange(it) }
             ) {
                 TextField(
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
                     value = filter,
                     onValueChange = onFilterChange,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.toBoolean()) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                     colors = ExposedDropdownMenuDefaults.textFieldColors()
                 )
                 val filteringOptions = options.filter { it.label.contains(filter, ignoreCase = true) }
                 if (filteringOptions.isNotEmpty()) {
                     ExposedDropdownMenu(
-                        expanded = expanded.toBoolean(),
-                        onDismissRequest = { onExpandedChange(false.toString()) }
+                        expanded = expanded,
+                        onDismissRequest = { onExpandedChange(false) }
                     ) {
                         filteringOptions.forEach { dropdownOption ->
                             DropdownMenuItem(
@@ -631,7 +588,7 @@ fun DropdownInput(
                                 onClick = {
                                     onValueChange(dropdownOption.value)
                                     onFilterChange(dropdownOption.label)
-                                    onExpandedChange(false.toString())
+                                    onExpandedChange(false)
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                             )
