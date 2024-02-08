@@ -35,7 +35,7 @@ fun SummaryScreen(
         modifier = modifier
     ) { innerPadding ->
         Text(
-            text = "${formViewModel.answers.entries.associate { it.key to it.value }}",
+            text = formViewModel.answersJson,
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .padding(innerPadding)

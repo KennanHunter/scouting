@@ -128,16 +128,25 @@ class FormViewModel : ViewModel() {
         }
         result
     }
-
     val answers: Map<String, Any>
         get() {
             return _answers
         }
 
-
     fun setAnswer(name: String, value: Any) {
         _answers[name] = value
     }
+
+    val answersJson: String
+        get() {
+            return answers.entries.toSortedSet(compareBy { it.key }).joinToString(
+                prefix = "{\n",
+                postfix = "\n}",
+                separator = ",\n"
+            ) {
+                "    \"" + it.key + "\": " + if (it.value is Int || it.value is Boolean) { "" } else { "\"" } + it.value.toString() + if (it.value is Int || it.value is Boolean) { "" } else { "\"" }
+            }
+        }
 
 
     private val _sideEffectChannel = Channel<SideEffect>(capacity = Channel.BUFFERED)
