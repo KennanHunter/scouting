@@ -3,11 +3,15 @@ import { GraphQLError } from "graphql";
 import { z } from "zod";
 import { Resolvers } from ".";
 import { eventType } from "./event";
+import { databaseMatch, databaseTeamMatchEntry, matchType } from "./match";
 
 export const queryType = g.type("Query", {
   allEvents: g.ref(eventType).list(),
   getEvent: g.ref(eventType).args({
-    id: g.string(),
+    key: g.string(),
+  }),
+  getMatch: g.ref(matchType).args({
+    key: g.string(),
   }),
 });
 
@@ -15,15 +19,6 @@ const databaseEvent = z.object({
   eventKey: z.string(),
   eventName: z.string(),
   startTime: z.number(),
-});
-
-const matchEntryJoinResult = z.object({
-  matchKey: z.string(),
-  startTime: z.number(),
-  eventKey: z.string(),
-  teamNumber: z.number(),
-  alliance: z.string(),
-  matchData: z.string(),
 });
 
 export const queryResolvers: Resolvers["Query"] = {
@@ -40,10 +35,10 @@ export const queryResolvers: Resolvers["Query"] = {
       startTime: new Date(event.startTime),
     }));
   },
-  getEvent: async (_parent, { id }, context) => {
+  getEvent: async (_parent, { key }, context) => {
     const eventRaw = context.env.DB.prepare(
       "SELECT * FROM Events WHERE eventKey = ?"
-    ).bind(id);
+    ).bind(key);
 
     const eventResult = databaseEvent.safeParse(await eventRaw.first());
 
@@ -55,6 +50,28 @@ export const queryResolvers: Resolvers["Query"] = {
       key: event.eventKey,
       name: event.eventName,
       startTime: new Date(event.startTime),
+    };
+  },
+  getMatch: async (_parent, { key }, context) => {
+    const matchRaw = await context.env.DB.prepare(
+      "SELECT * FROM Matches WHERE matchKey = ?"
+    )
+      .bind(key)
+      .first();
+
+    if (!matchRaw) throw new GraphQLError("Match not found");
+
+    const matchParseResult = databaseMatch.safeParse(matchRaw);
+
+    if (!matchParseResult.success)
+      throw new GraphQLError("Unrecognized match data :(");
+
+    const match = matchParseResult.data;
+
+    return {
+      matchKey: match.matchKey,
+      eventKey: match.eventKey,
+      startTime: new Date(match.startTime),
     };
   },
 };

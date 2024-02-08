@@ -65,29 +65,17 @@ export const eventResolvers: Resolvers["Event"] = {
     const matches = matchEntryParseResult.data.reduce<
       Infer<typeof matchType>[]
     >((prev, cur) => {
-      const index = prev.findIndex((val) => val.eventKey == cur.matchKey);
+      const index = prev.findIndex((val) => val.matchKey === cur.matchKey);
 
       if (index === -1) {
         prev.push({
           matchKey: cur.matchKey,
-          startTime: cur.startTime,
+          startTime: new Date(cur.startTime),
           eventKey: cur.eventKey,
-          matchEntries: [
-            {
-              alliance: cur.alliance,
-              matchData: cur.matchData,
-              matchKey: cur.matchKey,
-              teamNumber: cur.teamNumber,
-            },
-          ],
+          matchEntries: [cur],
         });
       } else {
-        prev.at(index)?.matchEntries.push({
-          alliance: cur.alliance,
-          matchData: cur.matchData,
-          matchKey: cur.matchKey,
-          teamNumber: cur.teamNumber,
-        });
+        prev.at(index)?.matchEntries.push(cur);
       }
 
       return prev;

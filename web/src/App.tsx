@@ -6,11 +6,14 @@ import { FC } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Index } from "./routes/Index";
 import { SelectEvent, selectEventLoader } from "./routes/SelectEvent";
+import { ExportPage } from "./routes/event/Export";
 import { EventOverview, eventLoader } from "./routes/event/Index";
 import { EventLayout, eventLayoutLoader } from "./routes/event/Layout";
-import { ErrorPage } from "./routes/special/Error";
+import { MatchPage, matchLoader } from "./routes/event/Match";
+import { MatchesPage, matchesLoader } from "./routes/event/Matches";
+import { TeamPage } from "./routes/event/Team";
 import { TeamsPage, teamsLoader } from "./routes/event/Teams";
-import { ExportPage } from "./routes/event/Export";
+import { ErrorPage } from "./routes/special/Error";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +40,21 @@ const router = createBrowserRouter([
             path: "teams/",
             element: <TeamsPage />,
             loader: teamsLoader,
+          },
+          {
+            path: "teams/:teamNumber",
+            element: <TeamPage />,
+            loader: teamsLoader,
+          },
+          {
+            path: "matches/",
+            element: <MatchesPage />,
+            loader: matchesLoader,
+          },
+          {
+            path: "matches/:matchId",
+            element: <MatchPage />,
+            loader: matchLoader,
           },
           {
             path: "export/",

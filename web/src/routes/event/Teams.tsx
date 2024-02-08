@@ -12,7 +12,7 @@ export const teamsLoader = (async ({ params }) => {
       }[];
     };
   }>(`{
-    getEvent(id: "${params.id}") {
+    getEvent(key: "${params.id}") {
       teams {
         teamNumber
         nickname

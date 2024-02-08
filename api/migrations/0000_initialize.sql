@@ -31,6 +31,9 @@ CREATE TABLE IF NOT EXISTS Matches (
   matchKey TEXT UNIQUE PRIMARY KEY,
   startTime INTEGER,
   eventKey TEXT,
+  reportedWinningAlliance TEXT,
+  reportedRedScore INTEGER,
+  reportedBlueScore INTEGER,
   FOREIGN KEY(eventKey) REFERENCES Events(eventKey)
 );
 
@@ -46,4 +49,3 @@ CREATE TABLE IF NOT EXISTS TeamMatchEntry (
   FOREIGN KEY(matchKey) REFERENCES Matches(matchKey),
   FOREIGN KEY(teamNumber) REFERENCES Teams(teamNumber)
 );
-

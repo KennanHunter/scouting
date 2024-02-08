@@ -1,8 +1,12 @@
 -- Migration number: 0001 	 2024-02-04T23:58:56.311Z
+DELETE Events;
+
 INSERT INTO
   Events (eventKey, eventName, startTime)
 VALUES
   ("2024mock", "Mock Event", 1707541200000);
+
+DELETE Teams;
 
 INSERT INTO
   Teams (teamName, teamNumber, nickname)
@@ -16,6 +20,8 @@ VALUES
   ("Off-Season Demo 7", 9997, "Demo 7"),
   ("Off-Season Demo 8", 9998, "Demo 8"),
   ("Off-Season Demo 9", 9999, "Demo 9");
+
+DELETE TeamEventAppearance;
 
 INSERT INTO
   TeamEventAppearance (eventKey, teamNumber)

@@ -7,7 +7,7 @@ export const eventLoader = (async ({ params }) => {
   const data = await apiClient<{
     getEvent: { name: string; startTime: number };
   }>(`{
-    getEvent(id: "${params.id}") {
+    getEvent(key: "${params.id}") {
       name
       startTime
     }
