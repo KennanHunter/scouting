@@ -156,14 +156,18 @@ object DataSource {
                                     "type": "checkbox",
                                     "label": "Leave",
                                     "name": "leave"
+                                },
+                                {
+                                    "type": "spacer"
+                                },
+                                {
+                                    "type": "image",
+                                    "contentId": "example_image",
+                                    "label": "Key to Note Locations"
                                 }
                             ]
                         }
                     ]
-                },
-                {
-                    "type": "image",
-                    "contentId": "example_image"
                 }
             ]
         },
@@ -252,6 +256,7 @@ object DataSource {
                                     "type": "radio",
                                     "label": "Onstage",
                                     "name": "onstage",
+                                    "columns": "2",
                                     "options": [
                                         {
                                             "value": "1",
@@ -280,6 +285,7 @@ object DataSource {
                                     "type": "radio",
                                     "label": "Number of Other Robots on Same Stage",
                                     "name": "harmonize",
+                                    "columns": "2",
                                     "options": [
                                         {
                                             "value": "1",
@@ -377,6 +383,7 @@ object DataSource {
                                     "type": "radio",
                                     "label": "Driver Rating (Amongst Same Alliance)",
                                     "name": "rating",
+                                    "columns": "3",
                                     "options": [
                                         {
                                             "value": "1",

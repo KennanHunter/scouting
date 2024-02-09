@@ -215,6 +215,7 @@ fun FormItem(
                 value = getValue(item.name).toString(),
                 onValueChange = { onValueChange(item.name, it) },
                 options = item.options,
+                columns = item.columns.toIntOrNull() ?: 1,
                 label = item.label,
                 modifier = modifier
             )
@@ -535,6 +536,7 @@ fun RadioInput(
     value: String,
     onValueChange: (Any) -> Unit,
     options: List<FormOption>,
+    columns: Int,
     modifier: Modifier = Modifier,
     label: String
 ) {
@@ -544,24 +546,29 @@ fun RadioInput(
         if (label != "") {
             FormLabel(label = label)
         }
-        Column {
-            for (j in options) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(bottom = dimensionResource(R.dimen.option_space))
-                        .clickable { onValueChange(j.value) }
-                ) {
-                    RadioButton(
-                        selected = j.value == value,
-                        onClick = { onValueChange(j.value) },
-                        modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
-                    Text(
-                        text = j.label,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+        Row {
+            for (i in 0 until columns) {
+                if (i != 0) { Spacer(modifier = Modifier.width(dimensionResource(R.dimen.lr_option_space))) }
+                Column {
+                    for (j in options.subList(i * (options.size / columns), (i + 1) * (options.size / columns))) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(bottom = dimensionResource(R.dimen.option_space))
+                                .clickable { onValueChange(j.value) }
+                        ) {
+                            RadioButton(
+                                selected = j.value == value,
+                                onClick = { onValueChange(j.value) },
+                                modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
+                            Text(
+                                text = j.label,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
                 }
             }
         }

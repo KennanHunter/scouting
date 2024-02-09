@@ -19,6 +19,7 @@ class FormElement(
     val label: String = "",
     val placeholder: String = "",
     var options: List<FormOption> = listOf(),
+    val columns: String = "1",
     val min: String = "-9999",
     val max: String = "9999",
     val content: List<FormElement> = listOf(),
