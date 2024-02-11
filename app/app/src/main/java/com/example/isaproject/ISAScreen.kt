@@ -47,7 +47,7 @@ fun ISAScreen(
             composable(route = formViewModel.form[i].name) {
                 FormScreen(
                     formViewModel = formViewModel,
-                    page = formViewModel.form[i],
+                    page = formViewModel.form[i].name,
                     onNextButtonClicked = {
                         if (navController.currentBackStackEntry?.destination?.route == "prematch") {
                             formViewModel.getNowScouting(formViewModel.answers["matchnumber"].toString().toIntOrNull() ?: 0)
