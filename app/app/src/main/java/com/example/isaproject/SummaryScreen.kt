@@ -41,7 +41,7 @@ fun SummaryScreen(
                 canNavigateBack = true,
                 nextButtonLabel = stringResource(R.string.submit),
                 onNextButtonClicked = {
-                    //TODO: send data
+                    //TODO: send data 
                     onSubmitButtonClicked()
                 },
                 previousButtonLabel = stringResource(R.string.previous),
