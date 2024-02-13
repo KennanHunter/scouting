@@ -1,11 +1,12 @@
+import { D1Database } from "@cloudflare/workers-types";
 import { Context, Handler, Hono, MiddlewareHandler } from "hono";
 import { cors } from "hono/cors";
 import { addTrailingSlash } from "./middleware/addTrailingSlash";
 import { handle404 } from "./routes/404";
 import { generateHandler } from "./routes/auth/generate";
+import { dumpHandler } from "./routes/dump";
 import { graphqlHandler } from "./routes/graphql";
 import { graphqlViewerHandler } from "./routes/graphql/viewer";
-import { D1Database } from "@cloudflare/workers-types";
 
 export type Bindings = {
   DB: D1Database;
@@ -28,6 +29,7 @@ app
   .use("/*", cors()) // TODO: limit cors allowed origins
   // .use("/api/*", protect) // TODO: Fix Authentication
   .post("/auth/generate/", generateHandler)
+  .get("/dump/:eventId/:format/", dumpHandler)
   .get("/viewer/", graphqlViewerHandler)
   .use("/graphql/", graphqlHandler);
 
