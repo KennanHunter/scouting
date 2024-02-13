@@ -49,7 +49,15 @@ object DataSource {
                     "type": "number",
                     "label": "Match Number",
                     "name": "matchnumber",
-                    "min": "0"
+                    "min": "0",
+                    "max": "100"
+                },
+                {
+                    "type": "number",
+                    "label": "Team Number",
+                    "name": "teamnumber",
+                    "min": "0",
+                    "max": "10000"
                 },
                 {
                     "type": "checkbox",
