@@ -6,28 +6,29 @@ import androidx.compose.runtime.setValue
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FormPage(
+data class SerializableFormPage(
     val name: String,
     val label: String,
-    val page: List<FormElement>
+    val page: List<SerializableFormElement>
 )
 
 @Serializable
-class FormElement(
+data class SerializableFormElement(
     val type: String,
-    val name: String = "",
+    var name: String = "",
     val label: String = "",
     val placeholder: String = "",
     var options: List<FormOption> = listOf(),
-    val min: String = "-9999",
-    val max: String = "9999",
-    val content: List<FormElement> = listOf(),
-    val contentId: String = "",
+    val columns: String = "1",
+    val min: String = "",
+    val max: String = "",
+    val children: List<SerializableFormElement> = listOf(),
+    val content: String = "",
     private var initialValue: String = ""
 ) {
     var value: List<*> by mutableStateOf(
         if (type == "row" || type == "column") {
-            List(content.size){ content[it].value }
+            List(children.size){ children[it].value }
         } else {
             listOf(
                 when (type) {
@@ -38,34 +39,45 @@ class FormElement(
             )
         }
     )
-    var expanded: List<*> by mutableStateOf(
-        if (type == "row" || type == "column") {
-            List(content.size){ content[it].expanded }
-        } else {
-            listOf(false)
-        }
-    )
-    var filter: List<*> by mutableStateOf(
-        if (type == "row" || type == "column") {
-            List(content.size){ content[it].filter }
-        } else {
-            listOf("")
-        }
-    )
-    var error: List<*> by mutableStateOf(
-        if (type == "row" || type == "column") {
-            List(content.size){ content[it].error }
-        } else {
-            listOf(false)
-        }
-    )
-    var errorMessage: List<*> by mutableStateOf(
-        if (type == "row" || type == "column") {
-            List(content.size){ content[it].errorMessage }
-        } else {
-            listOf("")
-        }
-    )
+}
+
+enum class FormElementType {
+    Label,
+    Divider,
+    Spacer,
+    Image,
+    Row,
+    Column,
+    Text,
+    TextArea,
+    Number,
+    Radio,
+    Checkbox,
+    Dropdown
+}
+
+data class FormPage(
+    val name: String,
+    val label: String,
+    val page: List<FormElement>
+)
+
+data class FormElement(
+    val type: FormElementType,
+    val name: String,
+    val label: String,
+    val placeholder: String,
+    var options: List<FormOption>,
+    val columns: Int,
+    val min: Int,
+    val max: Int,
+    val children: List<String>,
+    val isChild: Boolean,
+    val content: String
+) {
+    var expanded by mutableStateOf(false)
+    var filter by mutableStateOf("")
+    var error by mutableStateOf("")
 }
 
 @Serializable

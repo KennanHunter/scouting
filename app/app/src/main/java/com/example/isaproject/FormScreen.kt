@@ -36,6 +36,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -46,7 +47,7 @@ import androidx.compose.ui.unit.Dp
 @Composable
 fun FormScreen(
     formViewModel: FormViewModel,
-    page: FormPage,
+    page: String,
     onNextButtonClicked: () -> Unit,
     onPreviousButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -54,10 +55,12 @@ fun FormScreen(
     val context = LocalContext.current
     Scaffold(
         topBar = {
-            PageTitle(
-                text = page.label,
-                nowScouting = formViewModel.nowScouting
-            )
+            formViewModel.form.find { it.name == page }?.let {
+                PageTitle(
+                    text = it.label,
+                    nowScouting = formViewModel.nowScouting
+                )
+            }
         },
         bottomBar = {
             BottomNavBar(
@@ -75,26 +78,33 @@ fun FormScreen(
                 .padding(innerPadding)
                 .padding(all = dimensionResource(R.dimen.margin))
         ) {
-            items(page.page) { item ->
-                FormItem(
-                    item = item,
-                    onValueChange = { it1, it2 ->
-                        formViewModel.setAnswer(it1, it2)
-                    },
-                    onExpandedChange = {
-                        formViewModel.setExpanded(page, item, it)
-                    },
-                    onFilterChange = {
-                        formViewModel.setFilter(page, item, it)
-                    },
-                    onErrorChange = { error, errorMessage ->
-                        formViewModel.setError(page, item, error, errorMessage)
-                    },
-                    getValue = {
-                        formViewModel.answers[it] ?: "No such key"
-                    },
-                    context = context
-                )
+            formViewModel.form.find { it.name == page }?.let { it ->
+                items(it.page) { item ->
+                    if (!item.isChild) {
+                        FormItem(
+                            item = item,
+                            onValueChange = { name, value ->
+                                formViewModel.setAnswer(name, value)
+                            },
+                            onExpandedChange = { itemName, it ->
+                                formViewModel.setExpanded(page, itemName, it)
+                            },
+                            onFilterChange = { itemName, it ->
+                                formViewModel.setFilter(page, itemName, it)
+                            },
+                            onErrorChange = { itemName, it ->
+                                formViewModel.setError(page, itemName, it)
+                            },
+                            getValue = {
+                                formViewModel.answers[it] ?: "No such key"
+                            },
+                            getElement = { itemName ->
+                                formViewModel.form.find { it.name == page }?.page?.find { it.name == itemName }
+                            },
+                            context = context
+                        )
+                    }
+                }
             }
         }
     }
@@ -105,75 +115,70 @@ fun FormScreen(
 fun FormItem(
     item: FormElement,
     onValueChange: (String, Any) -> Unit,
-    onExpandedChange: (List<*>) -> Unit,
-    onFilterChange: (List<*>) -> Unit,
-    onErrorChange: (List<*>, List<*>) -> Unit,
+    onExpandedChange: (String, Boolean) -> Unit,
+    onFilterChange: (String, String) -> Unit,
+    onErrorChange: (String, String) -> Unit,
     getValue: (String) -> Any,
+    getElement: (String) -> FormElement?,
     context: Context,
     modifier: Modifier = Modifier
 ) {
     when (item.type) {
-        "label" -> {
+        FormElementType.Label -> {
             FormLabel(
                 label = item.label,
                 modifier = modifier
             )
         }
 
-        "divider" -> {
+        FormElementType.Divider -> {
             FormDivider(
                 modifier = modifier
             )
         }
 
-        "spacer" -> {
+        FormElementType.Spacer -> {
             FormSpace(
                 modifier = modifier
             )
         }
 
-        "image" -> {
+        FormElementType.Image -> {
             FormImage(
-                imageId = context.resources.getIdentifier(item.contentId, "drawable", context.packageName),
+                imageId = context.resources.getIdentifier(item.content, "drawable", context.packageName),
                 label = item.label
             )
         }
 
-        "row" -> {
+        FormElementType.Row -> {
             FormRow(
-                content = item.content,
+                children = item.children,
                 getValue = getValue,
                 onValueChange = onValueChange,
-                expanded = item.expanded,
                 onExpandedChange = onExpandedChange,
-                filter = item.filter,
                 onFilterChange = onFilterChange,
-                error = item.error,
-                errorMessage = item.errorMessage,
                 onErrorChange = onErrorChange,
+                getElement = getElement,
                 context = context,
                 modifier = modifier
             )
         }
 
-        "column" -> {
+        FormElementType.Column -> {
             FormColumn(
-                content = item.content,
+                children = item.children,
                 getValue = getValue,
                 onValueChange = onValueChange,
-                expanded = item.expanded,
                 onExpandedChange = onExpandedChange,
-                filter = item.filter,
                 onFilterChange = onFilterChange,
-                error = item.error,
-                errorMessage = item.errorMessage,
                 onErrorChange = onErrorChange,
+                getElement = getElement,
                 context = context,
                 modifier = modifier
             )
         }
 
-        "text" -> {
+        FormElementType.Text -> {
             TextInput(
                 value = getValue(item.name).toString(),
                 onValueChange = { onValueChange(item.name, it) },
@@ -183,7 +188,7 @@ fun FormItem(
             )
         }
 
-        "textarea" -> {
+        FormElementType.TextArea -> {
             TextAreaInput(
                 value = getValue(item.name).toString(),
                 onValueChange = { onValueChange(item.name, it) },
@@ -193,33 +198,33 @@ fun FormItem(
             )
         }
 
-        "number" -> {
+        FormElementType.Number -> {
             NumberInput(
-                value = getValue(item.name).toString().toIntOrNull() ?: 5,
+                value = getValue(item.name).toString().toIntOrNull() ?: -9999,
                 onValueChange = { onValueChange(item.name, it) },
                 placeholder = item.placeholder,
                 label = item.label,
-                error = item.error[0].toString().toBooleanStrictOrNull() ?: true,
-                errorMessage = item.errorMessage[0].toString(),
-                onErrorChange = {it1, it2 -> onErrorChange(listOf(it1), listOf(it2)) },
-                min = item.min.toIntOrNull() ?: -9999,
-                max = item.max.toIntOrNull() ?: 9999,
+                error = item.error,
+                onErrorChange = { onErrorChange(item.name, it) },
+                min = item.min,
+                max = item.max,
                 context = context,
                 modifier = modifier
             )
         }
 
-        "radio" -> {
+        FormElementType.Radio -> {
             RadioInput(
                 value = getValue(item.name).toString(),
                 onValueChange = { onValueChange(item.name, it) },
                 options = item.options,
+                columns = item.columns,
                 label = item.label,
                 modifier = modifier
             )
         }
 
-        "checkbox" -> {
+        FormElementType.Checkbox -> {
             CheckboxInput(
                 value = getValue(item.name).toString().toBooleanStrictOrNull() ?: true,
                 onValueChange = { onValueChange(item.name, it) },
@@ -228,15 +233,15 @@ fun FormItem(
             )
         }
 
-        "dropdown" -> {
+        FormElementType.Dropdown -> {
             DropdownInput(
                 onValueChange = { onValueChange(item.name, it) },
-                expanded = item.expanded[0].toString().toBooleanStrictOrNull() ?: true,
-                onExpandedChange = { onExpandedChange(listOf(it)) },
+                expanded = item.expanded,
+                onExpandedChange = { onExpandedChange(item.name, it) },
                 options = item.options,
                 label = item.label,
-                filter = item.filter[0].toString(),
-                onFilterChange = { onFilterChange(listOf(it)) },
+                filter = item.filter,
+                onFilterChange = { onFilterChange(item.name, it) },
                 modifier = modifier
             )
         }
@@ -283,29 +288,29 @@ fun FormImage(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+        modifier = Modifier
+            .padding(bottom = dimensionResource(R.dimen.form_element_space))
+            .fillMaxWidth()
     ) {
         if (label != "") { FormLabel(label = label) }
         Image(
             painter = painterResource(imageId),
             contentDescription = null,
-            modifier = modifier.fillMaxWidth()
+            contentScale = ContentScale.FillWidth,
+            modifier = modifier
         )
     }
 }
 
 @Composable
 fun FormRow(
-    content: List<FormElement>,
+    children: List<String>,
     getValue: (String) -> Any,
     onValueChange: (String, Any) -> Unit,
-    expanded: List<*>,
-    onExpandedChange: (List<*>) -> Unit,
-    filter: List<*>,
-    onFilterChange: (List<*>) -> Unit,
-    error: List<*>,
-    errorMessage: List<*>,
-    onErrorChange: (List<*>, List<*>) -> Unit,
+    onExpandedChange: (String, Boolean) -> Unit,
+    onFilterChange: (String, String) -> Unit,
+    onErrorChange: (String, String) -> Unit,
+    getElement: (String) -> FormElement?,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -313,35 +318,29 @@ fun FormRow(
         modifier = modifier
     ) {
         FormGroup(
-            content = content,
+            children = children,
             getValue = getValue,
             onValueChange = onValueChange,
-            expanded = expanded,
             onExpandedChange = onExpandedChange,
-            filter = filter,
             onFilterChange = onFilterChange,
-            error = error,
-            errorMessage = errorMessage,
             onErrorChange = onErrorChange,
-            context = context,
             row = true,
-            modifier = Modifier.weight(1f)
+            getElement = getElement,
+            modifier = Modifier.weight(1f),
+            context = context,
         )
     }
 }
 
 @Composable
 fun FormColumn(
-    content: List<FormElement>,
+    children: List<String>,
     getValue: (String) -> Any,
     onValueChange: (String, Any) -> Unit,
-    expanded: List<*>,
-    onExpandedChange: (List<*>) -> Unit,
-    filter: List<*>,
-    onFilterChange: (List<*>) -> Unit,
-    error: List<*>,
-    errorMessage: List<*>,
-    onErrorChange: (List<*>, List<*>) -> Unit,
+    onExpandedChange: (String, Boolean) -> Unit,
+    onFilterChange: (String, String) -> Unit,
+    onErrorChange: (String, String) -> Unit,
+    getElement: (String) -> FormElement?,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -349,17 +348,14 @@ fun FormColumn(
         modifier = modifier
     ) {
         FormGroup(
-            content = content,
+            children = children,
             getValue = getValue,
             onValueChange = onValueChange,
-            expanded = expanded,
             onExpandedChange = onExpandedChange,
-            filter = filter,
             onFilterChange = onFilterChange,
-            error = error,
-            errorMessage = errorMessage,
             onErrorChange = onErrorChange,
             row = false,
+            getElement = getElement,
             context = context
         )
     }
@@ -367,47 +363,36 @@ fun FormColumn(
 
 @Composable
 fun FormGroup(
-    content: List<FormElement>,
+    children: List<String>,
     getValue: (String) -> Any,
     onValueChange: (String, Any) -> Unit,
-    expanded: List<*>,
-    onExpandedChange: (List<*>) -> Unit,
-    filter: List<*>,
-    onFilterChange: (List<*>) -> Unit,
-    error: List<*>,
-    errorMessage: List<*>,
-    onErrorChange: (List<*>, List<*>) -> Unit,
+    onExpandedChange: (String, Boolean) -> Unit,
+    onFilterChange: (String, String) -> Unit,
+    onErrorChange: (String, String) -> Unit,
     row: Boolean,
+    getElement: (String) -> FormElement?,
     context: Context,
     modifier: Modifier = Modifier
 ) {
-    for (i in 0 until content.size) {
-        FormItem(
-            item = content[i],
-            onValueChange = onValueChange,
-            onExpandedChange = {
-                var newExpanded = expanded.toMutableList()
-                newExpanded[i] = it
-                onExpandedChange(newExpanded)
-            },
-            onFilterChange = {
-                var newFilter = filter.toMutableList()
-                newFilter[i] = it
-                onFilterChange(newFilter)
-            },
-            onErrorChange = { it1, it2 ->
-                var newError = error.toMutableList()
-                newError[i] = it1
-                var newErrorMessage = errorMessage.toMutableList()
-                newErrorMessage[i] = it2
-                onErrorChange(newError, newErrorMessage)
-            },
-            getValue = getValue,
-            context = context,
-            modifier = modifier
-        )
-        if (row) {
-            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.margin)))
+    for (i in children) {
+        val item = getElement(i)
+        if (item != null) {
+            FormItem(
+                item = item,
+                onValueChange = onValueChange,
+                onExpandedChange = onExpandedChange,
+                onFilterChange = onFilterChange,
+                onErrorChange = onErrorChange,
+                getValue = getValue,
+                context = context,
+                getElement = getElement,
+                modifier = modifier
+            )
+            if (row) {
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.margin)))
+            }
+        } else {
+            Text(text = "getElement() failed")
         }
     }
 }
@@ -465,14 +450,13 @@ fun NumberInput(
     value: Int,
     onValueChange: (Any) -> Unit,
     placeholder: String,
-    error: Boolean,
-    errorMessage: String,
-    onErrorChange: (Boolean, String) -> Unit,
+    error: String,
+    onErrorChange: (String) -> Unit,
     min: Int,
     max: Int,
-    modifier: Modifier = Modifier,
+    label: String,
     context: Context,
-    label: String
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
@@ -484,23 +468,32 @@ fun NumberInput(
             TextField(
                 value = value.toString(),
                 onValueChange = {
-                    if ((it.toIntOrNull() ?: 0) < min) {
-                        onErrorChange(true, context.getString(R.string.minimum_value_is) + min)
-                    } else if ((it.toIntOrNull() ?: 0) > max) {
-                        onErrorChange(true, context.getString(R.string.maximum_value_is) + max)
-                    } else if (error) {
-                        onErrorChange(false, "")
+                    val newValue = it.toIntOrNull() ?: -9999
+                    if (newValue < min) {
+                        onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
+                    } else if (newValue > max) {
+                        onErrorChange(context.getString(R.string.maximum_value_is, max.toString()))
+                    } else if (error != "") {
+                        onErrorChange("")
                     }
-                    onValueChange(it.toIntOrNull() ?: 0)
+                    onValueChange(newValue)
                 },
                 singleLine = true,
                 placeholder = { Text(placeholder) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                isError = error,
-                supportingText = { if (error) { Text(errorMessage) } },
+                isError = error != "",
+                supportingText = { if (error != "") { Text(error) } },
                 leadingIcon = {
                     IconButton(
-                        onClick = { onValueChange(value - 1) },
+                        onClick = {
+                            val newValue = value - 1
+                            if (newValue < min) {
+                                onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
+                            } else if (error != "") {
+                                onErrorChange("")
+                            }
+                            onValueChange(newValue)
+                        },
                         modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
                     ) {
                         Icon(
@@ -511,7 +504,15 @@ fun NumberInput(
                 },
                 trailingIcon = {
                     IconButton(
-                        onClick = { onValueChange(value + 1) },
+                        onClick = {
+                            val newValue = value + 1
+                            if (newValue > max) {
+                                onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
+                            } else if (error != "") {
+                                onErrorChange("")
+                            }
+                            onValueChange(newValue)
+                        },
                         modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
                     ) {
                         Icon(
@@ -531,6 +532,7 @@ fun RadioInput(
     value: String,
     onValueChange: (Any) -> Unit,
     options: List<FormOption>,
+    columns: Int,
     modifier: Modifier = Modifier,
     label: String
 ) {
@@ -540,24 +542,29 @@ fun RadioInput(
         if (label != "") {
             FormLabel(label = label)
         }
-        Column {
-            for (j in options) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(bottom = dimensionResource(R.dimen.option_space))
-                        .clickable { onValueChange(j.value) }
-                ) {
-                    RadioButton(
-                        selected = j.value == value,
-                        onClick = { onValueChange(j.value) },
-                        modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
-                    Text(
-                        text = j.label,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+        Row {
+            for (i in 0 until columns) {
+                if (i != 0) { Spacer(modifier = Modifier.width(dimensionResource(R.dimen.lr_option_space))) }
+                Column {
+                    for (j in options.subList(i * (options.size / columns), (i + 1) * (options.size / columns))) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(bottom = dimensionResource(R.dimen.option_space))
+                                .clickable { onValueChange(j.value) }
+                        ) {
+                            RadioButton(
+                                selected = j.value == value,
+                                onClick = { onValueChange(j.value) },
+                                modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
+                            Text(
+                                text = j.label,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
                 }
             }
         }

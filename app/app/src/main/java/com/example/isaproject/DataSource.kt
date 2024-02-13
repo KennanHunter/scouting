@@ -64,10 +64,10 @@ object DataSource {
             "page": [
                 {
                     "type": "row",
-                    "content": [
+                    "children": [
                         {
                             "type": "column",
-                            "content": [
+                            "children": [
                                 {
                                     "type": "radio",
                                     "label": "Starting Position",
@@ -139,7 +139,7 @@ object DataSource {
                         },
                         {
                             "type": "column",
-                            "content": [
+                            "children": [
                                 {
                                     "type": "number",
                                     "label": "Notes in Amp",
@@ -156,14 +156,18 @@ object DataSource {
                                     "type": "checkbox",
                                     "label": "Leave",
                                     "name": "leave"
+                                },
+                                {
+                                    "type": "spacer"
+                                },
+                                {
+                                    "type": "image",
+                                    "content": "example_image",
+                                    "label": "Key to Note Locations"
                                 }
                             ]
                         }
                     ]
-                },
-                {
-                    "type": "image",
-                    "contentId": "example_image"
                 }
             ]
         },
@@ -173,10 +177,10 @@ object DataSource {
             "page": [
                 {
                     "type": "row",
-                    "content": [
+                    "children": [
                         {
                             "type": "column",
-                            "content": [
+                            "children": [
                                 {
                                     "type": "number",
                                     "label": "Notes in Amp",
@@ -200,7 +204,7 @@ object DataSource {
                         },
                         {
                             "type": "column",
-                            "content": [
+                            "children": [
                                 {
                                     "type": "label",
                                     "label": "Scored From"
@@ -237,10 +241,10 @@ object DataSource {
                 },
                 {
                     "type": "row",
-                    "content": [
+                    "children": [
                         {
                             "type": "column",
-                            "content": [
+                            "children": [
                                 {
                                     "type": "number",
                                     "label": "Time Climb Started",
@@ -252,6 +256,7 @@ object DataSource {
                                     "type": "radio",
                                     "label": "Onstage",
                                     "name": "onstage",
+                                    "columns": "2",
                                     "options": [
                                         {
                                             "value": "1",
@@ -275,11 +280,12 @@ object DataSource {
                         },
                         {
                             "type": "column",
-                            "content": [
+                            "children": [
                                 {
                                     "type": "radio",
                                     "label": "Number of Other Robots on Same Stage",
                                     "name": "harmonize",
+                                    "columns": "2",
                                     "options": [
                                         {
                                             "value": "1",
@@ -318,10 +324,10 @@ object DataSource {
                 },
                 {
                     "type": "row",
-                    "content": [
+                    "children": [
                         {
                             "type": "column",
-                            "content": [
+                            "children": [
                                 {
                                     "type":"checkbox",
                                     "label": "Floor Pick Up",
@@ -372,11 +378,12 @@ object DataSource {
                         },
                         {
                             "type": "column",
-                            "content": [
+                            "children": [
                                 {
                                     "type": "radio",
                                     "label": "Driver Rating (Amongst Same Alliance)",
                                     "name": "rating",
+                                    "columns": "3",
                                     "options": [
                                         {
                                             "value": "1",

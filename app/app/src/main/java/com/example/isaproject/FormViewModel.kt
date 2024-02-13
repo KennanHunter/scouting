@@ -20,40 +20,106 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class FormViewModel : ViewModel() {
-    private var _form : List<FormPage> = Json.decodeFromString<List<FormPage>>(DataSource.formJSON.trimIndent()).toMutableStateList()
+    private val serializedForm = Json.decodeFromString<List<SerializableFormPage>>(DataSource.formJSON.trimIndent())
+    private fun scanForElementsWithId(element: SerializableFormElement, defaultId: Int) : Pair<List<Pair<SerializableFormElement, String>>, Int> {
+        var newId = defaultId
+        val result = mutableListOf<Pair<SerializableFormElement, String>>()
+        if (element.name == "") {
+            element.name = "noId${newId}"
+            newId += 1
+        }
+        if (element.type == "row" || element.type == "column") {
+            result.add(Pair(element, ""))
+            element.children.forEach { it1 ->
+                if (it1.name == "") {
+                    it1.name = "noId${newId}"
+                    newId += 1
+                }
+                val elements = scanForElementsWithId(it1, newId)
+                elements.first.forEach { it2 ->
+                    result.add(Pair(it2.first, it1.name))
+                }
+                newId = elements.second
+            }
+        } else {
+            result.add(Pair(element, ""))
+        }
+        return Pair(result, newId)
+    }
+    private var _form : List<FormPage> = run {
+        val result = mutableListOf<FormPage>()
+        var defaultId = 0
+        for (i in serializedForm) {
+            val pageContent = mutableListOf<FormElement>()
+            for (j in i.page) {
+                val elements = scanForElementsWithId(j, defaultId)
+                elements.first.forEach { (item, parent) ->
+                    pageContent.add(
+                        FormElement(
+                            type = enumByNameIgnoreCase<FormElementType>(item.type) ?: FormElementType.Text,
+                            name = item.name,
+                            label = item.label,
+                            placeholder = item.placeholder,
+                            options = item.options,
+                            columns = item.columns.toIntOrNull() ?: 1,
+                            min = item.min.toIntOrNull() ?: Int.MIN_VALUE,
+                            max = item.max.toIntOrNull() ?: Int.MAX_VALUE,
+                            children = run {
+                                val children = mutableListOf<String>()
+                                for (k in item.children) {
+                                    children.add(k.name)
+                                }
+                                children
+                            },
+                            isChild = parent != "",
+                            content = item.content
+                        )
+                    )
+                }
+                defaultId = elements.second
+            }
+            result.add(
+                FormPage(
+                    name = i.name,
+                    label = i.label,
+                    page = pageContent
+                )
+            )
+        }
+        result
+    }
     val form: List<FormPage>
         get() = _form
 
     fun getScouts() {
         //TODO: send a request to relay computer for scout names
         val scouts = Json.decodeFromString<List<FormOption>>(DataSource.scoutsJSON.trimIndent())
-        _form.find { it.name == "prematch" }?.let { i ->
-            i.page.find { it.name == "scoutname" }?.let { j ->
-                j.options = scouts
+        _form.find { it.name == "prematch" }?.let { it ->
+            it.page.find { it.name == "scoutname" }?.let {
+                it.options = scouts
             }
         }
     }
 
-    fun setExpanded(page: FormPage, item: FormElement, expanded: List<*>) {
-        _form.find { it.name == page.name }?.let { i ->
-            i.page.find { it.name == item.name }?.let { j ->
+    fun setExpanded(page: String, item: String, expanded: Boolean) {
+        _form.find { it.name == page }?.let { i ->
+            i.page.find { it.name == item }?.let { j ->
                 j.expanded = expanded
             }
         }
     }
-    fun setFilter(page: FormPage, item: FormElement, filter: List<*>) {
-        _form.find { it.name == page.name }?.let { i ->
-            i.page.find { it.name == item.name }?.let { j ->
+    fun setFilter(page: String, item: String, filter: String) {
+        _form.find { it.name == page }?.let { i ->
+            i.page.find { it.name == item }?.let { j ->
                 j.filter = filter
             }
         }
     }
 
-    fun setError(page: FormPage, item: FormElement, error: List<*>, errorMessage: List<*>) {
-        _form.find { it.name == page.name }?.let { i ->
-            i.page.find { it.name == item.name }?.let { j ->
-                j.error = error
-                j.errorMessage = errorMessage
+    fun setError(page: String, item: String, errorMessage: String) {
+        _form.find { it.name == page }?.let { i ->
+            i.page.find { it.name == item }?.let { j ->
+                j.error = errorMessage
             }
         }
     }
@@ -104,10 +170,11 @@ class FormViewModel : ViewModel() {
         _connectionStatus = status
     }
 
-    private fun scanForElements(element: FormElement) : List<FormElement> {
-        val result = mutableListOf<FormElement>()
+
+    private fun scanForElements(element: SerializableFormElement) : List<SerializableFormElement> {
+        val result = mutableListOf<SerializableFormElement>()
         if (element.type == "row" || element.type == "column") {
-            element.content.forEach {  it1 ->
+            element.children.forEach { it1 ->
                 scanForElements(it1).forEach { it2 ->
                     result.add(it2)
                 }
@@ -119,10 +186,10 @@ class FormViewModel : ViewModel() {
     }
     private var _answers = run {
         val result = mutableStateMapOf<String, Any>()
-        for (i in form) {
+        for (i in serializedForm) {
             for (j in i.page) {
                 scanForElements(j).forEach {
-                    if (it.name != "") { result[it.name] = it.value[0] as Any }
+                    if (it.name != "" && "noId" !in it.name) { result[it.name] = it.value[0] as Any }
                 }
             }
         }
@@ -167,13 +234,6 @@ class FormViewModel : ViewModel() {
         //TODO: send a request to relay computer for team number based on match number
         val team = DataSource.nowScouting
         _nowScouting = team
-    }
-
-    private var _buttonPresses = listOf<ButtonPress>().toMutableStateList()
-    val buttonPresses: List<ButtonPress>
-        get() = _buttonPresses
-    fun addButtonPress(button: String, time: String) {
-        _buttonPresses.add(ButtonPress(button, time))
     }
 }
 
