@@ -24,6 +24,7 @@ export const dumpHandler: RouteHandler = async (c) => {
 
     return matchRow;
   });
+
   const date = new Date();
 
   const dateString = `scouting-export-${date.getFullYear()}-${date.getMonth()}-${date.getDay()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
@@ -35,10 +36,18 @@ export const dumpHandler: RouteHandler = async (c) => {
   }
 
   if (format === "CSV") {
+    const header = Object.keys(rows.at(0) ?? [])
+      .map(escapeValue)
+      .join(",");
+
     return c.body(
       [
-        Object.keys(rows.at(0) ?? []).join(","),
-        ...rows.map((row) => Object.values(row).join(",")),
+        header,
+        ...rows.map((row) => {
+          const values = Object.values(row);
+
+          return values.map(escapeValue).join(",");
+        }),
       ].join("\n"),
       200,
       {
@@ -51,4 +60,14 @@ export const dumpHandler: RouteHandler = async (c) => {
   return c.text("Please define a valid format", {
     status: 400,
   });
+};
+
+const escapeValue: (
+  value: unknown,
+  index: number,
+  array: unknown[]
+) => string = (val) => {
+  if (typeof val === "number") return val.toString();
+
+  return `"${(val as string)?.replace('"', '""')}"`;
 };
