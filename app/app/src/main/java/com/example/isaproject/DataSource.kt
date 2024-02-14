@@ -6,31 +6,31 @@ object DataSource {
     val deviceJSON = """[
         {
             "name": "Device1",
-            "id": "sldgjlkber"
+            "id": "device1"
         },
         {
             "name": "Device2",
-            "id": "sldgjftjdrtlkber"
+            "id": "device2"
         },
         {
             "name": "Device3",
-            "id": "ethesrh"
+            "id": "device3"
         },
         {
             "name": "Device4",
-            "id": "tjdr6jkrt7"
+            "id": "device4"
         },
         {
             "name": "Device5",
-            "id": "sdthrs5by"
+            "id": "device5"
         },
         {
             "name": "Device6",
-            "id": "dtyjfntyr"
+            "id": "device6"
         },
         {
             "name": "Device7",
-            "id": "sderybery"
+            "id": "device7"
         }
     ]""".trimIndent()
 

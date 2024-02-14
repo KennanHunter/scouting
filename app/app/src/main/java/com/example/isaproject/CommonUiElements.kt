@@ -20,8 +20,8 @@ import androidx.compose.ui.res.stringResource
 @Composable
 fun PageTitle(
     text: String,
-    nowScouting: String = "",
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    nowScouting: String = ""
 ) {
     TopAppBar(
         title = {

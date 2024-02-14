@@ -72,7 +72,8 @@ class FormViewModel : ViewModel() {
                                 children
                             },
                             isChild = parent != "",
-                            content = item.content
+                            content = item.content,
+                            initialValue = item.initialValue
                         )
                     )
                 }
@@ -186,11 +187,19 @@ class FormViewModel : ViewModel() {
     }
     private var _answers = run {
         val result = mutableStateMapOf<String, Any>()
-        for (i in serializedForm) {
+        for (i in form) {
             for (j in i.page) {
-                scanForElements(j).forEach {
-                    if (it.name != "" && "noId" !in it.name) { result[it.name] = it.value[0] as Any }
-                }
+                    if (j.name != "" && "noId" !in j.name) {
+                        result[j.name] = if (j.initialValue == "") {
+                            when (j.type) {
+                                FormElementType.Number -> 0
+                                FormElementType.Checkbox -> false
+                                else -> j.initialValue.toIntOrNull() ?: j.initialValue.toBooleanStrictOrNull() ?: j.initialValue
+                            }
+                        } else {
+                            j.initialValue
+                        } as Any
+                    }
             }
         }
         result

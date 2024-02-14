@@ -24,22 +24,8 @@ data class SerializableFormElement(
     val max: String = "",
     val children: List<SerializableFormElement> = listOf(),
     val content: String = "",
-    private var initialValue: String = ""
-) {
-    var value: List<*> by mutableStateOf(
-        if (type == "row" || type == "column") {
-            List(children.size){ children[it].value }
-        } else {
-            listOf(
-                when (type) {
-                    "number" -> 0
-                    "checkbox" -> false
-                    else -> initialValue.toIntOrNull() ?: initialValue.toBooleanStrictOrNull() ?: initialValue
-                }
-            )
-        }
-    )
-}
+    var initialValue: String = ""
+)
 
 enum class FormElementType {
     Label,
@@ -73,7 +59,8 @@ data class FormElement(
     val max: Int,
     val children: List<String>,
     val isChild: Boolean,
-    val content: String
+    val content: String,
+    val initialValue: String
 ) {
     var expanded by mutableStateOf(false)
     var filter by mutableStateOf("")
@@ -90,9 +77,4 @@ data class FormOption(
 data class Device(
     val id: String,
     val name: String
-)
-
-data class ButtonPress(
-    val button: String,
-    val time: String
 )
