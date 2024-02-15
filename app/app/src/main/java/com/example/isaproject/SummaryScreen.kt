@@ -1,14 +1,11 @@
 package com.example.isaproject
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -51,14 +48,11 @@ fun SummaryScreen(
                             val directory = File(context.filesDir, "shared_files")
                             if (!directory.exists()) directory.mkdirs()
                             val file = File(directory, filename)
-                            Log.d("FileSharing", "File path: ${file.absolutePath}")
                             file.parentFile?.mkdirs()
                             FileOutputStream(file).use {
                                 it.write(content.toByteArray())
                             }
                             val fileUri = FileProvider.getUriForFile(context, "com.example.isaproject.provider", file)
-                            Log.d("FileSharing", "File URI: $fileUri")
-
 
                             val intent = Intent(Intent.ACTION_SEND).apply {
                                 type = "application/json"

@@ -420,6 +420,7 @@ object DataSource {
         }
     ]""".trimIndent()
 
+    // TODO: make some code to update this from the relay station
     val scoutsJSON = """[
         {
             "value": "kennan",
@@ -435,5 +436,6 @@ object DataSource {
         }
     ]""".trimIndent()
 
-    val nowScouting = "11329"
+    // TODO: make some code to update this from relay station
+    val nowScouting = "[not yet implemented]"
 }
