@@ -40,7 +40,8 @@ fun SelectDeviceScreen(
                     Triple(
                         {
                             if (formViewModel.currentDevice.id != "") {
-                                formViewModel.setConnectionStatus(ConnectionStatus.CONNECTING)
+                                // TODO: make the ConnectionStatus CONNECTING
+                                formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
                                 //TODO: Code for connecting to the selected device
                                 onConnectButtonClicked()
                             } else {
