@@ -68,14 +68,14 @@ fun SummaryScreen(
                         stringResource(R.string.download_json),
                         ButtonType.Filled
                     ),
-                    Triple(
-                        {
-                            //TODO: send data
-                            onSubmitButtonClicked()
-                        },
-                        stringResource(R.string.submit),
-                        ButtonType.Filled
-                    )
+//                    Triple(
+//                        {
+//                            //TODO: send data
+//                            onSubmitButtonClicked()
+//                        },
+//                        stringResource(R.string.submit),
+//                        ButtonType.Filled
+//                    )
                 )
             )
         },

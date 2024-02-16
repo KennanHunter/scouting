@@ -60,11 +60,14 @@ data class FormElement(
     val children: List<String>,
     val isChild: Boolean,
     val content: String,
-    val initialValue: String
+    val initialValue: String,
+    private val _expanded: Boolean = false,
+    private val _filter: String = "",
+    private val _error: String = ""
 ) {
-    var expanded by mutableStateOf(false)
-    var filter by mutableStateOf("")
-    var error by mutableStateOf("")
+    var expanded by mutableStateOf(_expanded)
+    var filter by mutableStateOf(_filter)
+    var error by mutableStateOf(_error)
 }
 
 @Serializable

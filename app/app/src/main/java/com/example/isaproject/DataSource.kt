@@ -71,11 +71,6 @@ object DataSource {
             "label": "Part 1: Autonomous",
             "page": [
                 {
-                    "type": "image",
-                    "content": "example_image",
-                    "label": "Key to Note Locations"
-                },
-                {
                     "type": "row",
                     "children": [
                         {
@@ -163,6 +158,14 @@ object DataSource {
                                             ]
                                         }
                                     ]
+                                },
+                                {
+                                    "type": "spacer"
+                                },
+                                {
+                                    "type": "image",
+                                    "content": "auto_locations_2024",
+                                    "label": "Key to Ground Note Locations"
                                 }
                             ]
                         },
@@ -220,12 +223,7 @@ object DataSource {
                                     "name": "teleoptrap",
                                     "min": "0",
                                     "max": "3"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "column",
-                            "children": [
+                                },
                                 {
                                     "type": "label",
                                     "label": "Scored From"
@@ -249,6 +247,16 @@ object DataSource {
                                     "type": "checkbox",
                                     "label": "Outside Wing",
                                     "name": "outside"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "column",
+                            "children": [
+                                {
+                                    "type": "image",
+                                    "content": "shooting_locations_2024",
+                                    "label": "Key to Scoring Locations"
                                 }
                             ]
                         }
@@ -329,9 +337,6 @@ object DataSource {
                                     "type":"checkbox",
                                     "label": "Buddy Climb",
                                     "name": "buddy"
-                                },
-                                {
-                                    "type": "spacer"
                                 }
                             ]
                         }
@@ -349,19 +354,6 @@ object DataSource {
                         {
                             "type": "column",
                             "children": [
-                                {
-                                    "type":"checkbox",
-                                    "label": "Floor Pick Up",
-                                    "name": "floor"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "Source Pick Up",
-                                    "name": "source"
-                                },
-                                {
-                                    "type": "spacer"
-                                },
                                 {
                                     "type": "checkbox",
                                     "label": "Drove Under Stage",
@@ -400,6 +392,19 @@ object DataSource {
                         {
                             "type": "column",
                             "children": [
+                                {
+                                    "type":"checkbox",
+                                    "label": "Floor Pick Up",
+                                    "name": "floor"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Source Pick Up",
+                                    "name": "source"
+                                },
+                                {
+                                    "type": "spacer"
+                                },
                                 {
                                     "type": "radio",
                                     "label": "Driver Rating (Amongst Same Alliance)",

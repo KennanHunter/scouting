@@ -73,7 +73,8 @@ class FormViewModel : ViewModel() {
                             },
                             isChild = parent != "",
                             content = item.content,
-                            initialValue = item.initialValue
+                            initialValue = item.initialValue,
+                            _filter = if (item.type == "number") { "0" } else { "" }
                         )
                     )
                 }

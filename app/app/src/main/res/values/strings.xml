@@ -13,6 +13,7 @@
     <string name="minimum_value_is">"Minimum value is %s"</string>
     <string name="maximum_value_is">"Maximum value is %s"</string>
     <string name="now_scouting">"Now Scouting: "</string>
-    <string name="download_json">Share JSON</string>
+    <string name="download_json">Submit JSON</string>
     <string name="isa_json">ISA JSON_%1$s</string>
+    <string name="must_be_an_integer">Must be an integer</string>
 </resources>

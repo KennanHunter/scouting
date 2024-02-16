@@ -475,16 +475,19 @@ fun NumberInput(
             TextField(
                 value = value.toString(),
                 onValueChange = {
-                    val newValue = it.toIntOrNull() ?: value
-                    if (newValue < min) {
-                        onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
-                    } else if (newValue > max) {
-                        onErrorChange(context.getString(R.string.maximum_value_is, max.toString()))
-                    } else if (error != "") {
-                        onErrorChange("")
-                        onValueChange(newValue)
+                    if (it.toIntOrNull() == null) {
+                        onValueChange(Int.MIN_VALUE)
+                        onErrorChange(context.getString(R.string.must_be_an_integer))
                     } else {
-                        onValueChange(newValue)
+                        val newValue = it.toIntOrNull() ?: value
+                        if (newValue < min) {
+                            onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
+                        } else if (newValue > max) {
+                            onErrorChange(context.getString(R.string.maximum_value_is, max.toString()))
+                        } else {
+                            if (error != "") { onErrorChange("") }
+                            onValueChange(newValue)
+                        }
                     }
                 },
                 singleLine = true,
@@ -498,10 +501,8 @@ fun NumberInput(
                             val newValue = value - 1
                             if (newValue < min) {
                                 onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
-                            } else if (error != "") {
-                                onErrorChange("")
-                                onValueChange(newValue)
                             } else {
+                                if (error != "") { onErrorChange("") }
                                 onValueChange(newValue)
                             }
                         },
@@ -519,10 +520,8 @@ fun NumberInput(
                             val newValue = value + 1
                             if (newValue > max) {
                                 onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
-                            } else if (error != "") {
-                                onErrorChange("")
-                                onValueChange(newValue)
                             } else {
+                                if (error != "") { onErrorChange("") }
                                 onValueChange(newValue)
                             }
                         },
