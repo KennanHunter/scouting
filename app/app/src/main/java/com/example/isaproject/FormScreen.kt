@@ -473,21 +473,24 @@ fun NumberInput(
         }
         Row {
             TextField(
-                value = value.toString(),
+                value = when (value) {
+                    Int.MIN_VALUE -> "-"
+                    Int.MAX_VALUE -> ""
+                    else -> value.toString()
+                },
                 onValueChange = {
-                    if (it.toIntOrNull() == null) {
+                    if (it == "0-" || it == "-") {
                         onValueChange(Int.MIN_VALUE)
-                        onErrorChange(context.getString(R.string.must_be_an_integer))
+                    } else if (it == "") {
+                        onValueChange(Int.MAX_VALUE)
                     } else {
                         val newValue = it.toIntOrNull() ?: value
+                        onValueChange(newValue)
                         if (newValue < min) {
                             onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
                         } else if (newValue > max) {
                             onErrorChange(context.getString(R.string.maximum_value_is, max.toString()))
-                        } else {
-                            if (error != "") { onErrorChange("") }
-                            onValueChange(newValue)
-                        }
+                        } else if (error != "") { onErrorChange("") }
                     }
                 },
                 singleLine = true,
@@ -499,12 +502,10 @@ fun NumberInput(
                     OutlinedIconButton(
                         onClick = {
                             val newValue = value - 1
+                            onValueChange(newValue)
                             if (newValue < min) {
                                 onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
-                            } else {
-                                if (error != "") { onErrorChange("") }
-                                onValueChange(newValue)
-                            }
+                            } else if (error != "") { onErrorChange("") }
                         },
                         modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
                     ) {
@@ -518,12 +519,10 @@ fun NumberInput(
                     OutlinedIconButton(
                         onClick = {
                             val newValue = value + 1
+                            onValueChange(newValue)
                             if (newValue > max) {
                                 onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
-                            } else {
-                                if (error != "") { onErrorChange("") }
-                                onValueChange(newValue)
-                            }
+                            } else if (error != "") { onErrorChange("") }
                         },
                         modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
                     ) {
