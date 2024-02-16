@@ -18,8 +18,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,8 +27,8 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -304,7 +304,7 @@ fun FormImage(
             painter = painterResource(imageId),
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
-            modifier = modifier
+            modifier = modifier.fillMaxWidth()
         )
     }
 }
@@ -475,15 +475,17 @@ fun NumberInput(
             TextField(
                 value = value.toString(),
                 onValueChange = {
-                    val newValue = it.toIntOrNull() ?: -9999
+                    val newValue = it.toIntOrNull() ?: value
                     if (newValue < min) {
                         onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
                     } else if (newValue > max) {
                         onErrorChange(context.getString(R.string.maximum_value_is, max.toString()))
                     } else if (error != "") {
                         onErrorChange("")
+                        onValueChange(newValue)
+                    } else {
+                        onValueChange(newValue)
                     }
-                    onValueChange(newValue)
                 },
                 singleLine = true,
                 placeholder = { Text(placeholder) },
@@ -491,39 +493,43 @@ fun NumberInput(
                 isError = error != "",
                 supportingText = { if (error != "") { Text(error) } },
                 leadingIcon = {
-                    IconButton(
+                    OutlinedIconButton(
                         onClick = {
                             val newValue = value - 1
                             if (newValue < min) {
                                 onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
                             } else if (error != "") {
                                 onErrorChange("")
+                                onValueChange(newValue)
+                            } else {
+                                onValueChange(newValue)
                             }
-                            onValueChange(newValue)
                         },
                         modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
+                            imageVector = Icons.Default.Remove,
                             contentDescription = "Minus 1",
                         )
                     }
                 },
                 trailingIcon = {
-                    IconButton(
+                    OutlinedIconButton(
                         onClick = {
                             val newValue = value + 1
                             if (newValue > max) {
                                 onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
                             } else if (error != "") {
                                 onErrorChange("")
+                                onValueChange(newValue)
+                            } else {
+                                onValueChange(newValue)
                             }
-                            onValueChange(newValue)
                         },
                         modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
+                            imageVector = Icons.Default.Add,
                             contentDescription = "Plus 1",
                         )
                     }

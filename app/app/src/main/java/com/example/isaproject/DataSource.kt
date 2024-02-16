@@ -71,6 +71,11 @@ object DataSource {
             "label": "Part 1: Autonomous",
             "page": [
                 {
+                    "type": "image",
+                    "content": "example_image",
+                    "label": "Key to Note Locations"
+                },
+                {
                     "type": "row",
                     "children": [
                         {
@@ -80,6 +85,7 @@ object DataSource {
                                     "type": "radio",
                                     "label": "Starting Position",
                                     "name": "startingpos",
+                                    "columns": "4",
                                     "options": [
                                         {
                                             "value": "1",
@@ -104,44 +110,59 @@ object DataSource {
                                     "label": "Note Pickup Locations"
                                 },
                                 {
-                                    "type": "checkbox",
-                                    "label": "1",
-                                    "name": "1"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "2",
-                                    "name": "2"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "3",
-                                    "name": "3"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "4",
-                                    "name": "4"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "5",
-                                    "name": "5"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "6",
-                                    "name": "6"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "7",
-                                    "name": "7"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "8",
-                                    "name": "8"
+                                    "type": "row",
+                                    "children": [
+                                        {
+                                            "type": "column",
+                                            "children": [
+                                                {
+                                                    "type": "checkbox",
+                                                    "label": "1",
+                                                    "name": "1"
+                                                },
+                                                {
+                                                    "type": "checkbox",
+                                                    "label": "2",
+                                                    "name": "2"
+                                                },
+                                                {
+                                                    "type": "checkbox",
+                                                    "label": "3",
+                                                    "name": "3"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "column",
+                                            "children": [
+                                                {
+                                                    "type": "checkbox",
+                                                    "label": "4",
+                                                    "name": "4"
+                                                },
+                                                {
+                                                    "type": "checkbox",
+                                                    "label": "5",
+                                                    "name": "5"
+                                                },
+                                                {
+                                                    "type": "checkbox",
+                                                    "label": "6",
+                                                    "name": "6"
+                                                },
+                                                {
+                                                    "type": "checkbox",
+                                                    "label": "7",
+                                                    "name": "7"
+                                                },
+                                                {
+                                                    "type": "checkbox",
+                                                    "label": "8",
+                                                    "name": "8"
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -164,14 +185,6 @@ object DataSource {
                                     "type": "checkbox",
                                     "label": "Leave",
                                     "name": "leave"
-                                },
-                                {
-                                    "type": "spacer"
-                                },
-                                {
-                                    "type": "image",
-                                    "content": "example_image",
-                                    "label": "Key to Note Locations"
                                 }
                             ]
                         }
@@ -261,6 +274,18 @@ object DataSource {
                                     "max": "135"
                                 },
                                 {
+                                    "type": "number",
+                                    "label": "Spotlit by Your Team",
+                                    "name": "spotlit",
+                                    "min": "0",
+                                    "max": "3"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "column",
+                            "children": [
+                                {
                                     "type": "radio",
                                     "label": "Onstage",
                                     "name": "onstage",
@@ -283,12 +308,7 @@ object DataSource {
                                             "label": "Park"
                                         }
                                     ]
-                                }
-                            ]
-                        },
-                        {
-                            "type": "column",
-                            "children": [
+                                },
                                 {
                                     "type": "radio",
                                     "label": "Number of Other Robots on Same Stage",
@@ -312,13 +332,6 @@ object DataSource {
                                 },
                                 {
                                     "type": "spacer"
-                                },
-                                {
-                                    "type": "number",
-                                    "label": "Spotlit by Your Team",
-                                    "name": "spotlit",
-                                    "min": "0",
-                                    "max": "3"
                                 }
                             ]
                         }

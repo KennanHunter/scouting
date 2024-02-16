@@ -4,7 +4,7 @@
     <dimen name="form_element_space">12dp</dimen>
     <dimen name="option_space">0dp</dimen>
     <dimen name="lr_option_space">14dp</dimen>
-    <dimen name="number_button_size">40dp</dimen>
+    <dimen name="number_button_size">30dp</dimen>
     <dimen name="option_button_size">40dp</dimen>
     <dimen name="option_label_space">8dp</dimen>
     <dimen name="select_device_space">12dp</dimen>
