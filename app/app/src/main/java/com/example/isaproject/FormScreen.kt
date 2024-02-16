@@ -484,7 +484,11 @@ fun NumberInput(
                     } else if (it == "") {
                         onValueChange(Int.MAX_VALUE)
                     } else {
-                        val newValue = it.toIntOrNull() ?: value
+                        val newValue = it.toIntOrNull() ?: if (value == Int.MAX_VALUE || value == Int.MIN_VALUE) {
+                            0
+                        } else {
+                            value
+                        }
                         onValueChange(newValue)
                         if (newValue < min) {
                             onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
@@ -501,7 +505,11 @@ fun NumberInput(
                 leadingIcon = {
                     OutlinedIconButton(
                         onClick = {
-                            val newValue = value - 1
+                            val newValue = if (value == Int.MIN_VALUE || value == Int.MAX_VALUE) {
+                                0
+                            } else {
+                                value - 1
+                            }
                             onValueChange(newValue)
                             if (newValue < min) {
                                 onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
@@ -518,7 +526,11 @@ fun NumberInput(
                 trailingIcon = {
                     OutlinedIconButton(
                         onClick = {
-                            val newValue = value + 1
+                            val newValue = if (value == Int.MIN_VALUE || value == Int.MAX_VALUE) {
+                                0
+                            } else {
+                                value + 1
+                            }
                             onValueChange(newValue)
                             if (newValue > max) {
                                 onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
