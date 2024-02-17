@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class FormViewModel : ViewModel() {
-    private val serializedForm = Json.decodeFromString<List<SerializableFormPage>>(DataSource.formJSON.trimIndent())
+    private val serializedForm = Json.decodeFromString<List<SerializableFormPage>>(DataSource.formJSON)
     private fun scanForElementsWithId(element: SerializableFormElement, defaultId: Int) : Pair<List<Pair<SerializableFormElement, String>>, Int> {
         var newId = defaultId
         val result = mutableListOf<Pair<SerializableFormElement, String>>()
@@ -215,8 +215,9 @@ class FormViewModel : ViewModel() {
             }
         }
     }
-    fun resetAnswers() {
+    fun resetForm() {
         _answers = initAnswers()
+        _nowScouting = 0
     }
 
     val answersJson: String

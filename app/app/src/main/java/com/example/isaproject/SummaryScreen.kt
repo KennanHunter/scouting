@@ -71,7 +71,7 @@ fun SummaryScreen(
                     Triple(
                         {
                             //TODO: send data
-                            formViewModel.resetAnswers()
+                            formViewModel.resetForm()
                             onSubmitButtonClicked()
                         },
                         stringResource(R.string.submit),
