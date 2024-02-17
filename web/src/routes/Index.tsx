@@ -21,12 +21,13 @@ export const Index: FC = () => {
           justifyContent: "space-between",
           alignItems: "center",
           padding: "1em",
+          overflow: "hidden",
         })}
       >
         <Link style={{ all: "unset" }} to={"/"}>
           <Text p="lg">Indiana Scouting Alliance Explorer</Text>
         </Link>
-        <Status />
+        {/* <Status /> */}
       </Paper>
       <Box
         style={() => ({

@@ -7,10 +7,12 @@ import { generateHandler } from "./routes/auth/generate";
 import { dumpHandler } from "./routes/dump";
 import { graphqlHandler } from "./routes/graphql";
 import { graphqlViewerHandler } from "./routes/graphql/viewer";
+import { TBAWebhookHandler } from "./webhooks/tba";
 
 export type Bindings = {
   DB: D1Database;
   TBA_KEY: string;
+  TBA_SECRET: string;
   JWT_SECRET: string;
 };
 
@@ -31,6 +33,7 @@ app
   .post("/auth/generate/", generateHandler)
   .get("/dump/:eventId/:format/", dumpHandler)
   .get("/viewer/", graphqlViewerHandler)
+  .post("/webhooks/tba", TBAWebhookHandler)
   .use("/graphql/", graphqlHandler);
 
 export default app;

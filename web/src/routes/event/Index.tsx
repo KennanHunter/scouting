@@ -26,7 +26,7 @@ export const EventOverview = () => {
     <>
       <Flex justify={"space-between"} align={"center"}>
         <div>
-          <Title>{eventData.name}</Title>
+          <Title style={{ overflow: "hidden" }}>{eventData.name}</Title>
           <Text size={"md"} c={"gray.6"}>
             {eventData.id}
           </Text>

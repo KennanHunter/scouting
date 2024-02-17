@@ -14,6 +14,7 @@ import { MatchesPage, matchesLoader } from "./routes/event/Matches";
 import { TeamPage } from "./routes/event/Team";
 import { TeamsPage, teamsLoader } from "./routes/event/Teams";
 import { ErrorPage } from "./routes/special/Error";
+import { WebhookViewer } from "./routes/tools/WebhookViewer";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "/webhooks",
+    element: <WebhookViewer />,
   },
 ]);
 

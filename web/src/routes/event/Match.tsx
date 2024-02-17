@@ -1,4 +1,4 @@
-import { Divider, Table, Text, Title } from "@mantine/core";
+import { Box, Divider, Table, Text, Title } from "@mantine/core";
 import { FC } from "react";
 import { LoaderFunction, useLoaderData } from "react-router-dom";
 import { z } from "zod";
@@ -44,19 +44,16 @@ export const MatchPage: FC = () => {
   console.dir(matchData.matchEntries);
 
   return (
-    <div>
-      <Title>{extractTitleFromMatchKey(matchData.matchKey)}</Title>
+    <Box
+      style={{
+        overflowX: "scroll",
+      }}
+    >
+      <Title style={{ overflow: "hidden" }}>
+        {extractTitleFromMatchKey(matchData.matchKey)}
+      </Title>
       <Divider py={"md"} />
-      <Table
-        style={{
-          width: "100%",
-          overflowX: "scroll",
-        }}
-        striped
-        highlightOnHover
-        withTableBorder
-        withColumnBorders
-      >
+      <Table striped highlightOnHover withTableBorder withColumnBorders>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Team Number</Table.Th>
@@ -80,6 +77,6 @@ export const MatchPage: FC = () => {
           ))}
         </Table.Tbody>
       </Table>
-    </div>
+    </Box>
   );
 };
