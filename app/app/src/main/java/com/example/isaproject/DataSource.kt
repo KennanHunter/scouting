@@ -283,18 +283,6 @@ object DataSource {
                                     "max": "135"
                                 },
                                 {
-                                    "type": "number",
-                                    "label": "Spotlit by Your Team",
-                                    "name": "spotlit",
-                                    "min": "0",
-                                    "max": "3"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "column",
-                            "children": [
-                                {
                                     "type": "radio",
                                     "label": "Onstage",
                                     "name": "onstage",
@@ -317,7 +305,12 @@ object DataSource {
                                             "label": "Park"
                                         }
                                     ]
-                                },
+                                }
+                            ]
+                        },
+                        {
+                            "type": "column",
+                            "children": [
                                 {
                                     "type": "radio",
                                     "label": "Number of Other Robots on Same Stage",
@@ -342,54 +335,16 @@ object DataSource {
                             ]
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "name": "postmatch",
-            "label": "Part 3: Post-Match",
-            "page": [
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "spacer"
+                },
                 {
                     "type": "row",
                     "children": [
-                        {
-                            "type": "column",
-                            "children": [
-                                {
-                                    "type": "checkbox",
-                                    "label": "Drove Under Stage",
-                                    "name": "understage"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "Played Defense",
-                                    "name": "playeddefense"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "Received Defense",
-                                    "name": "receiveddefense"
-                                },
-                                {
-                                    "type": "spacer"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "Died (stopped moving due to comms issues, electrical problems or other)",
-                                    "name": "died"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "Tipped",
-                                    "name": "tipped"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "label": "Broke (sustained damage)",
-                                    "name": "broke"
-                                }
-                            ]
-                        },
                         {
                             "type": "column",
                             "children": [
@@ -407,33 +362,90 @@ object DataSource {
                                     "type": "spacer"
                                 },
                                 {
-                                    "type": "radio",
-                                    "label": "Driver Rating (Amongst Same Alliance)",
-                                    "name": "rating",
-                                    "columns": "3",
-                                    "options": [
-                                        {
-                                            "value": "1",
-                                            "label": "1"
-                                        },
-                                        {
-                                            "value": "2",
-                                            "label": "2"
-                                        },
-                                        {
-                                            "value": "3",
-                                            "label": "3"
-                                        }
-                                    ]
+                                    "type": "checkbox",
+                                    "label": "Drove Under Stage",
+                                    "name": "understage"
                                 },
                                 {
-                                    "type": "textarea",
-                                    "label": "Comments (including excessive penalties received, A-stop usage, etc)",
-                                    "name": "comments"
+                                    "type": "checkbox",
+                                    "label": "Played Defense",
+                                    "name": "playeddefense"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Received Defense",
+                                    "name": "receiveddefense"
+                                },
+                                {
+                                    "type": "spacer"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "column",
+                            "children": [
+                                {
+                                    "type": "checkbox",
+                                    "label": "Died (stopped moving due to comms issues, electrical problems or other)",
+                                    "name": "died"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Tipped",
+                                    "name": "tipped"
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "label": "Broke (sustained damage)",
+                                    "name": "broke"
                                 }
                             ]
                         }
                     ]
+                }
+            ]
+        },
+        {
+            "name": "postmatch",
+            "label": "Part 3: Post-Match",
+            "page": [
+                {
+                    "type": "number",
+                    "label": "Number of Amplifications",
+                    "name": "amplifications",
+                    "min": "0"
+                },
+                {
+                    "type": "number",
+                    "label": "Spotlit by Your Team",
+                    "name": "spotlit",
+                    "min": "0",
+                    "max": "3"
+                },
+                {
+                    "type": "radio",
+                    "label": "Driver Rating (Amongst Same Alliance)",
+                    "name": "rating",
+                    "columns": "3",
+                    "options": [
+                        {
+                            "value": "1",
+                            "label": "1"
+                        },
+                        {
+                            "value": "2",
+                            "label": "2"
+                        },
+                        {
+                            "value": "3",
+                            "label": "3"
+                        }
+                    ]
+                },
+                {
+                    "type": "textarea",
+                    "label": "Comments (including excessive penalties received, A-stop usage, etc)",
+                    "name": "comments"
                 }
             ]
         }
