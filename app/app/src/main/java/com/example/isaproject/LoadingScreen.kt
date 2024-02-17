@@ -83,7 +83,13 @@ fun LoadingScreen(
             }
 
             ConnectionStatus.NOT_CONNECTED, ConnectionStatus.ERROR -> {
-                scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.connection_error)) }
+                SingleEventEffect(formViewModel.sideEffectFlow) { sideEffect ->
+                    when (sideEffect) {
+                        is SideEffect.ShowToast -> scope.launch {
+                            snackbarHostState.showSnackbar(context.getString(R.string.connection_error))
+                        }
+                    }
+                }
                 onConnectionFail()
             }
         }

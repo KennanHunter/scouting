@@ -58,7 +58,8 @@ fun FormScreen(
             formViewModel.form.find { it.name == page }?.let {
                 PageTitle(
                     text = it.label,
-                    nowScouting = formViewModel.nowScouting
+                    nowScouting = formViewModel.nowScouting,
+                    position = formViewModel.currentPosition
                 )
             }
         },

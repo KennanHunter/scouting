@@ -4,8 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 
 @Composable
-fun SelectDeviceScreen(
+fun DeviceSetupScreen(
     formViewModel: FormViewModel,
     onConnectButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -40,10 +40,14 @@ fun SelectDeviceScreen(
                     Triple(
                         {
                             if (formViewModel.currentDevice.id != "") {
-                                // TODO: make the ConnectionStatus CONNECTING
-                                formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
-                                //TODO: Code for connecting to the selected device
-                                onConnectButtonClicked()
+                                if (formViewModel.currentPosition != Position.None) {
+                                    // TODO: make the ConnectionStatus CONNECTING
+                                    formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
+                                    //TODO: Code for connecting to the selected device
+                                    onConnectButtonClicked()
+                                } else {
+                                    formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_position_selected)))
+                                }
                             } else {
                                 formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
                             }
@@ -60,17 +64,43 @@ fun SelectDeviceScreen(
                 is SideEffect.ShowToast -> scope.launch { snackbarHostState.showSnackbar(sideEffect.message) }
             }
         }
-        LazyColumn(
+        Column(
             modifier = modifier
                 .padding(innerPadding)
                 .padding(dimensionResource(R.dimen.margin))
+                .verticalScroll(rememberScrollState())
         ) {
-            items(formViewModel.devices) { device ->
-                DeviceListItem(
-                    item = device,
-                    currentDevice = formViewModel.currentDevice,
-                    onValueChange = { formViewModel.setDevice(device) }
-                )
+            Text(
+                text = stringResource(R.string.select_device),
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Column {
+                for (device in formViewModel.devices) {
+                    //TODO: remove "Select any device to continue"
+                    DeviceListItem(
+                        label = device.name,
+                        current = formViewModel.currentDevice.name,
+                        subtext = stringResource(R.string.id_subtext, device.id),
+                        onValueChange = { formViewModel.setDevice(device) }
+                    )
+                }
+            }
+            FormDivider()
+            Text(
+                text = stringResource(R.string.scouter_position),
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Column {
+                for (i in Position.entries) {
+                    if (i != Position.None) {
+                        DeviceListItem(
+                            label = i.label,
+                            current = formViewModel.currentPosition.label,
+                            subtext = "not implemented; select any position to continue",
+                            onValueChange = { formViewModel.setPosition(i) }
+                        )
+                    }
+                }
             }
         }
     }
@@ -78,8 +108,9 @@ fun SelectDeviceScreen(
 
 @Composable
 fun DeviceListItem(
-    item: Device,
-    currentDevice: Device,
+    label: String,
+    current: String,
+    subtext: String,
     onValueChange: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -93,16 +124,18 @@ fun DeviceListItem(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = item.name,
+                text = label,
                 style = MaterialTheme.typography.titleMedium
             )
-            Text(
-                text = "id: ${item.id}",
-                style = MaterialTheme.typography.labelMedium
-            )
+            if (subtext != "") {
+                Text(
+                    text = subtext,
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
         }
         RadioButton(
-            selected = item.id == currentDevice.id,
+            selected = label == current,
             onClick = onValueChange,
         )
     }

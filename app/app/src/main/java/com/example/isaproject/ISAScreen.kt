@@ -8,12 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
-enum class AppScreens(val label: String) {
-    SelectDevice("Select Device"),
-    Loading("Loading"),
-    Summary("Summary")
-}
-
 @Composable
 fun ISAScreen(
     modifier: Modifier = Modifier,
@@ -26,7 +20,7 @@ fun ISAScreen(
             modifier = modifier
     ) {
         composable(route = AppScreens.SelectDevice.name) {
-            SelectDeviceScreen(
+            DeviceSetupScreen(
                 formViewModel = formViewModel,
                 onConnectButtonClicked = {
                     navController.navigate(AppScreens.Loading.name)
@@ -55,6 +49,7 @@ fun ISAScreen(
                         if (i < formViewModel.form.size - 1) {
                             navController.navigate(formViewModel.form[i + 1].name)
                         } else {
+                            formViewModel.cleanAnswers()
                             navController.navigate(AppScreens.Summary.name)
                         }
                     },
@@ -74,6 +69,8 @@ fun ISAScreen(
                 onPreviousButtonClicked = { navController.navigateUp() },
                 onSubmitButtonClicked = {
                     //TODO: navigate back to AppScreens.SelectDevice or do something else, idk what
+                    formViewModel.initAnswers()
+                    navController.popBackStack(formViewModel.form[0].name, inclusive = false)
                 }
             )
         }

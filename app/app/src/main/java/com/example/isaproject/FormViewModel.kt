@@ -159,9 +159,15 @@ class FormViewModel : ViewModel() {
     private var _currentDevice by mutableStateOf(Device("", ""))
     val currentDevice: Device
         get() = _currentDevice
-
     fun setDevice(device: Device) {
         _currentDevice = _devices.first { it.id == device.id }
+    }
+
+    private var _currentPosition by mutableStateOf(Position.None)
+    val currentPosition: Position
+        get() = _currentPosition
+    fun setPosition(position: Position) {
+        _currentPosition = position
     }
 
     private var _connectionStatus by mutableStateOf(ConnectionStatus.NOT_CONNECTED)
@@ -172,46 +178,45 @@ class FormViewModel : ViewModel() {
         _connectionStatus = status
     }
 
-
-    private fun scanForElements(element: SerializableFormElement) : List<SerializableFormElement> {
-        val result = mutableListOf<SerializableFormElement>()
-        if (element.type == "row" || element.type == "column") {
-            element.children.forEach { it1 ->
-                scanForElements(it1).forEach { it2 ->
-                    result.add(it2)
-                }
-            }
-        } else {
-            result.add(element)
-        }
-        return result
-    }
-    private var _answers = run {
+    fun initAnswers(): MutableMap<String, Any> {
         val result = mutableStateMapOf<String, Any>()
         for (i in form) {
             for (j in i.page) {
-                    if (j.name != "" && "noId" !in j.name) {
-                        result[j.name] = if (j.initialValue == "") {
-                            when (j.type) {
-                                FormElementType.Number -> 0
-                                FormElementType.Checkbox -> false
-                                else -> j.initialValue.toIntOrNull() ?: j.initialValue.toBooleanStrictOrNull() ?: j.initialValue
-                            }
-                        } else {
-                            j.initialValue
-                        } as Any
-                    }
+                if (j.name != "" && "noId" !in j.name) {
+                    result[j.name] = if (j.initialValue == "") {
+                        when (j.type) {
+                            FormElementType.Number -> 0
+                            FormElementType.Checkbox -> false
+                            else -> j.initialValue.toIntOrNull() ?: j.initialValue.toBooleanStrictOrNull() ?: j.initialValue
+                        }
+                    } else {
+                        j.initialValue
+                    } as Any
+                }
             }
         }
-        result
+        return result
     }
+    private var _answers = initAnswers()
     val answers: Map<String, Any>
         get() {
             return _answers
         }
-
     fun setAnswer(name: String, value: Any) {
         _answers[name] = value
+    }
+
+    fun cleanAnswers() {
+        for (i in answers) {
+            if (i.value is Int) {
+                if (i.value == Int.MIN_VALUE || i.value == Int.MAX_VALUE) {
+                    _answers[i.key] = 0
+                }
+            }
+        }
+    }
+    fun resetAnswers() {
+        _answers = initAnswers()
     }
 
     val answersJson: String
@@ -236,13 +241,13 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    private var _nowScouting by mutableStateOf("")
-    val nowScouting: String
+    private var _nowScouting by mutableStateOf(0)
+    val nowScouting: Int
         get() = _nowScouting
-
     fun getNowScouting(matchNumber: Number) {
         //TODO: send a request to relay computer for team number based on match number
-        val team = DataSource.nowScouting
+//        val team = DataSource.nowScouting
+        val team = answers["teamnumber"].toString().toIntOrNull() ?: 0
         _nowScouting = team
     }
 }

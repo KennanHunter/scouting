@@ -455,5 +455,5 @@ object DataSource {
     ]""".trimIndent()
 
     // TODO: make some code to update this from relay station
-    val nowScouting = "[not yet implemented]"
+    val nowScouting = 0
 }
