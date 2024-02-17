@@ -217,6 +217,7 @@ fun FormItem(
                 min = item.min,
                 max = item.max,
                 context = context,
+                useButtons = item.useButtons,
                 modifier = modifier
             )
         }
@@ -463,6 +464,7 @@ fun NumberInput(
     min: Int,
     max: Int,
     label: String,
+    useButtons: Boolean,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -503,48 +505,56 @@ fun NumberInput(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 isError = error != "",
                 supportingText = { if (error != "") { Text(error) } },
-                leadingIcon = {
-                    OutlinedIconButton(
-                        onClick = {
-                            val newValue = if (value == Int.MIN_VALUE || value == Int.MAX_VALUE) {
-                                0
-                            } else {
-                                value - 1
-                            }
-                            onValueChange(newValue)
-                            if (newValue < min) {
-                                onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
-                            } else if (error != "") { onErrorChange("") }
-                        },
-                        modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Remove,
-                            contentDescription = "Minus 1",
-                        )
+                leadingIcon = if (useButtons) {
+                    {
+                        OutlinedIconButton(
+                            onClick = {
+                                val newValue = if (value == Int.MIN_VALUE || value == Int.MAX_VALUE) {
+                                    0
+                                } else {
+                                    value - 1
+                                }
+                                onValueChange(newValue)
+                                if (newValue < min) {
+                                    onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
+                                } else if (error != "") {
+                                    onErrorChange("")
+                                }
+                            },
+                            modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Remove,
+                                contentDescription = "Minus 1",
+                            )
+                        }
                     }
-                },
-                trailingIcon = {
-                    OutlinedIconButton(
-                        onClick = {
-                            val newValue = if (value == Int.MIN_VALUE || value == Int.MAX_VALUE) {
-                                0
-                            } else {
-                                value + 1
-                            }
-                            onValueChange(newValue)
-                            if (newValue > max) {
-                                onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
-                            } else if (error != "") { onErrorChange("") }
-                        },
-                        modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Plus 1",
-                        )
+                } else { null },
+                trailingIcon = if (useButtons) {
+                    {
+                        OutlinedIconButton(
+                            onClick = {
+                                val newValue = if (value == Int.MIN_VALUE || value == Int.MAX_VALUE) {
+                                    0
+                                } else {
+                                    value + 1
+                                }
+                                onValueChange(newValue)
+                                if (newValue > max) {
+                                    onErrorChange(context.getString(R.string.minimum_value_is, min.toString()))
+                                } else if (error != "") {
+                                    onErrorChange("")
+                                }
+                            },
+                            modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Plus 1",
+                            )
+                        }
                     }
-                },
+                } else { null },
                 modifier = modifier.weight(1f)
             )
         }
@@ -575,11 +585,23 @@ fun RadioInput(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .padding(bottom = dimensionResource(R.dimen.option_space))
-                                .clickable { onValueChange(j.value) }
+                                .clickable {
+                                    if (j.value == value) {
+                                        onValueChange("")
+                                    } else {
+                                        onValueChange(j.value)
+                                    }
+                                }
                         ) {
                             RadioButton(
                                 selected = j.value == value,
-                                onClick = { onValueChange(j.value) },
+                                onClick = {
+                                    if (j.value == value) {
+                                        onValueChange("")
+                                    } else {
+                                        onValueChange(j.value)
+                                    }
+                                },
                                 modifier = Modifier.size(dimensionResource(R.dimen.option_button_size))
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.option_label_space)))
@@ -649,7 +671,8 @@ fun DropdownInput(
                     value = filter,
                     onValueChange = onFilterChange,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    singleLine = true
                 )
                 val filteringOptions = options.filter { it.label.contains(filter, ignoreCase = true) }
                 if (filteringOptions.isNotEmpty()) {

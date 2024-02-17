@@ -74,6 +74,7 @@ class FormViewModel : ViewModel() {
                             isChild = parent != "",
                             content = item.content,
                             initialValue = item.initialValue,
+                            useButtons = item.useButtons.toBooleanStrictOrNull() ?: true,
                             _filter = if (item.type == "number") { "0" } else { "" }
                         )
                     )

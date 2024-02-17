@@ -60,7 +60,8 @@ data class SerializableFormElement(
     val max: String = "",
     val children: List<SerializableFormElement> = listOf(),
     val content: String = "",
-    var initialValue: String = ""
+    var initialValue: String = "",
+    val useButtons: String = "true"
 )
 
 enum class FormElementType {
@@ -97,6 +98,7 @@ data class FormElement(
     val isChild: Boolean,
     val content: String,
     val initialValue: String,
+    val useButtons: Boolean,
     private val _expanded: Boolean = false,
     private val _filter: String = "",
     private val _error: String = ""

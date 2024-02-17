@@ -57,7 +57,8 @@ object DataSource {
                     "label": "Team Number",
                     "name": "teamnumber",
                     "min": "0",
-                    "max": "10000"
+                    "max": "10000",
+                    "useButtons": "false"
                 },
                 {
                     "type": "checkbox",
@@ -341,13 +342,13 @@ object DataSource {
                             ]
                         }
                     ]
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "spacer"
-                },
+                }
+            ]
+        },
+        {
+            "name": "postmatch",
+            "label": "Part 3: Post-Match",
+            "page": [
                 {
                     "type": "row",
                     "children": [
