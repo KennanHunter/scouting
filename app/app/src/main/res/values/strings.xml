@@ -2,7 +2,7 @@
     <string name="app_name">Indiana Scouting Alliance App</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="submit">Return to Start</string>
+    <string name="submit">New Match</string>
     <string name="connect">Connect</string>
     <string name="loading">Loading…</string>
     <string name="no_device_selected">No Device Selected</string>

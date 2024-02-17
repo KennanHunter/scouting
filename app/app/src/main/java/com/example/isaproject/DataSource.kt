@@ -424,7 +424,7 @@ object DataSource {
                 },
                 {
                     "type": "radio",
-                    "label": "Driver Rating (Amongst Same Alliance)",
+                    "label": "Driver Rating (within same alliance)",
                     "name": "rating",
                     "columns": "3",
                     "options": [
