@@ -109,6 +109,9 @@ fun FormScreen(
                             getElement = { itemName ->
                                 formViewModel.form.find { it.name == page }?.page?.find { it.name == itemName }
                             },
+                            getData = {
+                                formViewModel[it]
+                            },
                             context = context
                         )
                     }
@@ -128,6 +131,7 @@ fun FormItem(
     onErrorChange: (String, String) -> Unit,
     getValue: (String) -> Any,
     getElement: (String) -> FormElement?,
+    getData: (String) -> Any?,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -167,6 +171,7 @@ fun FormItem(
                 onFilterChange = onFilterChange,
                 onErrorChange = onErrorChange,
                 getElement = getElement,
+                getData = getData,
                 context = context,
                 modifier = modifier
             )
@@ -181,6 +186,23 @@ fun FormItem(
                 onFilterChange = onFilterChange,
                 onErrorChange = onErrorChange,
                 getElement = getElement,
+                getData = getData,
+                context = context,
+                modifier = modifier
+            )
+        }
+
+        FormElementType.Conditional -> {
+            FormConditional(
+                property = item.property,
+                variants = item.variants,
+                getElement = getElement,
+                getData = getData,
+                getValue = getValue,
+                onValueChange = onValueChange,
+                onExpandedChange = onExpandedChange,
+                onFilterChange = onFilterChange,
+                onErrorChange = onErrorChange,
                 context = context,
                 modifier = modifier
             )
@@ -320,6 +342,7 @@ fun FormRow(
     onFilterChange: (String, String) -> Unit,
     onErrorChange: (String, String) -> Unit,
     getElement: (String) -> FormElement?,
+    getData: (String) -> Any?,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -335,6 +358,7 @@ fun FormRow(
             onErrorChange = onErrorChange,
             row = true,
             getElement = getElement,
+            getData = getData,
             modifier = Modifier.weight(1f),
             context = context,
         )
@@ -350,6 +374,7 @@ fun FormColumn(
     onFilterChange: (String, String) -> Unit,
     onErrorChange: (String, String) -> Unit,
     getElement: (String) -> FormElement?,
+    getData: (String) -> Any?,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -365,6 +390,7 @@ fun FormColumn(
             onErrorChange = onErrorChange,
             row = false,
             getElement = getElement,
+            getData = getData,
             context = context
         )
     }
@@ -380,6 +406,7 @@ fun FormGroup(
     onErrorChange: (String, String) -> Unit,
     row: Boolean,
     getElement: (String) -> FormElement?,
+    getData: (String) -> Any?,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -395,6 +422,7 @@ fun FormGroup(
                 getValue = getValue,
                 context = context,
                 getElement = getElement,
+                getData = getData,
                 modifier = modifier
             )
             if (row) {
@@ -402,6 +430,41 @@ fun FormGroup(
             }
         } else {
             Text(text = "getElement() failed")
+        }
+    }
+}
+
+@Composable
+fun FormConditional(
+    property: String,
+    variants: List<ConditionalVariant>,
+    getElement: (String) -> FormElement?,
+    getData: (String) -> Any?,
+    getValue: (String) -> Any,
+    onValueChange: (String, Any) -> Unit,
+    onExpandedChange: (String, Boolean) -> Unit,
+    onFilterChange: (String, String) -> Unit,
+    onErrorChange: (String, String) -> Unit,
+    context: Context,
+    modifier: Modifier = Modifier
+) {
+    val data = getData(property).toString()
+    for (i in variants) {
+        if (i.value == data) {
+            getElement(i.content)?.let {
+                FormItem(
+                    item = it,
+                    onValueChange = onValueChange,
+                    onExpandedChange = onExpandedChange,
+                    onFilterChange = onFilterChange,
+                    onErrorChange = onErrorChange,
+                    getValue = getValue,
+                    context = context,
+                    getElement = getElement,
+                    getData = getData,
+                    modifier = modifier
+                )
+            }
         }
     }
 }

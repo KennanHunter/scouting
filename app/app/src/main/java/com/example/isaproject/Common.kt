@@ -41,6 +41,12 @@ enum class Position(val label: String) {
     None("No Position Selected")
 }
 
+enum class ScoutPos(val label: String) {
+    A("Source Side"),
+    B("Amp Side"),
+    None("No Position Selected")
+}
+
 @Serializable
 data class SerializableFormPage(
     val name: String,
@@ -61,7 +67,15 @@ data class SerializableFormElement(
     val children: List<SerializableFormElement> = listOf(),
     val content: String = "",
     var initialValue: String = "",
-    val useButtons: String = "true"
+    val useButtons: String = "true",
+    val property: String = "",
+    val variants: List<SerializableConditionalVariant> = listOf()
+)
+
+@Serializable
+data class SerializableConditionalVariant(
+    val value: String,
+    val content: SerializableFormElement
 )
 
 enum class FormElementType {
@@ -76,7 +90,8 @@ enum class FormElementType {
     Number,
     Radio,
     Checkbox,
-    Dropdown
+    Dropdown,
+    Conditional
 }
 
 data class FormPage(
@@ -99,6 +114,8 @@ data class FormElement(
     val content: String,
     val initialValue: String,
     val useButtons: Boolean,
+    val property: String,
+    val variants: List<ConditionalVariant>,
     private val _expanded: Boolean = false,
     private val _filter: String = "",
     private val _error: String = ""
@@ -112,6 +129,11 @@ data class FormElement(
 data class FormOption(
     val value: String,
     val label: String
+)
+
+data class ConditionalVariant(
+    val value: String,
+    val content: String
 )
 
 @Serializable
@@ -157,20 +179,18 @@ fun PageTitle(
             Text(text = text)
         },
         actions = {
-            if (nowScouting != 0) {
-                Button(
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    ),
-                    modifier = Modifier.padding(end = dimensionResource(R.dimen.margin))
-                ) {
-                    Text(
-                        text = stringResource(R.string.now_scouting, nowScouting, position.label),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+            Button(
+                onClick = {},
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                ),
+                modifier = Modifier.padding(end = dimensionResource(R.dimen.margin))
+            ) {
+                Text(
+                    text = stringResource(R.string.now_scouting, if (nowScouting != 0) { nowScouting.toString() } else { "-" }, position.label),
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

@@ -41,10 +41,14 @@ fun DeviceSetupScreen(
                         {
                             if (formViewModel.currentDevice.id != "") {
                                 if (formViewModel.currentPosition != Position.None) {
-                                    // TODO: make the ConnectionStatus CONNECTING
-                                    formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
-                                    //TODO: Code for connecting to the selected device
-                                    onConnectButtonClicked()
+                                    if (formViewModel.scoutPos != ScoutPos.None) {
+                                        // TODO: make the ConnectionStatus CONNECTING
+                                        formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
+                                        //TODO: Code for connecting to the selected device
+                                        onConnectButtonClicked()
+                                    } else {
+                                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_scout_location_selected)))
+                                    }
                                 } else {
                                     formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_position_selected)))
                                 }
@@ -75,13 +79,19 @@ fun DeviceSetupScreen(
                 style = MaterialTheme.typography.headlineMedium
             )
             Column {
-                for (device in formViewModel.devices) {
+                for (i in formViewModel.devices) {
                     //TODO: remove "Select any device to continue"
                     DeviceListItem(
-                        label = device.name,
+                        label = i.name,
                         current = formViewModel.currentDevice.name,
-                        subtext = stringResource(R.string.id_subtext, device.id),
-                        onValueChange = { formViewModel.setDevice(device) }
+                        subtext = stringResource(R.string.id_subtext, i.id),
+                        onValueChange = {
+                            if (formViewModel.currentDevice != i) {
+                                formViewModel.setDevice(i)
+                            } else {
+                                formViewModel.setDevice(Device("", ""))
+                            }
+                        }
                     )
                 }
             }
@@ -96,8 +106,37 @@ fun DeviceSetupScreen(
                         DeviceListItem(
                             label = i.label,
                             current = formViewModel.currentPosition.label,
-                            subtext = "not implemented; select any position to continue",
-                            onValueChange = { formViewModel.setPosition(i) }
+                            subtext = "",
+                            onValueChange = {
+                                if (formViewModel.currentPosition != i) {
+                                    formViewModel.setPosition(i)
+                                } else {
+                                    formViewModel.setPosition(Position.None)
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+            FormDivider()
+            Text(
+                text = "Select Scout Location",
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Column {
+                for (i in ScoutPos.entries) {
+                    if (i != ScoutPos.None) {
+                        DeviceListItem(
+                            label = i.label,
+                            current = formViewModel.scoutPos.label,
+                            subtext = "",
+                            onValueChange = {
+                                if (formViewModel.scoutPos != i) {
+                                    formViewModel.setScoutPos(i)
+                                } else {
+                                    formViewModel.setScoutPos(ScoutPos.None)
+                                }
+                            }
                         )
                     }
                 }

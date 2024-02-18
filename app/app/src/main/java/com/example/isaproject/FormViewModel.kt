@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,21 +29,38 @@ class FormViewModel : ViewModel() {
             element.name = "noId${newId}"
             newId += 1
         }
-        if (element.type == "row" || element.type == "column") {
-            result.add(Pair(element, ""))
-            element.children.forEach { it1 ->
-                if (it1.name == "") {
-                    it1.name = "noId${newId}"
-                    newId += 1
+        when (element.type) {
+            "row", "column" -> {
+                result.add(Pair(element, ""))
+                element.children.forEach { it1 ->
+                    if (it1.name == "") {
+                        it1.name = "noId${newId}"
+                        newId += 1
+                    }
+                    val elements = scanForElementsWithId(it1, newId)
+                    elements.first.forEach { it2 ->
+                        result.add(Pair(it2.first, it1.name))
+                    }
+                    newId = elements.second
                 }
-                val elements = scanForElementsWithId(it1, newId)
-                elements.first.forEach { it2 ->
-                    result.add(Pair(it2.first, it1.name))
-                }
-                newId = elements.second
             }
-        } else {
-            result.add(Pair(element, ""))
+            "conditional"   -> {
+                result.add(Pair(element, ""))
+                element.variants.forEach { it1 ->
+                    if (it1.content.name == "") {
+                        it1.content.name = "noId${newId}"
+                        newId += 1
+                    }
+                    val elements = scanForElementsWithId(it1.content, newId)
+                    elements.first.forEach { it2 ->
+                        result.add(Pair(it2.first, it1.content.name))
+                    }
+                    newId = elements.second
+                }
+            }
+            else            -> {
+                result.add(Pair(element, ""))
+            }
         }
         return Pair(result, newId)
     }
@@ -75,6 +93,14 @@ class FormViewModel : ViewModel() {
                             content = item.content,
                             initialValue = item.initialValue,
                             useButtons = item.useButtons.toBooleanStrictOrNull() ?: true,
+                            property = item.property,
+                            variants = run {
+                                val variants = mutableListOf<ConditionalVariant>()
+                                for (k in item.variants) {
+                                    variants.add(ConditionalVariant(k.value, k.content.name))
+                                }
+                                variants
+                            },
                             _filter = if (item.type == "number") { "0" } else { "" }
                         )
                     )
@@ -161,7 +187,11 @@ class FormViewModel : ViewModel() {
     val currentDevice: Device
         get() = _currentDevice
     fun setDevice(device: Device) {
-        _currentDevice = _devices.first { it.id == device.id }
+        _currentDevice = if (device.id != "") {
+            _devices.first { it.id == device.id }
+        } else {
+            Device("", "")
+        }
     }
 
     private var _currentPosition by mutableStateOf(Position.None)
@@ -169,6 +199,13 @@ class FormViewModel : ViewModel() {
         get() = _currentPosition
     fun setPosition(position: Position) {
         _currentPosition = position
+    }
+
+    private var _scoutPos by mutableStateOf(ScoutPos.None)
+    val scoutPos: ScoutPos
+        get() = _scoutPos
+    fun setScoutPos(pos: ScoutPos) {
+        _scoutPos = pos
     }
 
     private var _connectionStatus by mutableStateOf(ConnectionStatus.NOT_CONNECTED)
@@ -243,7 +280,7 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    private var _nowScouting by mutableStateOf(0)
+    private var _nowScouting by mutableIntStateOf(0)
     val nowScouting: Int
         get() = _nowScouting
     fun getNowScouting(matchNumber: Number) {
@@ -251,6 +288,21 @@ class FormViewModel : ViewModel() {
 //        val team = DataSource.nowScouting
         val team = answers["teamnumber"].toString().toIntOrNull() ?: 0
         _nowScouting = team
+    }
+
+    operator fun get(key: String): Any? {
+        return when (key) {
+            "form" -> form
+            "devices" -> devices
+            "currentDevice" -> currentDevice
+            "currentPosition" -> currentPosition
+            "scoutPos" -> scoutPos
+            "connectionStatus" -> connectionStatus
+            "answers" -> answers
+            "answersJson" -> answersJson
+            "nowScouting" -> nowScouting
+            else -> null
+        }
     }
 }
 

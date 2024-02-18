@@ -159,14 +159,6 @@ object DataSource {
                                             ]
                                         }
                                     ]
-                                },
-                                {
-                                    "type": "spacer"
-                                },
-                                {
-                                    "type": "image",
-                                    "content": "auto_locations_2024",
-                                    "label": "Key to Ground Note Locations"
                                 }
                             ]
                         },
@@ -191,6 +183,31 @@ object DataSource {
                                     "name": "leave"
                                 }
                             ]
+                        }
+                    ]
+                },
+                {
+                    "type": "spacer"
+                },
+                {
+                    "type": "conditional",
+                    "property": "scoutPos",
+                    "variants": [
+                        {
+                            "value": "A",
+                            "content": {
+                                "type": "image",
+                                "content": "auto_locations_source_2024",
+                                "label": "Key to Ground Note Locations"
+                            }
+                        },
+                        {
+                            "value": "B",
+                            "content": {
+                                "type": "image",
+                                "content": "auto_locations_amp_2024",
+                                "label": "Key to Ground Note Locations"
+                            }
                         }
                     ]
                 }

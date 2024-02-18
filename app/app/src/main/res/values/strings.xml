@@ -11,7 +11,7 @@
     <string name="connection_failed">Connection Failed</string>
     <string name="minimum_value_is">"Minimum value is %s"</string>
     <string name="maximum_value_is">"Maximum value is %s"</string>
-    <string name="now_scouting">"Now Scouting: %1$d / %2$s"</string>
+    <string name="now_scouting">"Now Scouting: %1$s / %2$s"</string>
     <string name="download_json">Submit JSON</string>
     <string name="isa_json">ISA JSON_%1$s</string>
     <string name="must_be_an_integer">Must be an integer</string>
@@ -19,4 +19,5 @@
     <string name="scouter_position">Scouter Position</string>
     <string name="id_subtext">id: %1$s; not implemented; select any device to continue</string>
     <string name="no_position_selected">No Position Selected</string>
+    <string name="no_scout_location_selected">No Scout Location Selected</string>
 </resources>
