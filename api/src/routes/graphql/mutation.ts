@@ -1,10 +1,13 @@
-import { g } from "garph";
+// cspell:disable
+
+import { Infer, g } from "garph";
 import { GraphQLError } from "graphql";
 import { Resolvers } from ".";
 import { fetchTBA } from "../../connections/thebluealliance/client";
 import { TBAEventSchema } from "../../connections/thebluealliance/type/eventSchema";
 import { TBATeamSchema } from "../../connections/thebluealliance/type/teamSchema";
 import { eventType } from "./event";
+import { matchEntry, matchType } from "./match";
 import { dateType } from "./scalars";
 
 export const mutationType = g.type("Mutation", {
@@ -25,6 +28,10 @@ export const mutationType = g.type("Mutation", {
       teams: g.int().list(),
     })
     .description("Create the event raw"),
+  addMatchEntry: g.ref(matchEntry).args({
+    eventKey: g.string(),
+    data: g.string(),
+  }),
 });
 
 export const mutationResolvers: Resolvers["Mutation"] = {
@@ -108,5 +115,48 @@ export const mutationResolvers: Resolvers["Mutation"] = {
       name: event.name,
       startTime: new Date(startTime),
     };
+  },
+  addMatchEntry: async (_, { data, eventKey }, context) => {
+    const matchData = JSON.parse(data) as unknown as {
+      matchnumber: number;
+      teamnumber: number;
+      position: `${"Blue" | "Red"}${1 | 2 | 3}`;
+    };
+
+    const matchEntry = {
+      matchKey: `${eventKey}_qm${matchData.matchnumber}`,
+      matchData: data,
+      alliance: matchData.position.slice(0, -1).toLowerCase() as "blue" | "red",
+      teamNumber: matchData.teamnumber,
+    };
+
+    const team = await fetchTBA(
+      `/team/frc${matchData.teamnumber}`,
+      context.env.TBA_KEY
+    ).then((val) => TBATeamSchema.parse(val));
+
+    context.env.DB.batch([
+      context.env.DB.prepare(
+        "INSERT OR IGNORE INTO Teams (teamNumber, teamName, nickname) VALUES (?, ?, ?) "
+      ).bind(matchEntry.teamNumber, team.name, team.nickname ?? team.name),
+      context.env.DB.prepare(
+        "INSERT OR IGNORE INTO TeamEventAppearance (eventKey, teamNumber) VALUES (?, ?)"
+      ).bind(eventKey, team.team_number),
+    ]);
+
+    await context.env.DB.prepare(
+      "INSERT OR REPLACE INTO TeamMatchEntry \
+      (matchKey, teamNumber, alliance, matchData)\
+      VALUES (?, ?, ?, ?)"
+    )
+      .bind(
+        matchEntry.matchKey,
+        matchEntry.teamNumber,
+        matchEntry.alliance,
+        matchEntry.matchData
+      )
+      .run();
+
+    return matchEntry;
   },
 };

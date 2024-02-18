@@ -27,6 +27,7 @@ export const EventLayout: FC = () => {
           <NavButton to={route + "matches/"}>Matches</NavButton>
           <NavButton to={route + "teams/"}>Teams</NavButton>
           <NavButton to={route + "export/"}>Export</NavButton>
+          <NavButton to={route + "upload/"}>Upload</NavButton>
         </Stack>
       </Paper>
       <Box w={"100%"} p={"md"}>

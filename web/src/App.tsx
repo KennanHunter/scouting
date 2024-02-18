@@ -15,6 +15,7 @@ import { TeamPage } from "./routes/event/Team";
 import { TeamsPage, teamsLoader } from "./routes/event/Teams";
 import { ErrorPage } from "./routes/special/Error";
 import { WebhookViewer } from "./routes/tools/WebhookViewer";
+import { UploadPage } from "./routes/event/Upload";
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
           {
             path: "export/",
             element: <ExportPage />,
+          },
+          {
+            path: "upload/",
+            element: <UploadPage />,
           },
         ],
       },
