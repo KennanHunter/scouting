@@ -41,7 +41,7 @@ enum class Position(val label: String) {
     None("No Position Selected")
 }
 
-enum class ScoutPos(val label: String) {
+enum class FieldOrientation(val label: String) {
     A("Source Side"),
     B("Amp Side"),
     None("No Position Selected")

@@ -201,11 +201,11 @@ class FormViewModel : ViewModel() {
         _currentPosition = position
     }
 
-    private var _scoutPos by mutableStateOf(ScoutPos.None)
-    val scoutPos: ScoutPos
-        get() = _scoutPos
-    fun setScoutPos(pos: ScoutPos) {
-        _scoutPos = pos
+    private var _fieldOrientation by mutableStateOf(FieldOrientation.None)
+    val fieldOrientation: FieldOrientation
+        get() = _fieldOrientation
+    fun setFieldOrientation(pos: FieldOrientation) {
+        _fieldOrientation = pos
     }
 
     private var _connectionStatus by mutableStateOf(ConnectionStatus.NOT_CONNECTED)
@@ -299,7 +299,7 @@ class FormViewModel : ViewModel() {
             "devices" -> devices
             "currentDevice" -> currentDevice
             "currentPosition" -> currentPosition
-            "scoutPos" -> scoutPos
+            "scoutPos" -> fieldOrientation
             "connectionStatus" -> connectionStatus
             "answers" -> answers
             "answersJson" -> answersJson

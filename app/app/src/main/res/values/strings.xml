@@ -20,4 +20,5 @@
     <string name="id_subtext">id: %1$s; not implemented; select any device to continue</string>
     <string name="no_position_selected">No Position Selected</string>
     <string name="no_scout_location_selected">No Scout Location Selected</string>
+    <string name="field_orientation">Field Orientation</string>
 </resources>

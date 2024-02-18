@@ -41,7 +41,7 @@ fun DeviceSetupScreen(
                         {
 //                            if (formViewModel.currentDevice.id != "") {
                                 if (formViewModel.currentPosition != Position.None) {
-                                    if (formViewModel.scoutPos != ScoutPos.None) {
+                                    if (formViewModel.fieldOrientation != FieldOrientation.None) {
                                         // TODO: make the ConnectionStatus CONNECTING
                                         formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
                                         //TODO: Code for connecting to the selected device
@@ -120,21 +120,21 @@ fun DeviceSetupScreen(
             }
             FormDivider()
             Text(
-                text = "Select Scout Location",
+                text = stringResource(R.string.field_orientation),
                 style = MaterialTheme.typography.headlineMedium
             )
             Column {
-                for (i in ScoutPos.entries) {
-                    if (i != ScoutPos.None) {
+                for (i in FieldOrientation.entries) {
+                    if (i != FieldOrientation.None) {
                         DeviceListItem(
                             label = i.label,
-                            current = formViewModel.scoutPos.label,
+                            current = formViewModel.fieldOrientation.label,
                             subtext = "",
                             onValueChange = {
-                                if (formViewModel.scoutPos != i) {
-                                    formViewModel.setScoutPos(i)
+                                if (formViewModel.fieldOrientation != i) {
+                                    formViewModel.setFieldOrientation(i)
                                 } else {
-                                    formViewModel.setScoutPos(ScoutPos.None)
+                                    formViewModel.setFieldOrientation(FieldOrientation.None)
                                 }
                             }
                         )
