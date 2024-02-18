@@ -39,7 +39,7 @@ fun DeviceSetupScreen(
                 buttons = listOf(
                     Triple(
                         {
-                            if (formViewModel.currentDevice.id != "") {
+//                            if (formViewModel.currentDevice.id != "") {
                                 if (formViewModel.currentPosition != Position.None) {
                                     if (formViewModel.scoutPos != ScoutPos.None) {
                                         // TODO: make the ConnectionStatus CONNECTING
@@ -52,9 +52,9 @@ fun DeviceSetupScreen(
                                 } else {
                                     formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_position_selected)))
                                 }
-                            } else {
-                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
-                            }
+//                            } else {
+//                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
+//                            }
                         },
                         stringResource(R.string.connect),
                         ButtonType.Filled
@@ -74,28 +74,28 @@ fun DeviceSetupScreen(
                 .padding(dimensionResource(R.dimen.margin))
                 .verticalScroll(rememberScrollState())
         ) {
-            Text(
-                text = stringResource(R.string.select_device),
-                style = MaterialTheme.typography.headlineMedium
-            )
-            Column {
-                for (i in formViewModel.devices) {
-                    //TODO: remove "Select any device to continue"
-                    DeviceListItem(
-                        label = i.name,
-                        current = formViewModel.currentDevice.name,
-                        subtext = stringResource(R.string.id_subtext, i.id),
-                        onValueChange = {
-                            if (formViewModel.currentDevice != i) {
-                                formViewModel.setDevice(i)
-                            } else {
-                                formViewModel.setDevice(Device("", ""))
-                            }
-                        }
-                    )
-                }
-            }
-            FormDivider()
+//            Text(
+//                text = stringResource(R.string.select_device),
+//                style = MaterialTheme.typography.headlineMedium
+//            )
+//            Column {
+//                for (i in formViewModel.devices) {
+//                    //TODO: remove "Select any device to continue"
+//                    DeviceListItem(
+//                        label = i.name,
+//                        current = formViewModel.currentDevice.name,
+//                        subtext = stringResource(R.string.id_subtext, i.id),
+//                        onValueChange = {
+//                            if (formViewModel.currentDevice != i) {
+//                                formViewModel.setDevice(i)
+//                            } else {
+//                                formViewModel.setDevice(Device("", ""))
+//                            }
+//                        }
+//                    )
+//                }
+//            }
+//            FormDivider()
             Text(
                 text = stringResource(R.string.scouter_position),
                 style = MaterialTheme.typography.headlineMedium
