@@ -5,6 +5,7 @@ import { fetchTBA } from "../../connections/thebluealliance/client";
 import { TBAEventSchema } from "../../connections/thebluealliance/type/eventSchema";
 import { TBATeamSchema } from "../../connections/thebluealliance/type/teamSchema";
 import { eventType } from "./event";
+import { dateType } from "./scalars";
 
 export const mutationType = g.type("Mutation", {
   importEvent: g
@@ -13,9 +14,61 @@ export const mutationType = g.type("Mutation", {
       id: g.string(),
     })
     .description("Importing latest events"),
+  createEvent: g
+    .ref(eventType)
+    .args({
+      event: g.inputType("EventInput", {
+        key: g.string(),
+        name: g.string(),
+        startTime: g.ref(dateType),
+      }),
+      teams: g.int().list(),
+    })
+    .description("Create the event raw"),
 });
 
 export const mutationResolvers: Resolvers["Mutation"] = {
+  createEvent: async (_, { event, teams }, context) => {
+    const eventInsert = context.env.DB.prepare(
+      "INSERT OR REPLACE INTO Events (eventKey, eventName, startTime) VALUES (?, ?, ?)"
+    )
+      .bind(event.key, event.name, event.startTime.getTime())
+      .run()
+      .catch((err) => {
+        console.error(err);
+        throw new GraphQLError("Event creation error");
+      });
+
+    await eventInsert;
+
+    const teamTBAData = teams.map((team) =>
+      fetchTBA(`/team/frc${team}`, context.env.TBA_KEY)
+    );
+
+    const teamInserts = (await Promise.all(teamTBAData))
+      .map((teamData) => TBATeamSchema.parse(teamData))
+      .map((team) => [
+        context.env.DB.prepare(
+          "INSERT OR REPLACE INTO Teams (teamNumber, teamName, nickname) VALUES (?, ?, ?)"
+        ).bind(team.team_number, team.name, team.nickname ?? team.name),
+        context.env.DB.prepare(
+          "INSERT OR REPLACE INTO TeamEventAppearance (eventKey, teamNumber) VALUES (?, ?)"
+        ).bind(event.key, team.team_number),
+      ])
+      .flat();
+
+    const teamInsertsSucceeded = (
+      await context.env.DB.batch(teamInserts)
+    ).every((result) => result.success);
+
+    if (!teamInsertsSucceeded) throw new GraphQLError("Inserts failed");
+
+    return {
+      key: event.key,
+      name: event.name,
+      startTime: new Date(event.startTime),
+    };
+  },
   importEvent: async (_, { id }, context) => {
     const data = TBAEventSchema.safeParse(
       await fetchTBA(`/event/${id}`, context.env.TBA_KEY)

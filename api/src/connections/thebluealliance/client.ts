@@ -12,7 +12,8 @@ export const fetchTBA = async (
     },
   }).then((val) => {
     console.log(JSON.stringify(val, null, 4));
-    if (val.status >= 400) throw new Error(val.statusText);
+
+    if (!val.ok) throw new Error("TBA Error: " + val.statusText);
 
     return val.json();
   });

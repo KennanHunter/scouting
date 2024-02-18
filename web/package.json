@@ -14,6 +14,7 @@
     "@garph/gqty": "^0.4.5",
     "@mantine/code-highlight": "^7.5.2",
     "@mantine/core": "^7.5.2",
+    "@mantine/form": "^7.5.3",
     "@mantine/hooks": "^7.5.2",
     "@mantine/modals": "^7.5.2",
     "@mantine/notifications": "^7.5.2",
