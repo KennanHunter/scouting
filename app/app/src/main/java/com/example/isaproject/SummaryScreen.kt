@@ -30,7 +30,7 @@ fun SummaryScreen(
     val context = LocalContext.current
     Scaffold(
         topBar = {
-            PageTitle(text = AppScreens.Summary.label)
+            PageTitle(text = AppScreen.Summary.label)
         },
         bottomBar = {
             BottomNavBar(

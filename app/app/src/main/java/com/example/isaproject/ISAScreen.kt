@@ -16,25 +16,25 @@ fun ISAScreen(
 ) {
     NavHost(
             navController = navController,
-            startDestination = AppScreens.SelectDevice.name,
+            startDestination = AppScreen.SelectDevice.name,
             modifier = modifier
     ) {
-        composable(route = AppScreens.SelectDevice.name) {
+        composable(route = AppScreen.SelectDevice.name) {
             DeviceSetupScreen(
                 formViewModel = formViewModel,
                 onConnectButtonClicked = {
-                    navController.navigate(AppScreens.Loading.name)
+                    navController.navigate(AppScreen.Loading.name)
                 }
             )
         }
-        composable(route = AppScreens.Loading.name) {
+        composable(route = AppScreen.Loading.name) {
             LoadingScreen(
                 formViewModel = formViewModel,
                 onConnectionSuccess = {
                     formViewModel.getScouts()
                     navController.navigate(formViewModel.form[0].name)
                 },
-                onConnectionFail = { navController.navigate(AppScreens.SelectDevice.name) }
+                onConnectionFail = { navController.navigate(AppScreen.SelectDevice.name) }
             )
         }
         for (i in 0 until formViewModel.form.size) {
@@ -46,24 +46,29 @@ fun ISAScreen(
                         if (navController.currentBackStackEntry?.destination?.route == "prematch") {
                             formViewModel.getNowScouting(formViewModel.answers["matchnumber"].toString().toIntOrNull() ?: 0)
                         }
-                        if (i < formViewModel.form.size - 1) {
-                            navController.navigate(formViewModel.form[i + 1].name)
-                        } else {
+                        if (i == formViewModel.form.size - 1) {
                             formViewModel.cleanAnswers()
-                            navController.navigate(AppScreens.Summary.name)
+                            navController.navigate(AppScreen.Summary.name)
+                        } else {
+                            if (formViewModel.answers["noshow"].toString().toBooleanStrictOrNull() == true) {
+                                formViewModel.cleanAnswers()
+                                navController.navigate(AppScreen.Summary.name)
+                            } else {
+                                navController.navigate(formViewModel.form[i + 1].name)
+                            }
                         }
                     },
                     onPreviousButtonClicked = {
-                        if (i > 0) {
-                            navController.navigateUp()
+                        if (i == 0) {
+                            navController.popBackStack(AppScreen.SelectDevice.name, inclusive = false)
                         } else {
-                            navController.popBackStack(AppScreens.SelectDevice.name, inclusive = false)
+                            navController.navigateUp()
                         }
                     }
                 )
             }
         }
-        composable(route = AppScreens.Summary.name) {
+        composable(route = AppScreen.Summary.name) {
             SummaryScreen(
                 formViewModel = formViewModel,
                 onPreviousButtonClicked = { navController.navigateUp() },

@@ -25,7 +25,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 
-enum class AppScreens(val label: String) {
+enum class AppScreen(val label: String) {
     SelectDevice("Setup Device"),
     Loading("Loading"),
     Summary("Summary")
@@ -179,18 +179,32 @@ fun PageTitle(
             Text(text = text)
         },
         actions = {
-            Button(
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                ),
-                modifier = Modifier.padding(end = dimensionResource(R.dimen.margin))
-            ) {
-                Text(
-                    text = stringResource(R.string.now_scouting, if (nowScouting != 0) { nowScouting.toString() } else { "-" }, position.label),
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            if (nowScouting != 0 && position != Position.None) {
+                Button(
+                    onClick = {},
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    ),
+                    modifier = Modifier.padding(end = dimensionResource(R.dimen.margin))
+                ) {
+                    Text(
+                        text = stringResource(
+                            R.string.now_scouting,
+                            if (nowScouting != 0) {
+                                nowScouting.toString()
+                            } else {
+                                "-"
+                            },
+                            if (position != Position.None) {
+                                position.label
+                            } else {
+                                "-"
+                            }
+                        ),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

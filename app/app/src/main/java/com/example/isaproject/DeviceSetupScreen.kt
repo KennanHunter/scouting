@@ -33,7 +33,7 @@ fun DeviceSetupScreen(
     val context = LocalContext.current
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = { PageTitle(text = AppScreens.SelectDevice.label) },
+        topBar = { PageTitle(text = AppScreen.SelectDevice.label) },
         bottomBar = {
             BottomNavBar(
                 buttons = listOf(

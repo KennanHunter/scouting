@@ -252,9 +252,12 @@ class FormViewModel : ViewModel() {
                 }
             }
         }
+        _answers["position"] = currentPosition.name
     }
     fun resetForm() {
+        val matchNumber = (_answers["matchnumber"].toString().toIntOrNull() ?: 0) + 1
         _answers = initAnswers()
+        setAnswer("matchnumber", matchNumber)
         _nowScouting = 0
     }
 
