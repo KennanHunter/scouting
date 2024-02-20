@@ -41,8 +41,6 @@ export const MatchPage: FC = () => {
     )[0]
   );
 
-  console.dir(matchData.matchEntries);
-
   return (
     <Box
       style={{

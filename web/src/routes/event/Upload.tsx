@@ -12,6 +12,8 @@ export const UploadPage: FC = () => {
 
   const [files, setFiles] = useState<File[]>([]);
 
+  const [error, setError] = useState<string>();
+
   return (
     <>
       <Stack justify="center">
@@ -21,12 +23,12 @@ export const UploadPage: FC = () => {
 
             setFiles(files.concat(file));
           }}
-          accept="image/png,image/jpeg"
         >
           {(props) => <Button {...props}>Add File</Button>}
         </FileButton>
 
-        <Text>Current Files:</Text>
+        {files.length > 0 && <Text>Current Files:</Text>}
+
         {files.map((file) => (
           <Chip
             checked={false}
@@ -41,24 +43,42 @@ export const UploadPage: FC = () => {
         ))}
 
         <Button
+          disabled={!files.length}
           onClick={() => {
-            files.map(async (file) => {
-              const text = await file.text();
+            setError(undefined);
 
-              // const data = JSON.parse(text) as {
-              //   matchnumber: number;
-              //   teamnumber: number;
-              //   position: `${"Blue" | "Red"}${1 | 2 | 3}`;
-              // };
+            Promise.all(
+              files.map(async (file) => {
+                const text = await file.text();
 
-              apiClient(
-                `mutation { addMatchEntry(eventKey: ${id}, data: ${text}) { matchKey }}`
-              );
-            });
+                try {
+                  JSON.parse(text);
+                } catch (error) {
+                  setError(`File ${file.name} didn't produce safe JSON`);
+                  return;
+                }
+
+                return apiClient(
+                  `mutation { addMatchEntry(eventKey: ${id}, data: ${text}) { matchKey }}`
+                )
+                  .then(() => {
+                    setFiles(
+                      files.filter(
+                        (filterFile) => filterFile.name !== file.name
+                      )
+                    );
+                  })
+                  .catch((err) => {
+                    setError(error + "Request failed: " + JSON.stringify(err));
+                  });
+              })
+            );
           }}
         >
           Upload
         </Button>
+
+        {error && <Text c={"red"}>{error}</Text>}
       </Stack>
     </>
   );

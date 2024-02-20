@@ -1,7 +1,6 @@
 import { Box, Paper, Text } from "@mantine/core";
 import { FC } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { Status } from "../components/Status";
 
 export const Index: FC = () => {
   return (
