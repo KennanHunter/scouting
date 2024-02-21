@@ -307,6 +307,27 @@ class FormViewModel : ViewModel() {
             else -> null
         }
     }
+
+    private var _eventCode by mutableStateOf("")
+    val eventCode: String
+        get() = _eventCode
+    fun setEventCode(code: String) {
+        _eventCode = code
+    }
+
+    fun getMatches(): Pair<List<Pair<Triple<Int, Int, Int>, Triple<Int, Int, Int>>>, List<Pair<Triple<Int, Int, Int>, Triple<Int, Int, Int>>>> {
+        //TODO: implement code for getting matches from API
+        //TODO: Find out if we want to leave space for scouting playoff matches
+        return Pair(
+            listOf(
+                Pair(
+                    Triple(78, 3494, 1501),
+                    Triple(8564, 256, 119)
+                )
+            ),
+            listOf()
+        )
+    }
 }
 
 //TODO: probably pick different names for statuses
