@@ -16,25 +16,29 @@ fun ISAScreen(
 ) {
     NavHost(
             navController = navController,
-            startDestination = AppScreen.SelectDevice.name,
+            startDestination = AppScreen.SetupDevice.name,
             modifier = modifier
     ) {
-        composable(route = AppScreen.SelectDevice.name) {
+        composable(route = AppScreen.SetupDevice.name) {
             DeviceSetupScreen(
                 formViewModel = formViewModel,
-                onConnectButtonClicked = {
-                    navController.navigate(AppScreen.Loading.name)
-                }
+                onConnectButtonClicked = { navController.navigate(AppScreen.Loading.name) }
             )
         }
         composable(route = AppScreen.Loading.name) {
             LoadingScreen(
                 formViewModel = formViewModel,
                 onConnectionSuccess = {
-                    formViewModel.getScouts()
-                    navController.navigate(formViewModel.form[0].name)
+                    navController.navigate(AppScreen.MatchInfo.name)
                 },
-                onConnectionFail = { navController.navigate(AppScreen.SelectDevice.name) }
+                onConnectionFail = { navController.navigate(AppScreen.SetupDevice.name) }
+            )
+        }
+        composable(route = AppScreen.MatchInfo.name) {
+            MatchInfoScreen(
+                formViewModel = formViewModel,
+                onPreviousButtonClicked = { navController.navigate(AppScreen.SetupDevice.name) },
+                onNextButtonClicked = { navController.navigate(formViewModel.form[0].name) }
             )
         }
         for (i in 0 until formViewModel.form.size) {
@@ -43,9 +47,6 @@ fun ISAScreen(
                     formViewModel = formViewModel,
                     page = formViewModel.form[i].name,
                     onNextButtonClicked = {
-                        if (navController.currentBackStackEntry?.destination?.route == "prematch") {
-                            formViewModel.getNowScouting(formViewModel.answers["matchnumber"].toString().toIntOrNull() ?: 0)
-                        }
                         if (i == formViewModel.form.size - 1) {
                             formViewModel.cleanAnswers()
                             navController.navigate(AppScreen.Summary.name)
@@ -60,7 +61,7 @@ fun ISAScreen(
                     },
                     onPreviousButtonClicked = {
                         if (i == 0) {
-                            navController.popBackStack(AppScreen.SelectDevice.name, inclusive = false)
+                            navController.popBackStack(AppScreen.SetupDevice.name, inclusive = false)
                         } else {
                             navController.navigateUp()
                         }
@@ -73,9 +74,8 @@ fun ISAScreen(
                 formViewModel = formViewModel,
                 onPreviousButtonClicked = { navController.navigateUp() },
                 onSubmitButtonClicked = {
-                    //TODO: navigate back to AppScreens.SelectDevice or do something else, idk what
                     formViewModel.initAnswers()
-                    navController.popBackStack(formViewModel.form[0].name, inclusive = false)
+                    navController.popBackStack(AppScreen.MatchInfo.name, inclusive = false)
                 }
             )
         }

@@ -36,40 +36,7 @@ object DataSource {
 
     val formJSON = """[
         {
-            "name": "prematch",
-            "label": "Part 0: Match Information",
-            "page": [
-                {
-                    "type": "dropdown",
-                    "label": "Scout Name",
-                    "name": "scoutname",
-                    "options": []
-                },
-                {
-                    "type": "number",
-                    "label": "Match Number",
-                    "name": "matchnumber",
-                    "min": "0",
-                    "max": "100"
-                },
-                {
-                    "type": "number",
-                    "label": "Team Number",
-                    "name": "teamnumber",
-                    "min": "0",
-                    "max": "99999",
-                    "useButtons": "false"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "No Show",
-                    "name": "noshow"
-                }
-            ]
-        },
-        {
-            "name": "auto",
-            "label": "Part 1: Autonomous",
+            "name": "Part 1: Autonomous",
             "page": [
                 {
                     "type": "row",
@@ -214,8 +181,7 @@ object DataSource {
             ]
         },
         {
-            "name": "teleop",
-            "label": "Part 2: Teleop",
+            "name": "Part 2: Teleop",
             "page": [
                 {
                     "type": "row",
@@ -423,8 +389,7 @@ object DataSource {
             ]
         },
         {
-            "name": "postmatch",
-            "label": "Part 3: Post-Match",
+            "name": "Part 3: Post-Match",
             "page": [
                 {
                     "type": "number",
@@ -470,18 +435,9 @@ object DataSource {
 
     // TODO: make some code to update this from the relay station
     val scoutsJSON = """[
-        {
-            "value": "kennan",
-            "label": "Kennan"
-        },
-        {
-            "value": "jessica",
-            "label": "Jessica"
-        },
-        {
-            "value": "klee",
-            "label": "Klee"
-        }
+        "Kennan",
+        "Jessica",
+        "Klee"
     ]""".trimIndent()
 
     // TODO: make some code to update this from relay station

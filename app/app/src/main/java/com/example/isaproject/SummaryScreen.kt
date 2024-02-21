@@ -43,10 +43,10 @@ fun SummaryScreen(
                     Triple(
                         {
                             val content = formViewModel.answersJson
-                            val filename = context.getString(R.string.isa_json, LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss")))
+                            val filename = context.getString(R.string.isa_json, LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy_HH:mm:ss")))
 
                             val directory = File(context.filesDir, "shared_files")
-                            if (!directory.exists()) directory.mkdirs()
+                            if (!directory.exists()) { directory.mkdirs() }
                             val file = File(directory, filename)
                             file.parentFile?.mkdirs()
                             FileOutputStream(file).use {

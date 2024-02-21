@@ -2,20 +2,8 @@ package com.example.isaproject
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
@@ -25,9 +13,21 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 
+enum class ConnectionStatus {
+    CONNECTED,
+    NOT_CONNECTED,
+    CONNECTING,
+    ERROR
+}
+
+sealed interface SideEffect {
+    data class ShowToast(val message: String) : SideEffect
+}
+
 enum class AppScreen(val label: String) {
-    SelectDevice("Setup Device"),
+    SetupDevice("Setup Device"),
     Loading("Loading"),
+    MatchInfo("Part 0: Match Information"),
     Summary("Summary")
 }
 
@@ -50,7 +50,6 @@ enum class FieldOrientation(val label: String) {
 @Serializable
 data class SerializableFormPage(
     val name: String,
-    val label: String,
     val page: List<SerializableFormElement>
 )
 
@@ -96,7 +95,6 @@ enum class FormElementType {
 
 data class FormPage(
     val name: String,
-    val label: String,
     val page: List<FormElement>
 )
 
@@ -171,15 +169,15 @@ inline fun <reified T : Enum<T>> enumByNameIgnoreCase(input: String, default: T?
 fun PageTitle(
     text: String,
     modifier: Modifier = Modifier,
-    nowScouting: Int = 0,
-    position: Position = Position.None
+    position: Position = Position.None,
+    nowScouting: Int? = null,
 ) {
     TopAppBar(
         title = {
             Text(text = text)
         },
         actions = {
-            if (nowScouting != 0 && position != Position.None) {
+            if (nowScouting != null || position != Position.None) {
                 Button(
                     onClick = {},
                     colors = ButtonDefaults.buttonColors(
@@ -191,7 +189,7 @@ fun PageTitle(
                     Text(
                         text = stringResource(
                             R.string.now_scouting,
-                            if (nowScouting != 0) {
+                            if (nowScouting != null && nowScouting != Int.MAX_VALUE && nowScouting != Int.MIN_VALUE) {
                                 nowScouting.toString()
                             } else {
                                 "-"
