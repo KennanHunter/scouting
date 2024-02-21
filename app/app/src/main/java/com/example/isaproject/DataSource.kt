@@ -433,13 +433,10 @@ object DataSource {
         }
     ]""".trimIndent()
 
-    // TODO: make some code to update this from the relay station
-    val scoutsJSON = """[
+    // TODO: update this at some point?
+    val scouts = listOf(
         "Kennan",
         "Jessica",
         "Klee"
-    ]""".trimIndent()
-
-    // TODO: make some code to update this from relay station
-    val nowScouting = 0
+    )
 }

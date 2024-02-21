@@ -81,12 +81,9 @@ fun MatchInfoScreen(
                 useButtons = true,
                 context = context
             )
-            TextInput(
-                value = formViewModel.teamNumber?.toString() ?: "",
-                onValueChange = {},
-                placeholder = "",
-                label = "Team Number",
-                enabled = false
+            Text(
+                text = stringResource(R.string.team_number, formViewModel.teamNumber?.toString() ?: ""),
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
             )
             CheckboxInput(
                 value = formViewModel.noShow,

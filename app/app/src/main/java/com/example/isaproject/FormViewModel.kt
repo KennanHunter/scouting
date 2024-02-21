@@ -121,7 +121,7 @@ class FormViewModel : ViewModel() {
         get() = _scouts
     fun fetchScouts() {
         //TODO: send a request to relay computer for scout names
-        val availableScouts = Json.decodeFromString<List<String>>(DataSource.scoutsJSON.trimIndent())
+        val availableScouts = DataSource.scouts
         _scouts = availableScouts.toMutableList()
     }
     private var _currentScout by mutableStateOf("")
@@ -131,7 +131,7 @@ class FormViewModel : ViewModel() {
         _currentScout = value
     }
 
-    private var _matchNumber by mutableStateOf(0)
+    private var _matchNumber by mutableIntStateOf(0)
     val matchNumber: Int
         get() = _matchNumber
     fun setMatchNumber(value: Int) {
@@ -230,7 +230,7 @@ class FormViewModel : ViewModel() {
         _connectionStatus = status
     }
 
-    fun initAnswers(): MutableMap<String, Any> {
+    private fun initAnswers(): MutableMap<String, Any> {
         val result = mutableStateMapOf<String, Any>()
         for (i in form) {
             for (j in i.page) {
@@ -277,6 +277,8 @@ class FormViewModel : ViewModel() {
     fun resetForm() {
         val matchNumber = (_answers["matchnumber"].toString().toIntOrNull() ?: 0) + 1
         _answers = initAnswers()
+        _matchNumber += 1
+        _noShow = false
         setAnswer("matchnumber", matchNumber)
     }
 
