@@ -246,9 +246,9 @@ class FormViewModel : ViewModel() {
                 if (j.name != "" && "noId" !in j.name) {
                     result[j.name] = if (j.initialValue == "") {
                         when (j.type) {
-                            FormElementType.Number -> 0
+                            FormElementType.Number   -> 0
                             FormElementType.Checkbox -> false
-                            else -> j.initialValue.toIntOrNull() ?: j.initialValue.toBooleanStrictOrNull() ?: j.initialValue
+                            else                     -> j.initialValue.toIntOrNull() ?: j.initialValue.toBooleanStrictOrNull() ?: j.initialValue
                         }
                     } else {
                         j.initialValue
@@ -272,6 +272,23 @@ class FormViewModel : ViewModel() {
             if (i.value is Int) {
                 if (i.value == Int.MIN_VALUE || i.value == Int.MAX_VALUE) {
                     _answers[i.key] = 0
+                }
+            }
+            val element: FormElement? = run {
+                for (j in form) {
+                    for (k in j.page) {
+                        if (k.name == i.key) return@run k
+                    }
+                }
+                return@run null
+            }
+            if (element != null) {
+                if (i.value::class.simpleName != element.exportAs.name) {
+                    _answers[i.key] = when (element.exportAs) {
+                        DataType.Int     -> i.value.toString().toIntOrNull() ?: 0
+                        DataType.Boolean -> i.value.toString().toBooleanStrictOrNull() ?: false
+                        DataType.String  -> i.value.toString()
+                    }
                 }
             }
         }
