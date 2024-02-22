@@ -270,6 +270,7 @@ object DataSource {
                                     "label": "Onstage",
                                     "name": "onstage",
                                     "columns": "2",
+                                    "initialValue": "0",
                                     "options": [
                                         {
                                             "value": "1",
@@ -410,6 +411,7 @@ object DataSource {
                     "label": "Driver Rating (within same alliance)",
                     "name": "rating",
                     "columns": "3",
+                    "initialValue": "0",
                     "options": [
                         {
                             "value": "1",
