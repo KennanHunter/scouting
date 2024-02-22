@@ -234,6 +234,7 @@ fun FormItem(
                 options = item.options,
                 columns = item.columns,
                 label = item.label,
+                initialValue = item.initialValue,
                 modifier = modifier
             )
         }
@@ -621,6 +622,7 @@ fun RadioInput(
     options: List<FormOption>,
     columns: Int,
     modifier: Modifier = Modifier,
+    initialValue: String,
     label: String
 ) {
     Column(
@@ -642,7 +644,7 @@ fun RadioInput(
                                 .padding(bottom = dimensionResource(R.dimen.option_space))
                                 .clickable {
                                     if (j.value == value) {
-                                        onValueChange("")
+                                        onValueChange(initialValue)
                                     } else {
                                         onValueChange(j.value)
                                     }
@@ -652,7 +654,7 @@ fun RadioInput(
                                 selected = j.value == value,
                                 onClick = {
                                     if (j.value == value) {
-                                        onValueChange("")
+                                        onValueChange(initialValue)
                                     } else {
                                         onValueChange(j.value)
                                     }

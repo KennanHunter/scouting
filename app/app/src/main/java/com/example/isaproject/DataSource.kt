@@ -299,6 +299,7 @@ object DataSource {
                                     "label": "Number of Other Robots on Same Stage",
                                     "name": "harmonize",
                                     "columns": "2",
+                                    "initialValue": "0",
                                     "options": [
                                         {
                                             "value": "1",
