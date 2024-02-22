@@ -47,6 +47,12 @@ enum class FieldOrientation(val label: String) {
     None("No Position Selected")
 }
 
+enum class DataType {
+    Int,
+    String,
+    Boolean
+}
+
 @Serializable
 data class SerializableFormPage(
     val name: String,
@@ -68,6 +74,7 @@ data class SerializableFormElement(
     var initialValue: String = "",
     val useButtons: String = "true",
     val property: String = "",
+    val exportAs: String = "",
     val variants: List<SerializableConditionalVariant> = listOf()
 )
 
@@ -114,6 +121,7 @@ data class FormElement(
     val useButtons: Boolean,
     val property: String,
     val variants: List<ConditionalVariant>,
+    val exportAs: DataType,
     private val _expanded: Boolean = false,
     private val _filter: String = "",
     private val _error: String = ""

@@ -98,6 +98,15 @@ class FormViewModel : ViewModel() {
                                 }
                                 variants
                             },
+                            exportAs = if (item.exportAs == "") {
+                                when (item.type) {
+                                    "number" -> DataType.Int
+                                    "checkbox" -> DataType.Boolean
+                                    else -> DataType.String
+                                }
+                            } else {
+                                enumByNameIgnoreCase<DataType>(item.exportAs) ?: DataType.String
+                            },
                             _filter = if (item.type == "number") { "0" } else { "" }
                         )
                     )

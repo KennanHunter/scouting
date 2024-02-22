@@ -49,6 +49,7 @@ object DataSource {
                                     "label": "Starting Position",
                                     "name": "startingpos",
                                     "columns": "2",
+                                    "exportAs": "int",
                                     "options": [
                                         {
                                             "value": "1",
