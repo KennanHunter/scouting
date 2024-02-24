@@ -53,19 +53,19 @@ object DataSource {
                                     "options": [
                                         {
                                             "value": "1",
-                                            "label": "1"
+                                            "label": "A"
                                         },
                                         {
                                             "value": "3",
-                                            "label": "3"
+                                            "label": "C"
                                         },
                                         {
                                             "value": "2",
-                                            "label": "2"
+                                            "label": "B"
                                         },
                                         {
                                             "value": "4",
-                                            "label": "4"
+                                            "label": "D"
                                         }
                                     ]
                                 },
@@ -272,21 +272,22 @@ object DataSource {
                                     "name": "onstage",
                                     "columns": "2",
                                     "initialValue": "0",
+                                    "exportAs": "int",
                                     "options": [
                                         {
                                             "value": "1",
                                             "label": "First"
                                         },
                                         {
-                                            "value": "2",
-                                            "label": "Second"
-                                        },
-                                        {
                                             "value": "3",
                                             "label": "Third"
                                         },
                                         {
-                                            "value": "0",
+                                            "value": "2",
+                                            "label": "Second"
+                                        },
+                                        {
+                                            "value": "4",
                                             "label": "Park"
                                         }
                                     ]
@@ -302,6 +303,7 @@ object DataSource {
                                     "name": "harmonize",
                                     "columns": "2",
                                     "initialValue": "0",
+                                    "exportAs": "int",
                                     "options": [
                                         {
                                             "value": "1",
@@ -337,12 +339,14 @@ object DataSource {
                                 {
                                     "type":"checkbox",
                                     "label": "Floor Pick Up",
-                                    "name": "floor"
+                                    "name": "floor",
+                                    "exportAs": "int"
                                 },
                                 {
                                     "type": "checkbox",
                                     "label": "Source Pick Up",
-                                    "name": "source"
+                                    "name": "source",
+                                    "exportAs": "int"
                                 },
                                 {
                                     "type": "spacer"
@@ -413,6 +417,7 @@ object DataSource {
                     "name": "rating",
                     "columns": "3",
                     "initialValue": "0",
+                    "exportAs": "int",
                     "options": [
                         {
                             "value": "1",

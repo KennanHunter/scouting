@@ -626,17 +626,23 @@ fun RadioInput(
     label: String
 ) {
     Column(
-        modifier = modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+        modifier = modifier
+            .padding(bottom = dimensionResource(R.dimen.form_element_space))
+            .fillMaxWidth()
     ) {
         if (label != "") {
             FormLabel(label = label)
         }
         Row(
-            modifier = Modifier.horizontalScroll(rememberScrollState())
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
         ) {
             for (i in 0 until columns) {
                 if (i != 0) { Spacer(modifier = Modifier.width(dimensionResource(R.dimen.lr_option_space))) }
-                Column {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
                     for (j in options.subList(i * (options.size / columns), (i + 1) * (options.size / columns))) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,

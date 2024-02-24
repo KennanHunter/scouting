@@ -285,8 +285,16 @@ class FormViewModel : ViewModel() {
             if (element != null) {
                 if (i.value::class.simpleName != element.exportAs.name) {
                     _answers[i.key] = when (element.exportAs) {
-                        DataType.Int     -> i.value.toString().toIntOrNull() ?: 0
-                        DataType.Boolean -> i.value.toString().toBooleanStrictOrNull() ?: false
+                        DataType.Int     -> when (i.value::class.simpleName) {
+                            "Boolean" -> if (i.value.toString().toBoolean()) { 1 } else { 0 }
+                            "String"  -> i.value.toString().toIntOrNull() ?: 0
+                            else      -> 0
+                        }
+                        DataType.Boolean -> when (i.value::class.simpleName) {
+                            "Int"    -> i.value.toString().toInt() > 0
+                            "String" -> i.value.toString().toBooleanStrictOrNull() ?: false
+                            else     -> false
+                        }
                         DataType.String  -> i.value.toString()
                     }
                 }
