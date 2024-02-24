@@ -108,12 +108,11 @@ export const dumpHandler: RouteHandler = async (c) => {
 
         if (columnLabel === "startTime") {
           const startTime = columnValue as (typeof row)["startTime"];
-          return new Date(startTime).toDateString();
+
+          const time = new Date(startTime);
+
+          return `${time.getMonth()}/${time.getDay()}/${time.getFullYear()} ${time.toTimeString().split(" ")[0]}`;
         }
-
-        if (columnValue === undefined) return "";
-
-        if (typeof columnValue === "boolean") return columnValue ? 1 : 0;
 
         return columnValue;
       });
@@ -139,7 +138,7 @@ export const dumpHandler: RouteHandler = async (c) => {
 const escapeValue: (
   value: number | string | boolean | null | undefined
 ) => string = (val) => {
-  if (typeof val === "boolean") return val.toString();
+  if (typeof val === "boolean") return (val ? 1 : 0).toString();
 
   if (typeof val === "number") return val.toString();
 
