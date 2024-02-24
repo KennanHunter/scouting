@@ -38,6 +38,8 @@ export const dumpHandler: RouteHandler = async (c) => {
         ...matchDataObj,
       };
 
+      delete matchRow.matchData;
+
       return matchRow;
     });
 
@@ -135,11 +137,13 @@ export const dumpHandler: RouteHandler = async (c) => {
 };
 
 const escapeValue: (
-  value: unknown,
-  _index: number,
-  _array: unknown[]
+  value: number | string | boolean | null | undefined
 ) => string = (val) => {
+  if (!val) return "";
+
   if (typeof val === "number") return val.toString();
 
-  return `"${(val as string)?.replace('"', '""')}"`;
+  if (typeof val === "string") return `"${val.toString()?.replace('"', '""')}"`;
+
+  return val.toString();
 };
