@@ -1,7 +1,20 @@
 import { z } from "zod";
 import { RouteHandler } from "..";
+import { matchDataSchema } from "../matchDataSchema";
 
-const jsonData = z.record(z.string().or(z.number().or(z.null())));
+const allianceType = z.literal("red").or(z.literal("blue"));
+
+const teamMatchEntrySchema = z.object({
+  matchKey: z.string(),
+  teamNumber: z.number(),
+  alliance: allianceType,
+  matchData: z.string().optional(),
+  startTime: z.number(),
+  eventKey: z.string(),
+  reportedWinningAlliance: allianceType.optional(),
+  reportedRedScore: z.number().optional(),
+  reportedBlueScore: z.number().optional(),
+});
 
 export const dumpHandler: RouteHandler = async (c) => {
   const { eventId, format } = c.req.param();
@@ -12,43 +25,102 @@ export const dumpHandler: RouteHandler = async (c) => {
 
   const { results } = await query.all();
 
-  const rows = results.map((row) => {
-    const matchDataObj = JSON.parse(row["matchData"] as any);
+  const matchEntries = teamMatchEntrySchema
+    .array()
+    .parse(results)
+    .map((row) => {
+      const matchDataObj = matchDataSchema.parse(
+        JSON.parse(row["matchData"] ?? "{}")
+      );
 
-    const matchRow = {
-      ...row,
-      ...matchDataObj,
-    };
+      const matchRow = {
+        ...row,
+        ...matchDataObj,
+      };
 
-    delete matchRow.matchData;
-
-    return matchRow;
-  });
+      return matchRow;
+    });
 
   const date = new Date();
 
   const dateString = `scouting-export-${date.getFullYear()}-${date.getMonth()}-${date.getDay()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
 
   if (format === "JSON") {
-    return c.body(JSON.stringify(rows, null, "\t"), 200, {
+    return c.body(JSON.stringify(matchEntries, null, "\t"), 200, {
       "Content-Disposition": `attachment; filename="${dateString}.json"`,
     });
   }
 
   if (format === "CSV") {
-    const header = Object.keys(rows.at(0) ?? [])
-      .map(escapeValue)
-      .join(",");
+    const header = [
+      "matchKey",
+      "matchnumber",
+      "alliance",
+      "startTime",
+      "eventKey",
+      "reportedWinningAlliance",
+      "reportedRedScore",
+      "reportedBlueScore",
+      "scoutname",
+      "teamNumber",
+      "noshow",
+      "autoNote1",
+      "autoNote2",
+      "autoNote3",
+      "autoNote4",
+      "autoNote5",
+      "autoNote6",
+      "autoNote7",
+      "autoNote8",
+      "startingpos",
+      "autoamp",
+      "autospeaker",
+      "leave",
+      "teleopamp",
+      "teleopspeaker",
+      "subwoofer",
+      "podium",
+      "wing",
+      "outside",
+      "teleoptrap",
+      "climbtime",
+      "onstage",
+      "harmonize",
+      "buddy",
+      "spotlit",
+      "floor",
+      "source",
+      "understage",
+      "playeddefense",
+      "receiveddefense",
+      "died",
+      "tipped",
+      "broke",
+      "rating",
+      "comments",
+    ] as (keyof (typeof matchEntries)[number])[];
+
+    const rows = matchEntries.map((row) => {
+      const columnValues = header.map((columnLabel) => {
+        const columnValue = row[columnLabel];
+
+        if (columnLabel === "startTime") {
+          const startTime = columnValue as (typeof row)["startTime"];
+          return new Date(startTime).toDateString();
+        }
+
+        if (columnValue === undefined) return "";
+
+        if (typeof columnValue === "boolean") return columnValue ? 1 : 0;
+
+        return columnValue;
+      });
+
+      return columnValues.map(escapeValue).join(",");
+    });
 
     return c.body(
-      [
-        header,
-        ...rows.map((row) => {
-          const values = Object.values(row);
-
-          return values.map(escapeValue).join(",");
-        }),
-      ].join("\n"),
+      [header.map(escapeValue).join(","), ...rows].join("\n"),
       200,
       {
         "Content-Disposition": `attachment; filename="${dateString}.csv"`,
@@ -64,8 +136,8 @@ export const dumpHandler: RouteHandler = async (c) => {
 
 const escapeValue: (
   value: unknown,
-  index: number,
-  array: unknown[]
+  _index: number,
+  _array: unknown[]
 ) => string = (val) => {
   if (typeof val === "number") return val.toString();
 

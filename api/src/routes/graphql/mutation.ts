@@ -9,6 +9,7 @@ import { TBATeamSchema } from "../../connections/thebluealliance/type/teamSchema
 import { eventType } from "./event";
 import { matchEntry, matchType } from "./match";
 import { dateType } from "./scalars";
+import { matchDataSchema } from "../../matchDataSchema";
 
 export const mutationType = g.type("Mutation", {
   importEvent: g
@@ -144,6 +145,13 @@ export const mutationResolvers: Resolvers["Mutation"] = {
       ).bind(eventKey, team.team_number),
     ]);
 
+    const matchDataParseResult = matchDataSchema.safeParse(
+      JSON.parse(matchEntry.matchData)
+    );
+
+    if (!matchDataParseResult.success)
+      throw new GraphQLError("Unrecognized data");
+
     await context.env.DB.prepare(
       "INSERT OR REPLACE INTO TeamMatchEntry \
       (matchKey, teamNumber, alliance, matchData)\
@@ -153,7 +161,7 @@ export const mutationResolvers: Resolvers["Mutation"] = {
         matchEntry.matchKey,
         matchEntry.teamNumber,
         matchEntry.alliance,
-        matchEntry.matchData
+        matchDataParseResult.data
       )
       .run();
 
