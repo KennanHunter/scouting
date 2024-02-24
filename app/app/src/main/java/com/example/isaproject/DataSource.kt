@@ -36,40 +36,7 @@ object DataSource {
 
     val formJSON = """[
         {
-            "name": "prematch",
-            "label": "Part 0: Match Information",
-            "page": [
-                {
-                    "type": "dropdown",
-                    "label": "Scout Name",
-                    "name": "scoutname",
-                    "options": []
-                },
-                {
-                    "type": "number",
-                    "label": "Match Number",
-                    "name": "matchnumber",
-                    "min": "0",
-                    "max": "100"
-                },
-                {
-                    "type": "number",
-                    "label": "Team Number",
-                    "name": "teamnumber",
-                    "min": "0",
-                    "max": "10000",
-                    "useButtons": "false"
-                },
-                {
-                    "type": "checkbox",
-                    "label": "No Show",
-                    "name": "noshow"
-                }
-            ]
-        },
-        {
-            "name": "auto",
-            "label": "Part 1: Autonomous",
+            "name": "Part 1: Autonomous",
             "page": [
                 {
                     "type": "row",
@@ -81,19 +48,20 @@ object DataSource {
                                     "type": "radio",
                                     "label": "Starting Position",
                                     "name": "startingpos",
-                                    "columns": "4",
+                                    "columns": "2",
+                                    "exportAs": "int",
                                     "options": [
                                         {
                                             "value": "1",
                                             "label": "1"
                                         },
                                         {
-                                            "value": "2",
-                                            "label": "2"
-                                        },
-                                        {
                                             "value": "3",
                                             "label": "3"
+                                        },
+                                        {
+                                            "value": "2",
+                                            "label": "2"
                                         },
                                         {
                                             "value": "4",
@@ -214,8 +182,7 @@ object DataSource {
             ]
         },
         {
-            "name": "teleop",
-            "label": "Part 2: Teleop",
+            "name": "Part 2: Teleop",
             "page": [
                 {
                     "type": "row",
@@ -304,6 +271,7 @@ object DataSource {
                                     "label": "Onstage",
                                     "name": "onstage",
                                     "columns": "2",
+                                    "initialValue": "0",
                                     "options": [
                                         {
                                             "value": "1",
@@ -333,6 +301,7 @@ object DataSource {
                                     "label": "Number of Other Robots on Same Stage",
                                     "name": "harmonize",
                                     "columns": "2",
+                                    "initialValue": "0",
                                     "options": [
                                         {
                                             "value": "1",
@@ -423,8 +392,7 @@ object DataSource {
             ]
         },
         {
-            "name": "postmatch",
-            "label": "Part 3: Post-Match",
+            "name": "Part 3: Post-Match",
             "page": [
                 {
                     "type": "number",
@@ -444,6 +412,7 @@ object DataSource {
                     "label": "Driver Rating (within same alliance)",
                     "name": "rating",
                     "columns": "3",
+                    "initialValue": "0",
                     "options": [
                         {
                             "value": "1",
@@ -468,22 +437,10 @@ object DataSource {
         }
     ]""".trimIndent()
 
-    // TODO: make some code to update this from the relay station
-    val scoutsJSON = """[
-        {
-            "value": "kennan",
-            "label": "Kennan"
-        },
-        {
-            "value": "jessica",
-            "label": "Jessica"
-        },
-        {
-            "value": "klee",
-            "label": "Klee"
-        }
-    ]""".trimIndent()
-
-    // TODO: make some code to update this from relay station
-    val nowScouting = 0
+    // TODO: update this at some point?
+    val scouts = listOf(
+        "Kennan",
+        "Jessica",
+        "Klee"
+    )
 }

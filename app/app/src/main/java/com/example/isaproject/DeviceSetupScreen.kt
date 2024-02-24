@@ -3,15 +3,11 @@ package com.example.isaproject
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,28 +29,35 @@ fun DeviceSetupScreen(
     val context = LocalContext.current
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = { PageTitle(text = AppScreen.SelectDevice.label) },
+        topBar = { PageTitle(text = AppScreen.SetupDevice.label) },
         bottomBar = {
             BottomNavBar(
                 buttons = listOf(
                     Triple(
                         {
-//                            if (formViewModel.currentDevice.id != "") {
-                                if (formViewModel.currentPosition != Position.None) {
-                                    if (formViewModel.fieldOrientation != FieldOrientation.None) {
-                                        // TODO: make the ConnectionStatus CONNECTING
-                                        formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
-                                        //TODO: Code for connecting to the selected device
-                                        onConnectButtonClicked()
-                                    } else {
-                                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_scout_location_selected)))
-                                    }
-                                } else {
-                                    formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_position_selected)))
-                                }
-//                            } else {
+                            formViewModel.fetchScouts()
+                            formViewModel.fetchMatches()
+//                            if (formViewModel.currentDevice.id == "") {
 //                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
+//                                return@Triple
 //                            }
+                            if (formViewModel.currentPosition == Position.None) {
+                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_position_selected)))
+                                return@Triple
+                            }
+                            if (formViewModel.fieldOrientation == FieldOrientation.None) {
+                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_scout_location_selected)))
+                                return@Triple
+                            }
+                            if (formViewModel.matches == null) {
+                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.invalid_event_code)))
+                                return@Triple
+                            }
+
+                            // TODO: make the ConnectionStatus CONNECTING
+                            formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
+                            //TODO: Code for connecting to the selected device
+                            onConnectButtonClicked()
                         },
                         stringResource(R.string.connect),
                         ButtonType.Filled
@@ -141,6 +144,17 @@ fun DeviceSetupScreen(
                     }
                 }
             }
+            FormDivider()
+            Text(
+                text = "Event Code",
+                style = MaterialTheme.typography.headlineMedium
+            )
+            TextField(
+                value = formViewModel.eventCode,
+                onValueChange = { formViewModel.setEventCode(it) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

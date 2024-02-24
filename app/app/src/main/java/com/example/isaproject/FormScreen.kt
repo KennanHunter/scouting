@@ -7,14 +7,7 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -22,19 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedIconButton
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,8 +40,8 @@ fun FormScreen(
         topBar = {
             formViewModel.form.find { it.name == page }?.let {
                 PageTitle(
-                    text = it.label,
-                    nowScouting = formViewModel.nowScouting,
+                    text = it.name,
+                    nowScouting = formViewModel.teamNumber,
                     position = formViewModel.currentPosition
                 )
             }
@@ -253,6 +234,7 @@ fun FormItem(
                 options = item.options,
                 columns = item.columns,
                 label = item.label,
+                initialValue = item.initialValue,
                 modifier = modifier
             )
         }
@@ -476,8 +458,9 @@ fun TextInput(
     value: String,
     onValueChange: (Any) -> Unit,
     placeholder: String,
+    label: String,
     modifier: Modifier = Modifier,
-    label: String
+    enabled: Boolean = true
 ) {
     Column(
         modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
@@ -490,6 +473,7 @@ fun TextInput(
             onValueChange = onValueChange,
             singleLine = true,
             placeholder = { Text(placeholder) },
+            enabled = enabled,
             modifier = modifier.fillMaxWidth()
         )
     }
@@ -500,8 +484,8 @@ fun TextAreaInput(
     value: String,
     onValueChange: (Any) -> Unit,
     placeholder: String,
-    modifier: Modifier = Modifier,
-    label: String
+    label: String,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
@@ -523,15 +507,16 @@ fun TextAreaInput(
 fun NumberInput(
     value: Int,
     onValueChange: (Any) -> Unit,
-    placeholder: String,
     error: String,
     onErrorChange: (String) -> Unit,
-    min: Int,
-    max: Int,
-    label: String,
-    useButtons: Boolean,
     context: Context,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    placeholder: String = "",
+    min: Int = Int.MIN_VALUE,
+    max: Int = Int.MAX_VALUE,
+    label: String = "",
+    useButtons: Boolean = true,
+    enabled: Boolean = true
 ) {
     Column(
         modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
@@ -620,6 +605,10 @@ fun NumberInput(
                         }
                     }
                 } else { null },
+                enabled = enabled,
+                colors = TextFieldDefaults.colors(
+                    errorLeadingIconColor = TextFieldDefaults.colors().errorTrailingIconColor
+                ),
                 modifier = modifier.weight(1f)
             )
         }
@@ -633,6 +622,7 @@ fun RadioInput(
     options: List<FormOption>,
     columns: Int,
     modifier: Modifier = Modifier,
+    initialValue: String,
     label: String
 ) {
     Column(
@@ -654,7 +644,7 @@ fun RadioInput(
                                 .padding(bottom = dimensionResource(R.dimen.option_space))
                                 .clickable {
                                     if (j.value == value) {
-                                        onValueChange("")
+                                        onValueChange(initialValue)
                                     } else {
                                         onValueChange(j.value)
                                     }
@@ -664,7 +654,7 @@ fun RadioInput(
                                 selected = j.value == value,
                                 onClick = {
                                     if (j.value == value) {
-                                        onValueChange("")
+                                        onValueChange(initialValue)
                                     } else {
                                         onValueChange(j.value)
                                     }

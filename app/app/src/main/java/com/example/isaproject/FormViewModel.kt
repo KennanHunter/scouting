@@ -1,15 +1,11 @@
 package com.example.isaproject
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
+import androidx.compose.runtime.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
@@ -20,6 +16,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
+@SuppressLint("MutableCollectionMutableState")
 class FormViewModel : ViewModel() {
     private val serializedForm = Json.decodeFromString<List<SerializableFormPage>>(DataSource.formJSON)
     private fun scanForElementsWithId(element: SerializableFormElement, defaultId: Int) : Pair<List<Pair<SerializableFormElement, String>>, Int> {
@@ -101,6 +98,15 @@ class FormViewModel : ViewModel() {
                                 }
                                 variants
                             },
+                            exportAs = if (item.exportAs == "") {
+                                when (item.type) {
+                                    "number" -> DataType.Int
+                                    "checkbox" -> DataType.Boolean
+                                    else -> DataType.String
+                                }
+                            } else {
+                                enumByNameIgnoreCase<DataType>(item.exportAs) ?: DataType.String
+                            },
                             _filter = if (item.type == "number") { "0" } else { "" }
                         )
                     )
@@ -110,7 +116,6 @@ class FormViewModel : ViewModel() {
             result.add(
                 FormPage(
                     name = i.name,
-                    label = i.label,
                     page = pageContent
                 )
             )
@@ -120,14 +125,33 @@ class FormViewModel : ViewModel() {
     val form: List<FormPage>
         get() = _form
 
-    fun getScouts() {
+    private var _scouts: MutableList<String>? by mutableStateOf(null)
+    val scouts: List<String>?
+        get() = _scouts
+    fun fetchScouts() {
         //TODO: send a request to relay computer for scout names
-        val scouts = Json.decodeFromString<List<FormOption>>(DataSource.scoutsJSON.trimIndent())
-        _form.find { it.name == "prematch" }?.let { it ->
-            it.page.find { it.name == "scoutname" }?.let {
-                it.options = scouts
-            }
-        }
+        val availableScouts = DataSource.scouts
+        _scouts = availableScouts.toMutableList()
+    }
+    private var _currentScout by mutableStateOf("")
+    val currentScout: String
+        get() = _currentScout
+    fun setCurrentScout(value: String) {
+        _currentScout = value
+    }
+
+    private var _matchNumber by mutableIntStateOf(0)
+    val matchNumber: Int
+        get() = _matchNumber
+    fun setMatchNumber(value: Int) {
+        _matchNumber = value
+    }
+
+    private var _noShow by mutableStateOf(false)
+    val noShow: Boolean
+        get() = _noShow
+    fun setNoShow(value: Boolean) {
+        _noShow = value
     }
 
     fun setExpanded(page: String, item: String, expanded: Boolean) {
@@ -154,12 +178,11 @@ class FormViewModel : ViewModel() {
     }
 
 
-    private val _devices =
-        Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent()).toMutableStateList()
+    private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent()).toMutableStateList()
     val devices: List<Device>
         get() = _devices
 
-    fun fetchAvailableDevices(context: Context) {
+    fun getAvailableDevices(context: Context) {
         if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
             throw Error("Bluetooth not allowed on system")
         }
@@ -216,16 +239,16 @@ class FormViewModel : ViewModel() {
         _connectionStatus = status
     }
 
-    fun initAnswers(): MutableMap<String, Any> {
+    private fun initAnswers(): MutableMap<String, Any> {
         val result = mutableStateMapOf<String, Any>()
         for (i in form) {
             for (j in i.page) {
                 if (j.name != "" && "noId" !in j.name) {
                     result[j.name] = if (j.initialValue == "") {
                         when (j.type) {
-                            FormElementType.Number -> 0
+                            FormElementType.Number   -> 0
                             FormElementType.Checkbox -> false
-                            else -> j.initialValue.toIntOrNull() ?: j.initialValue.toBooleanStrictOrNull() ?: j.initialValue
+                            else                     -> j.initialValue.toIntOrNull() ?: j.initialValue.toBooleanStrictOrNull() ?: j.initialValue
                         }
                     } else {
                         j.initialValue
@@ -251,14 +274,38 @@ class FormViewModel : ViewModel() {
                     _answers[i.key] = 0
                 }
             }
+            val element: FormElement? = run {
+                for (j in form) {
+                    for (k in j.page) {
+                        if (k.name == i.key) return@run k
+                    }
+                }
+                return@run null
+            }
+            if (element != null) {
+                if (i.value::class.simpleName != element.exportAs.name) {
+                    _answers[i.key] = when (element.exportAs) {
+                        DataType.Int     -> i.value.toString().toIntOrNull() ?: 0
+                        DataType.Boolean -> i.value.toString().toBooleanStrictOrNull() ?: false
+                        DataType.String  -> i.value.toString()
+                    }
+                }
+            }
         }
-        _answers["position"] = currentPosition.name
+        _answers.putAll(mapOf(
+            "position" to currentPosition.name,
+            "scoutname" to currentScout,
+            "matchnumber" to matchNumber,
+            "teamnumber" to (teamNumber ?: 0),
+            "noshow" to noShow
+        ))
     }
     fun resetForm() {
         val matchNumber = (_answers["matchnumber"].toString().toIntOrNull() ?: 0) + 1
         _answers = initAnswers()
+        _matchNumber += 1
+        _noShow = false
         setAnswer("matchnumber", matchNumber)
-        _nowScouting = 0
     }
 
     val answersJson: String
@@ -283,15 +330,22 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    private var _nowScouting by mutableIntStateOf(0)
-    val nowScouting: Int
-        get() = _nowScouting
-    fun getNowScouting(matchNumber: Number) {
-        //TODO: send a request to relay computer for team number based on match number
-//        val team = DataSource.nowScouting
-        val team = answers["teamnumber"].toString().toIntOrNull() ?: 0
-        _nowScouting = team
-    }
+    val teamNumber: Int?
+        get() = matches?.let {
+            if (matchNumber > 0 && matchNumber <= it.size) {
+                when (currentPosition) {
+                    Position.Red1  -> it[matchNumber - 1].first.first
+                    Position.Red2  -> it[matchNumber - 1].first.second
+                    Position.Red3  -> it[matchNumber - 1].first.third
+                    Position.Blue1 -> it[matchNumber - 1].second.first
+                    Position.Blue2 -> it[matchNumber - 1].second.second
+                    Position.Blue3 -> it[matchNumber - 1].second.third
+                    else           -> null
+                }
+            } else {
+                null
+            }
+        }
 
     operator fun get(key: String): Any? {
         return when (key) {
@@ -303,20 +357,38 @@ class FormViewModel : ViewModel() {
             "connectionStatus" -> connectionStatus
             "answers" -> answers
             "answersJson" -> answersJson
-            "nowScouting" -> nowScouting
+            "teamNumber" -> teamNumber
             else -> null
         }
     }
-}
 
-//TODO: probably pick different names for statuses
-enum class ConnectionStatus {
-    CONNECTED,
-    NOT_CONNECTED,
-    CONNECTING,
-    ERROR
-}
+    private var _eventCode by mutableStateOf("")
+    val eventCode: String
+        get() = _eventCode
+    fun setEventCode(code: String) {
+        _eventCode = code
+    }
 
-sealed interface SideEffect {
-    data class ShowToast(val message: String) : SideEffect
+    private var _matches: List<Pair<Triple<Int, Int, Int>, Triple<Int, Int, Int>>>? by mutableStateOf(null)
+    val matches: List<Pair<Triple<Int, Int, Int>, Triple<Int, Int, Int>>>?
+        get() = _matches
+    fun fetchMatches() {
+        //TODO: implement code for getting matches from API
+        _matches = if (eventCode == "test") {
+            listOf(
+                Pair(
+                    Triple(78, 3494, 1501),
+                    Triple(8564, 256, 119)
+                ),
+                Pair(
+                    Triple(3452, 45, 756),
+                    Triple(2547, 7678, 234)
+                ),
+                Pair(
+                    Triple(4678, 2346, 7345),
+                    Triple(4836, 1563, 8136)
+                )
+            )
+        } else { null }
+    }
 }

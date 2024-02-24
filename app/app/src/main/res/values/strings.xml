@@ -13,12 +13,17 @@
     <string name="maximum_value_is">"Maximum value is %s"</string>
     <string name="now_scouting">"Now Scouting: %1$s / %2$s"</string>
     <string name="download_json">Submit JSON</string>
-    <string name="isa_json">ISA JSON_%1$s</string>
+    <string name="isa_json">ISA_JSON_%1$s.json</string>
     <string name="must_be_an_integer">Must be an integer</string>
     <string name="select_device">Select Device</string>
     <string name="scouter_position">Scouter Position</string>
     <string name="id_subtext">id: %1$s; not implemented; select any device to continue</string>
-    <string name="no_position_selected">No Position Selected</string>
-    <string name="no_scout_location_selected">No Scout Location Selected</string>
+    <string name="no_position_selected">No Scouter Position Selected</string>
+    <string name="no_scout_location_selected">No Field Orientation Selected</string>
     <string name="field_orientation">Field Orientation</string>
+    <string name="scout_name">Scout Name</string>
+    <string name="match_number">Match Number</string>
+    <string name="no_show">No Show</string>
+    <string name="invalid_event_code">Invalid Event Code</string>
+    <string name="team_number">"Team Number: %s"</string>
 </resources>
