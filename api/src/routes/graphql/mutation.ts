@@ -1,15 +1,16 @@
 // cspell:disable
 
-import { Infer, g } from "garph";
+import { g } from "garph";
 import { GraphQLError } from "graphql";
 import { Resolvers } from ".";
 import { fetchTBA } from "../../connections/thebluealliance/client";
 import { TBAEventSchema } from "../../connections/thebluealliance/type/eventSchema";
 import { TBATeamSchema } from "../../connections/thebluealliance/type/teamSchema";
-import { eventType } from "./event";
-import { matchEntry, matchType } from "./match";
-import { dateType } from "./scalars";
 import { matchDataSchema } from "../../matchDataSchema";
+import { eventType } from "./event";
+import { matchEntry } from "./match";
+import { dateType } from "./scalars";
+import { z } from "zod";
 
 export const mutationType = g.type("Mutation", {
   importEvent: g
@@ -118,21 +119,35 @@ export const mutationResolvers: Resolvers["Mutation"] = {
     };
   },
   addMatchEntry: async (_, { data, eventKey }, context) => {
-    const matchData = JSON.parse(data) as unknown as {
-      matchnumber: number;
-      teamnumber: number;
-      position: `${"Blue" | "Red"}${1 | 2 | 3}`;
-    };
+    try {
+      JSON.parse(data);
+    } catch {
+      throw new GraphQLError("Improperly formatted JSON data");
+    }
+
+    const matchDataResult = matchDataSchema.safeParse(JSON.parse(data));
+
+    if (!matchDataResult.success)
+      throw new GraphQLError("The schema is incorrect");
+
+    if (!matchDataResult.data.position)
+      throw new GraphQLError("Scouter position can not be null, call Kennan");
+
+    if (!matchDataResult.data.teamnumber)
+      throw new GraphQLError("Team number can not be null, call Kennan");
 
     const matchEntry = {
-      matchKey: `${eventKey}_qm${matchData.matchnumber}`,
+      matchKey: `${eventKey}_qm${matchDataResult.data.matchnumber}`,
       matchData: data,
-      alliance: matchData.position.slice(0, -1).toLowerCase() as "blue" | "red",
-      teamNumber: matchData.teamnumber,
+      alliance: z
+        .literal("red")
+        .or(z.literal("blue"))
+        .parse(matchDataResult.data.position.slice(0, -1).toLowerCase()),
+      teamNumber: matchDataResult.data.teamnumber,
     };
 
     const team = await fetchTBA(
-      `/team/frc${matchData.teamnumber}`,
+      `/team/frc${matchDataResult.data.teamnumber}`,
       context.env.TBA_KEY
     ).then((val) => TBATeamSchema.parse(val));
 
@@ -161,7 +176,7 @@ export const mutationResolvers: Resolvers["Mutation"] = {
         matchEntry.matchKey,
         matchEntry.teamNumber,
         matchEntry.alliance,
-        matchDataParseResult.data
+        JSON.stringify(matchDataParseResult.data)
       )
       .run();
 

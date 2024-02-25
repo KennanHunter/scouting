@@ -45,7 +45,7 @@ export const UploadPage: FC = () => {
         <Button
           disabled={!files.length}
           onClick={() => {
-            setError(undefined);
+            setError("");
 
             Promise.all(
               files.map(async (file) => {
@@ -61,7 +61,14 @@ export const UploadPage: FC = () => {
                 return apiClient(
                   `mutation { addMatchEntry(eventKey: ${id}, data: ${text}) { matchKey }}`
                 )
-                  .then(() => {
+                  .then((res) => {
+                    const errors: { message: string } = (res as any)["errors"];
+
+                    if (!(errors === undefined)) {
+                      setError(error + "\n" + errors.message);
+                      return;
+                    }
+
                     setFiles(
                       files.filter(
                         (filterFile) => filterFile.name !== file.name
@@ -69,7 +76,9 @@ export const UploadPage: FC = () => {
                     );
                   })
                   .catch((err) => {
-                    setError(error + "Request failed: " + JSON.stringify(err));
+                    setError(
+                      error + "\nRequest failed: " + JSON.stringify(err)
+                    );
                   });
               })
             );
