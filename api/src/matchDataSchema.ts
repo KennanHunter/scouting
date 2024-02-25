@@ -34,7 +34,7 @@ export const matchDataSchema = z.object({
   shotfromwing: z.boolean().nullable(),
   sourcepickup: z.number().nullable(),
   spotlit: z.number().nullable(),
-  startingpos: z.number().nullable(),
+  startingpos: z.string().nullable(),
   teamnumber: z.number().nullable(),
   teleopamp: z.number().nullable(),
   teleopspeaker: z.number().nullable(),
