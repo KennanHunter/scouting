@@ -363,6 +363,7 @@ class FormViewModel : ViewModel() {
         }
     }
 
+    private var _teamNumber by mutableStateOf("")
     val teamNumber: Int?
         get() = matches?.let {
             if (matchNumber > 0 && matchNumber <= it.size) {
@@ -378,7 +379,10 @@ class FormViewModel : ViewModel() {
             } else {
                 null
             }
-        }
+        } ?: _teamNumber.toIntOrNull()
+    fun setTeamNumber(value: String) {
+        _teamNumber = value
+    }
 
     operator fun get(key: String): Any? {
         return when (key) {
@@ -391,6 +395,8 @@ class FormViewModel : ViewModel() {
             "answers"          -> answers
             "answersJson"      -> answersJson
             "teamNumber"       -> teamNumber
+            "eventCode"        -> eventCode
+            "matches"          -> matches
             else               -> null
         }
     }
@@ -398,7 +404,6 @@ class FormViewModel : ViewModel() {
     private var _eventCode by mutableStateOf("")
     val eventCode: String
         get() = _eventCode
-
     fun setEventCode(code: String) {
         _eventCode = code
     }
@@ -406,7 +411,6 @@ class FormViewModel : ViewModel() {
     private var _matches: List<Pair<Triple<Int, Int, Int>, Triple<Int, Int, Int>>>? by mutableStateOf(null)
     val matches: List<Pair<Triple<Int, Int, Int>, Triple<Int, Int, Int>>>?
         get() = _matches
-
     fun fetchMatches() {
         val client = HttpClient(CIO)
 

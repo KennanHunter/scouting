@@ -30,7 +30,32 @@ fun ISAScreen(
         composable(route = AppScreen.SetupDevice.name) {
             DeviceSetupScreen(
                 formViewModel = formViewModel,
-                onConnectButtonClicked = { navController.navigate(AppScreen.Loading.name) }
+                onConnectButtonClicked = {
+                    formViewModel.fetchScouts()
+//                  if (formViewModel.currentDevice.id == "") {
+//                      formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
+//                      return@DeviceSetupScreen
+//                  }
+                    if (formViewModel.currentPosition == Position.None) {
+                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_position_selected)))
+                        return@DeviceSetupScreen
+                    }
+                    if (formViewModel.fieldOrientation == FieldOrientation.None) {
+                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_scout_location_selected)))
+                        return@DeviceSetupScreen
+                    }
+                    formViewModel.fetchMatches()
+                    if (formViewModel.matches == null && formViewModel.eventCode != "") {
+                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.invalid_event_code)))
+                        return@DeviceSetupScreen
+                    }
+
+                    // TODO: make the ConnectionStatus CONNECTING
+                    formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
+                    //TODO: Code for connecting to the selected device
+
+                    navController.navigate(AppScreen.Loading.name)
+                }
             )
         }
         composable(route = AppScreen.Loading.name) {

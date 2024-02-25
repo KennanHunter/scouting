@@ -49,23 +49,22 @@ object DataSource {
                                     "label": "Starting Position",
                                     "name": "startingpos",
                                     "columns": "2",
-                                    "exportAs": "int",
                                     "options": [
                                         {
-                                            "value": "1",
-                                            "label": "1"
+                                            "value": "a",
+                                            "label": "A"
                                         },
                                         {
-                                            "value": "3",
-                                            "label": "3"
+                                            "value": "c",
+                                            "label": "C"
                                         },
                                         {
-                                            "value": "2",
-                                            "label": "2"
+                                            "value": "b",
+                                            "label": "B"
                                         },
                                         {
-                                            "value": "4",
-                                            "label": "4"
+                                            "value": "d",
+                                            "label": "D"
                                         }
                                     ]
                                 },
@@ -82,17 +81,17 @@ object DataSource {
                                                 {
                                                     "type": "checkbox",
                                                     "label": "1",
-                                                    "name": "1"
+                                                    "name": "autonote1"
                                                 },
                                                 {
                                                     "type": "checkbox",
                                                     "label": "2",
-                                                    "name": "2"
+                                                    "name": "autonote2"
                                                 },
                                                 {
                                                     "type": "checkbox",
                                                     "label": "3",
-                                                    "name": "3"
+                                                    "name": "autonote3"
                                                 }
                                             ]
                                         },
@@ -102,27 +101,27 @@ object DataSource {
                                                 {
                                                     "type": "checkbox",
                                                     "label": "4",
-                                                    "name": "4"
+                                                    "name": "autonote4"
                                                 },
                                                 {
                                                     "type": "checkbox",
                                                     "label": "5",
-                                                    "name": "5"
+                                                    "name": "autonote5"
                                                 },
                                                 {
                                                     "type": "checkbox",
                                                     "label": "6",
-                                                    "name": "6"
+                                                    "name": "autonote6"
                                                 },
                                                 {
                                                     "type": "checkbox",
                                                     "label": "7",
-                                                    "name": "7"
+                                                    "name": "autonote7"
                                                 },
                                                 {
                                                     "type": "checkbox",
                                                     "label": "8",
-                                                    "name": "8"
+                                                    "name": "autonote8"
                                                 }
                                             ]
                                         }
@@ -216,22 +215,22 @@ object DataSource {
                                 {
                                     "type": "checkbox",
                                     "label": "Subwoofer",
-                                    "name": "subwoofer"
+                                    "name": "shotfromsubwoofer"
                                 },
                                 {
                                     "type": "checkbox",
                                     "label": "Podium",
-                                    "name": "podium"
+                                    "name": "shotfrompodium"
                                 },
                                 {
                                     "type": "checkbox",
                                     "label": "Within Wing",
-                                    "name": "wing"
+                                    "name": "shotfromwing"
                                 },
                                 {
                                     "type": "checkbox",
                                     "label": "Outside Wing",
-                                    "name": "outside"
+                                    "name": "shotfromoutside"
                                 }
                             ]
                         },
@@ -269,9 +268,10 @@ object DataSource {
                                 {
                                     "type": "radio",
                                     "label": "Onstage",
-                                    "name": "onstage",
+                                    "name": "onstageorder",
                                     "columns": "2",
                                     "initialValue": "0",
+                                    "exportAs": "int",
                                     "options": [
                                         {
                                             "value": "1",
@@ -299,9 +299,10 @@ object DataSource {
                                 {
                                     "type": "radio",
                                     "label": "Number of Other Robots on Same Stage",
-                                    "name": "harmonize",
+                                    "name": "harmonizeqty",
                                     "columns": "2",
                                     "initialValue": "0",
+                                    "exportAs": "int",
                                     "options": [
                                         {
                                             "value": "1",
@@ -337,12 +338,14 @@ object DataSource {
                                 {
                                     "type":"checkbox",
                                     "label": "Floor Pick Up",
-                                    "name": "floor"
+                                    "name": "floorpickup",
+                                    "exportAs": "int"
                                 },
                                 {
                                     "type": "checkbox",
                                     "label": "Source Pick Up",
-                                    "name": "source"
+                                    "name": "sourcepickup",
+                                    "exportAs": "int"
                                 },
                                 {
                                     "type": "spacer"
@@ -361,9 +364,6 @@ object DataSource {
                                     "type": "checkbox",
                                     "label": "Received Defense",
                                     "name": "receiveddefense"
-                                },
-                                {
-                                    "type": "spacer"
                                 }
                             ]
                         },
@@ -413,6 +413,7 @@ object DataSource {
                     "name": "rating",
                     "columns": "3",
                     "initialValue": "0",
+                    "exportAs": "int",
                     "options": [
                         {
                             "value": "1",
