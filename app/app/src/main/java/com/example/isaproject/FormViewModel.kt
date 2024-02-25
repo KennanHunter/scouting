@@ -322,7 +322,11 @@ class FormViewModel : ViewModel() {
         }
         _answers.putAll(
             mapOf(
-                "position" to currentPosition.name, "scoutname" to currentScout, "matchnumber" to matchNumber, "teamnumber" to (teamNumber ?: 0), "noshow" to noShow
+                "position" to currentPosition.name,
+                "scoutname" to currentScout,
+                "matchnumber" to matchNumber,
+                "teamnumber" to (teamNumber ?: 0),
+                "noshow" to noShow
             )
         )
     }

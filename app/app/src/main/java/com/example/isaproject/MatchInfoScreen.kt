@@ -52,7 +52,7 @@ fun MatchInfoScreen(
                 .fillMaxHeight()
         ) {
             var scoutsExpanded by remember { mutableStateOf(false) }
-            var scoutsFilter by remember { mutableStateOf("") }
+            var scoutsFilter by remember { mutableStateOf(formViewModel.currentScout) }
             var matchNumberError by remember { mutableStateOf("") }
             var teamNumberError by remember { mutableStateOf("") }
             formViewModel.scouts?.let { scouts ->
