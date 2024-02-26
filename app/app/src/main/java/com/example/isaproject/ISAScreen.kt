@@ -73,7 +73,6 @@ fun ISAScreen(
                 onPreviousButtonClicked = { navController.navigate(AppScreen.SetupDevice.name) },
                 onNextButtonClicked = {
                     if (formViewModel.noShow) {
-                        formViewModel.cleanAnswers()
                         navController.navigate(AppScreen.Summary.name)
                     } else {
                         navController.navigate(formViewModel.form[0].name)
@@ -88,7 +87,6 @@ fun ISAScreen(
                     page = formViewModel.form[i].name,
                     onNextButtonClicked = {
                         if (i == formViewModel.form.size - 1) {
-                            formViewModel.cleanAnswers()
                             navController.navigate(AppScreen.Summary.name)
                         } else {
                             navController.navigate(formViewModel.form[i + 1].name)

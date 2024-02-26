@@ -295,42 +295,6 @@ class FormViewModel : ViewModel() {
         _answers[name] = value
     }
 
-    fun cleanAnswers() {
-        for (i in answers) {
-            if (i.value is Int) {
-                if (i.value == Int.MIN_VALUE || i.value == Int.MAX_VALUE) {
-                    _answers[i.key] = 0
-                }
-            }
-            val element: FormElement? = run {
-                for (j in form) {
-                    for (k in j.page) {
-                        if (k.name == i.key) return@run k
-                    }
-                }
-                return@run null
-            }
-            if (element != null) {
-                if (i.value::class.simpleName != element.exportAs.name) {
-                    _answers[i.key] = when (element.exportAs) {
-                        DataType.Int     -> i.value.toString().toIntOrNull() ?: 0
-                        DataType.Boolean -> i.value.toString().toBooleanStrictOrNull() ?: false
-                        DataType.String  -> i.value.toString()
-                    }
-                }
-            }
-        }
-        _answers.putAll(
-            mapOf(
-                "position" to currentPosition.name,
-                "scoutname" to currentScout,
-                "matchnumber" to matchNumber,
-                "teamnumber" to (teamNumber ?: 0),
-                "noshow" to noShow
-            )
-        )
-    }
-
     fun resetForm() {
         val matchNumber = (_answers["matchnumber"].toString().toIntOrNull() ?: 0) + 1
         _answers = initAnswers()
@@ -341,14 +305,48 @@ class FormViewModel : ViewModel() {
 
     val answersJson: String
         get() {
-            return answers.entries.toSortedSet(compareBy { it.key }).joinToString(
+            return (
+                    answers +
+                    ("position" to currentPosition.name) +
+                    ("scoutname" to currentScout) +
+                    ("matchnumber" to matchNumber) +
+                    ("teamnumber" to (teamNumber ?: 0)) +
+                    ("noshow" to noShow)
+            ).entries.toSortedSet(compareBy { it.key }).joinToString(
                 prefix = "{\n", postfix = "\n}", separator = ",\n"
             ) {
+                val element: FormElement? = run {
+                    for (j in form) {
+                        for (k in j.page) {
+                            if (k.name == it.key) return@run k
+                        }
+                    }
+                    return@run null
+                }
+                var value = it.value
+                if (value is Int && (value == Int.MIN_VALUE || value == Int.MAX_VALUE)) {
+                    value = 0
+                }
+                if (element != null && value::class.simpleName != element.exportAs.name) {
+                    value = when (element.exportAs) {
+                        DataType.Int     -> when (value) {
+                            is Boolean -> if (value) 1 else 0
+                            is String  -> value.toIntOrNull() ?: 0
+                            else       -> value.toString().toIntOrNull() ?: 0 }
+                        DataType.Boolean -> when (value) {
+                            is Int    -> value > 0
+                            is String -> value.toBooleanStrictOrNull() ?: false
+                            else      -> value.toString().toBooleanStrictOrNull() ?: false
+                        }
+                        DataType.String  -> value.toString()
+                    }
+                }
+
                 "    \"" + it.key + "\": " + if (it.value is Int || it.value is Boolean) {
                     ""
                 } else {
                     "\""
-                } + it.value.toString() + if (it.value is Int || it.value is Boolean) {
+                } + value.toString() + if (it.value is Int || it.value is Boolean) {
                     ""
                 } else {
                     "\""
