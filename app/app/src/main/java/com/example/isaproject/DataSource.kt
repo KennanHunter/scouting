@@ -70,7 +70,7 @@ object DataSource {
                                 },
                                 {
                                     "type": "label",
-                                    "label": "Note Pickup Locations"
+                                    "label": "Notes Picked Up / Moved"
                                 },
                                 {
                                     "type": "row",
@@ -134,19 +134,19 @@ object DataSource {
                             "children": [
                                 {
                                     "type": "number",
-                                    "label": "Notes in Amp",
+                                    "label": "Scored in Amp",
                                     "name": "autoamp",
                                     "min": "0"
                                 },
                                 {
                                     "type": "number",
-                                    "label": "Notes in Speaker",
+                                    "label": "Scored in Speaker",
                                     "name": "autospeaker",
                                     "min": "0"
                                 },
                                 {
                                     "type": "checkbox",
-                                    "label": "Leave",
+                                    "label": "Left Robot Starting Zone",
                                     "name": "leave"
                                 }
                             ]
@@ -191,26 +191,26 @@ object DataSource {
                             "children": [
                                 {
                                     "type": "number",
-                                    "label": "Notes in Amp",
+                                    "label": "Scored in Amp",
                                     "name": "teleopamp",
                                     "min": "0"
                                 },
                                 {
                                     "type": "number",
-                                    "label": "Notes in Speaker",
+                                    "label": "Scored in Speaker",
                                     "name": "teleopspeaker",
                                     "min": "0"
                                 },
                                 {
                                     "type": "number",
-                                    "label": "Notes in Trap",
+                                    "label": "Scored in Trap",
                                     "name": "teleoptrap",
                                     "min": "0",
                                     "max": "3"
                                 },
                                 {
                                     "type": "label",
-                                    "label": "Scored From"
+                                    "label": "Scored From (speaker only)"
                                 },
                                 {
                                     "type": "checkbox",
@@ -267,7 +267,7 @@ object DataSource {
                                 },
                                 {
                                     "type": "radio",
-                                    "label": "Onstage",
+                                    "label": "Order Onstage (on same chain)",
                                     "name": "onstageorder",
                                     "columns": "2",
                                     "initialValue": "0",
