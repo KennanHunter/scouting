@@ -25,11 +25,11 @@ export const matchType = g.type("Match", {
 
 export const databaseMatch = z.object({
   matchKey: z.string(),
-  startTime: z.number(),
+  startTime: z.number().nullable(),
   eventKey: z.string(),
-  reportedWinningAlliance: z.string().optional(),
-  reportedRedScore: z.number().optional(),
-  reportedBlueScore: z.number().optional(),
+  reportedWinningAlliance: z.string().nullable(),
+  reportedRedScore: z.number().nullable(),
+  reportedBlueScore: z.number().nullable(),
 });
 
 export const databaseTeamMatchEntry = z.object({

@@ -6,14 +6,14 @@ import { apiClient } from "../../client";
 import { extractTitleFromMatchKey } from "../../util/extractTitleFromMatchKey";
 
 export const matchLoader = (async ({ params }) => {
-  const matches = await apiClient<{
+  const match = await apiClient<{
     getMatch: {
       matchKey: string;
       startTime: number;
       matchEntries: {
         teamNumber: number;
         alliance: "red" | "blue";
-        matchData: string;
+        matchData: string | null;
       }[];
     };
   }>(`{
@@ -28,7 +28,7 @@ export const matchLoader = (async ({ params }) => {
     }
   }`).then((val) => val.getMatch);
 
-  return matches;
+  return match;
 }) satisfies LoaderFunction;
 
 const jsonData = z.record(z.string().or(z.number().or(z.boolean())).nullable());
@@ -36,9 +36,15 @@ const jsonData = z.record(z.string().or(z.number().or(z.boolean())).nullable());
 export const MatchPage: FC = () => {
   const matchData = useLoaderData() as Awaited<ReturnType<typeof matchLoader>>;
 
+  const matchEntriesWithData = matchData.matchEntries.filter(
+    ({ matchData }) => matchData !== null
+  );
+
+  if (matchEntriesWithData.length === 0) return <>No match data yet</>;
+
   const keys = Object.keys(
-    matchData.matchEntries.map((val) =>
-      jsonData.parse(JSON.parse(val.matchData))
+    matchEntriesWithData.map((val) =>
+      jsonData.parse(JSON.parse(val.matchData as string))
     )[0]
   );
 
@@ -67,16 +73,16 @@ export const MatchPage: FC = () => {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {matchData.matchEntries.map((row, index) => (
+            {matchEntriesWithData.map((row, index) => (
               <Table.Tr h={80} key={index}>
                 <Table.Td>
                   <Text color={row.alliance}>{row.teamNumber}</Text>
                 </Table.Td>
-                {Object.values(jsonData.parse(JSON.parse(row.matchData))).map(
-                  (entry) => (
-                    <Table.Td>{entry?.toString() ?? ""}</Table.Td>
-                  )
-                )}
+                {Object.values(
+                  jsonData.parse(JSON.parse(row.matchData as string))
+                ).map((entry) => (
+                  <Table.Td>{entry?.toString() ?? ""}</Table.Td>
+                ))}
               </Table.Tr>
             ))}
           </Table.Tbody>

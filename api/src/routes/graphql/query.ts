@@ -3,7 +3,7 @@ import { GraphQLError } from "graphql";
 import { z } from "zod";
 import { Resolvers } from ".";
 import { eventType } from "./event";
-import { databaseMatch, databaseTeamMatchEntry, matchType } from "./match";
+import { databaseMatch, matchType } from "./match";
 
 export const queryType = g.type("Query", {
   allEvents: g.ref(eventType).list(),
@@ -71,7 +71,7 @@ export const queryResolvers: Resolvers["Query"] = {
     return {
       matchKey: match.matchKey,
       eventKey: match.eventKey,
-      startTime: new Date(match.startTime),
+      startTime: match.startTime ? new Date(match.startTime) : undefined,
     };
   },
 };
