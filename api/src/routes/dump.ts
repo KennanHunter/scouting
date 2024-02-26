@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { RouteHandler } from "..";
 import { matchDataSchema } from "../matchDataSchema";
+import { convertEpochToExcel } from "../util/convertEpochToExcel";
 
 const allianceType = z.literal("red").or(z.literal("blue"));
 
@@ -47,13 +48,13 @@ export const dumpHandler: RouteHandler = async (c) => {
 
   const dateString = `scouting-export-${date.getFullYear()}-${date.getMonth()}-${date.getDay()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
 
-  if (format === "JSON") {
+  if (format.toUpperCase() === "JSON") {
     return c.body(JSON.stringify(matchEntries, null, "\t"), 200, {
       "Content-Disposition": `attachment; filename="${dateString}.json"`,
     });
   }
 
-  if (format === "CSV") {
+  if (format.toUpperCase() === "CSV") {
     const header = [
       "matchKey",
       "matchnumber",
@@ -109,9 +110,7 @@ export const dumpHandler: RouteHandler = async (c) => {
         if (columnLabel === "startTime") {
           const startTime = columnValue as (typeof row)["startTime"];
 
-          const time = new Date(startTime);
-
-          return `${time.getMonth()}/${time.getDay()}/${time.getFullYear()} ${time.toTimeString().split(" ")[0]}`;
+          return convertEpochToExcel(startTime);
         }
 
         return columnValue;

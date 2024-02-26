@@ -5,6 +5,7 @@ import { addTrailingSlash } from "./middleware/addTrailingSlash";
 import { handle404 } from "./routes/404";
 import { generateHandler } from "./routes/auth/generate";
 import { dumpHandler } from "./routes/dump";
+import { dumpScheduleHandler } from "./routes/dumpSchedule";
 import { graphqlHandler } from "./routes/graphql";
 import { graphqlViewerHandler } from "./routes/graphql/viewer";
 import { TBAWebhookHandler } from "./webhooks/tba";
@@ -31,6 +32,7 @@ app
   .use("/*", cors()) // TODO: limit cors allowed origins
   // .use("/api/*", protect) // TODO: Fix Authentication
   .post("/auth/generate/", generateHandler)
+  .get("/dump/schedule/:eventId/:format/", dumpScheduleHandler)
   .get("/dump/:eventId/:format/", dumpHandler)
   .get("/viewer/", graphqlViewerHandler)
   .post("/webhooks/tba", TBAWebhookHandler)
