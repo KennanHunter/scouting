@@ -34,31 +34,7 @@ fun DeviceSetupScreen(
             BottomNavBar(
                 buttons = listOf(
                     Triple(
-                        {
-                            formViewModel.fetchScouts()
-                            formViewModel.fetchMatches()
-//                            if (formViewModel.currentDevice.id == "") {
-//                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
-//                                return@Triple
-//                            }
-                            if (formViewModel.currentPosition == Position.None) {
-                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_position_selected)))
-                                return@Triple
-                            }
-                            if (formViewModel.fieldOrientation == FieldOrientation.None) {
-                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_scout_location_selected)))
-                                return@Triple
-                            }
-                            if (formViewModel.matches == null) {
-                                formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.invalid_event_code)))
-                                return@Triple
-                            }
-
-                            // TODO: make the ConnectionStatus CONNECTING
-                            formViewModel.setConnectionStatus(ConnectionStatus.CONNECTED)
-                            //TODO: Code for connecting to the selected device
-                            onConnectButtonClicked()
-                        },
+                        onConnectButtonClicked,
                         stringResource(R.string.connect),
                         ButtonType.Filled
                     )
@@ -153,6 +129,9 @@ fun DeviceSetupScreen(
                 value = formViewModel.eventCode,
                 onValueChange = { formViewModel.setEventCode(it) },
                 singleLine = true,
+                supportingText = {
+                    Text("Leave this field blank to manually input team numbers")
+                },
                 modifier = Modifier.fillMaxWidth()
             )
         }

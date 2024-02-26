@@ -48,7 +48,6 @@ fun SummaryScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        formViewModel.cleanAnswers()
         Column(
             modifier = Modifier
                 .padding(innerPadding)

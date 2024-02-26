@@ -25,5 +25,6 @@
     <string name="match_number">Match Number</string>
     <string name="no_show">No Show</string>
     <string name="invalid_event_code">Invalid Event Code</string>
-    <string name="team_number">"Team Number: %s"</string>
+    <string name="team_number_is">"Team Number: %s"</string>
+    <string name="team_number">Team Number</string>
 </resources>

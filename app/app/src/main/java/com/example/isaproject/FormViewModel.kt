@@ -10,16 +10,29 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.ktor.client.*
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
+import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 
 @SuppressLint("MutableCollectionMutableState")
 class FormViewModel : ViewModel() {
     private val serializedForm = Json.decodeFromString<List<SerializableFormPage>>(DataSource.formJSON)
-    private fun scanForElementsWithId(element: SerializableFormElement, defaultId: Int) : Pair<List<Pair<SerializableFormElement, String>>, Int> {
+    private fun scanForElementsWithId(
+        element: SerializableFormElement,
+        defaultId: Int
+    ): Pair<List<Pair<SerializableFormElement, String>>, Int> {
         var newId = defaultId
         val result = mutableListOf<Pair<SerializableFormElement, String>>()
         if (element.name == "") {
@@ -41,6 +54,7 @@ class FormViewModel : ViewModel() {
                     newId = elements.second
                 }
             }
+
             "conditional"   -> {
                 result.add(Pair(element, ""))
                 element.variants.forEach { it1 ->
@@ -55,13 +69,15 @@ class FormViewModel : ViewModel() {
                     newId = elements.second
                 }
             }
+
             else            -> {
                 result.add(Pair(element, ""))
             }
         }
         return Pair(result, newId)
     }
-    private var _form : List<FormPage> = run {
+
+    private var _form: List<FormPage> = run {
         val result = mutableListOf<FormPage>()
         var defaultId = 0
         for (i in serializedForm) {
@@ -69,54 +85,39 @@ class FormViewModel : ViewModel() {
             for (j in i.page) {
                 val elements = scanForElementsWithId(j, defaultId)
                 elements.first.forEach { (item, parent) ->
-                    pageContent.add(
-                        FormElement(
-                            type = enumByNameIgnoreCase<FormElementType>(item.type) ?: FormElementType.Text,
-                            name = item.name,
-                            label = item.label,
-                            placeholder = item.placeholder,
-                            options = item.options,
-                            columns = item.columns.toIntOrNull() ?: 1,
-                            min = item.min.toIntOrNull() ?: Int.MIN_VALUE,
-                            max = item.max.toIntOrNull() ?: Int.MAX_VALUE,
-                            children = run {
-                                val children = mutableListOf<String>()
-                                for (k in item.children) {
-                                    children.add(k.name)
-                                }
-                                children
-                            },
-                            isChild = parent != "",
-                            content = item.content,
-                            initialValue = item.initialValue,
-                            useButtons = item.useButtons.toBooleanStrictOrNull() ?: true,
-                            property = item.property,
-                            variants = run {
-                                val variants = mutableListOf<ConditionalVariant>()
-                                for (k in item.variants) {
-                                    variants.add(ConditionalVariant(k.value, k.content.name))
-                                }
-                                variants
-                            },
-                            exportAs = if (item.exportAs == "") {
-                                when (item.type) {
-                                    "number" -> DataType.Int
-                                    "checkbox" -> DataType.Boolean
-                                    else -> DataType.String
-                                }
-                            } else {
-                                enumByNameIgnoreCase<DataType>(item.exportAs) ?: DataType.String
-                            },
-                            _filter = if (item.type == "number") { "0" } else { "" }
-                        )
+                    pageContent.add(FormElement(type = enumByNameIgnoreCase<FormElementType>(item.type) ?: FormElementType.Text, name = item.name, label = item.label, placeholder = item.placeholder, options = item.options, columns = item.columns.toIntOrNull() ?: 1, min = item.min.toIntOrNull() ?: Int.MIN_VALUE, max = item.max.toIntOrNull() ?: Int.MAX_VALUE, children = run {
+                        val children = mutableListOf<String>()
+                        for (k in item.children) {
+                            children.add(k.name)
+                        }
+                        children
+                    }, isChild = parent != "", content = item.content, initialValue = item.initialValue, useButtons = item.useButtons.toBooleanStrictOrNull() ?: true, property = item.property, variants = run {
+                        val variants = mutableListOf<ConditionalVariant>()
+                        for (k in item.variants) {
+                            variants.add(ConditionalVariant(k.value, k.content.name))
+                        }
+                        variants
+                    }, exportAs = if (item.exportAs == "") {
+                        when (item.type) {
+                            "number"   -> DataType.Int
+                            "checkbox" -> DataType.Boolean
+                            else       -> DataType.String
+                        }
+                    } else {
+                        enumByNameIgnoreCase<DataType>(item.exportAs) ?: DataType.String
+                    }, _filter = if (item.type == "number") {
+                        "0"
+                    } else {
+                        ""
+                    }
+                    )
                     )
                 }
                 defaultId = elements.second
             }
             result.add(
                 FormPage(
-                    name = i.name,
-                    page = pageContent
+                    name = i.name, page = pageContent
                 )
             )
         }
@@ -128,14 +129,17 @@ class FormViewModel : ViewModel() {
     private var _scouts: MutableList<String>? by mutableStateOf(null)
     val scouts: List<String>?
         get() = _scouts
+
     fun fetchScouts() {
         //TODO: send a request to relay computer for scout names
         val availableScouts = DataSource.scouts
         _scouts = availableScouts.toMutableList()
     }
+
     private var _currentScout by mutableStateOf("")
     val currentScout: String
         get() = _currentScout
+
     fun setCurrentScout(value: String) {
         _currentScout = value
     }
@@ -143,6 +147,7 @@ class FormViewModel : ViewModel() {
     private var _matchNumber by mutableIntStateOf(0)
     val matchNumber: Int
         get() = _matchNumber
+
     fun setMatchNumber(value: Int) {
         _matchNumber = value
     }
@@ -150,18 +155,28 @@ class FormViewModel : ViewModel() {
     private var _noShow by mutableStateOf(false)
     val noShow: Boolean
         get() = _noShow
+
     fun setNoShow(value: Boolean) {
         _noShow = value
     }
 
-    fun setExpanded(page: String, item: String, expanded: Boolean) {
+    fun setExpanded(
+        page: String,
+        item: String,
+        expanded: Boolean
+    ) {
         _form.find { it.name == page }?.let { i ->
             i.page.find { it.name == item }?.let { j ->
                 j.expanded = expanded
             }
         }
     }
-    fun setFilter(page: String, item: String, filter: String) {
+
+    fun setFilter(
+        page: String,
+        item: String,
+        filter: String
+    ) {
         _form.find { it.name == page }?.let { i ->
             i.page.find { it.name == item }?.let { j ->
                 j.filter = filter
@@ -169,7 +184,11 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    fun setError(page: String, item: String, errorMessage: String) {
+    fun setError(
+        page: String,
+        item: String,
+        errorMessage: String
+    ) {
         _form.find { it.name == page }?.let { i ->
             i.page.find { it.name == item }?.let { j ->
                 j.error = errorMessage
@@ -178,7 +197,9 @@ class FormViewModel : ViewModel() {
     }
 
 
-    private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent()).toMutableStateList()
+    private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent())
+        .toMutableStateList()
+
     val devices: List<Device>
         get() = _devices
 
@@ -194,8 +215,7 @@ class FormViewModel : ViewModel() {
         }
 
         if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.BLUETOOTH_SCAN
+                context, Manifest.permission.BLUETOOTH_SCAN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             throw Error("Bluetooth not granted")
@@ -209,6 +229,7 @@ class FormViewModel : ViewModel() {
     private var _currentDevice by mutableStateOf(Device("", ""))
     val currentDevice: Device
         get() = _currentDevice
+
     fun setDevice(device: Device) {
         _currentDevice = if (device.id != "") {
             _devices.first { it.id == device.id }
@@ -220,6 +241,7 @@ class FormViewModel : ViewModel() {
     private var _currentPosition by mutableStateOf(Position.None)
     val currentPosition: Position
         get() = _currentPosition
+
     fun setPosition(position: Position) {
         _currentPosition = position
     }
@@ -227,6 +249,7 @@ class FormViewModel : ViewModel() {
     private var _fieldOrientation by mutableStateOf(FieldOrientation.None)
     val fieldOrientation: FieldOrientation
         get() = _fieldOrientation
+
     fun setFieldOrientation(pos: FieldOrientation) {
         _fieldOrientation = pos
     }
@@ -258,56 +281,20 @@ class FormViewModel : ViewModel() {
         }
         return result
     }
+
     private var _answers = initAnswers()
     val answers: Map<String, Any>
         get() {
             return _answers
         }
-    fun setAnswer(name: String, value: Any) {
+
+    fun setAnswer(
+        name: String,
+        value: Any
+    ) {
         _answers[name] = value
     }
 
-    fun cleanAnswers() {
-        for (i in answers) {
-            if (i.value is Int) {
-                if (i.value == Int.MIN_VALUE || i.value == Int.MAX_VALUE) {
-                    _answers[i.key] = 0
-                }
-            }
-            val element: FormElement? = run {
-                for (j in form) {
-                    for (k in j.page) {
-                        if (k.name == i.key) return@run k
-                    }
-                }
-                return@run null
-            }
-            if (element != null) {
-                if (i.value::class.simpleName != element.exportAs.name) {
-                    _answers[i.key] = when (element.exportAs) {
-                        DataType.Int     -> when (i.value::class.simpleName) {
-                            "Boolean" -> if (i.value.toString().toBoolean()) { 1 } else { 0 }
-                            "String"  -> i.value.toString().toIntOrNull() ?: 0
-                            else      -> 0
-                        }
-                        DataType.Boolean -> when (i.value::class.simpleName) {
-                            "Int"    -> i.value.toString().toInt() > 0
-                            "String" -> i.value.toString().toBooleanStrictOrNull() ?: false
-                            else     -> false
-                        }
-                        DataType.String  -> i.value.toString()
-                    }
-                }
-            }
-        }
-        _answers.putAll(mapOf(
-            "position" to currentPosition.name,
-            "scoutname" to currentScout,
-            "matchnumber" to matchNumber,
-            "teamnumber" to (teamNumber ?: 0),
-            "noshow" to noShow
-        ))
-    }
     fun resetForm() {
         val matchNumber = (_answers["matchnumber"].toString().toIntOrNull() ?: 0) + 1
         _answers = initAnswers()
@@ -318,12 +305,52 @@ class FormViewModel : ViewModel() {
 
     val answersJson: String
         get() {
-            return answers.entries.toSortedSet(compareBy { it.key }).joinToString(
-                prefix = "{\n",
-                postfix = "\n}",
-                separator = ",\n"
+            return (
+                    answers +
+                    ("position" to currentPosition.name) +
+                    ("scoutname" to currentScout) +
+                    ("matchnumber" to matchNumber) +
+                    ("teamnumber" to (teamNumber ?: 0)) +
+                    ("noshow" to noShow)
+            ).entries.toSortedSet(compareBy { it.key }).joinToString(
+                prefix = "{\n", postfix = "\n}", separator = ",\n"
             ) {
-                "    \"" + it.key + "\": " + if (it.value is Int || it.value is Boolean) { "" } else { "\"" } + it.value.toString() + if (it.value is Int || it.value is Boolean) { "" } else { "\"" }
+                val element: FormElement? = run {
+                    for (j in form) {
+                        for (k in j.page) {
+                            if (k.name == it.key) return@run k
+                        }
+                    }
+                    return@run null
+                }
+                var value = it.value
+                if (value is Int && (value == Int.MIN_VALUE || value == Int.MAX_VALUE)) {
+                    value = 0
+                }
+                if (element != null && value::class.simpleName != element.exportAs.name) {
+                    value = when (element.exportAs) {
+                        DataType.Int     -> when (value) {
+                            is Boolean -> if (value) 1 else 0
+                            is String  -> value.toIntOrNull() ?: 0
+                            else       -> value.toString().toIntOrNull() ?: 0 }
+                        DataType.Boolean -> when (value) {
+                            is Int    -> value > 0
+                            is String -> value.toBooleanStrictOrNull() ?: false
+                            else      -> value.toString().toBooleanStrictOrNull() ?: false
+                        }
+                        DataType.String  -> value.toString()
+                    }
+                }
+
+                "    \"" + it.key + "\": " + if (it.value is Int || it.value is Boolean) {
+                    ""
+                } else {
+                    "\""
+                } + value.toString() + if (it.value is Int || it.value is Boolean) {
+                    ""
+                } else {
+                    "\""
+                }
             }
         }
 
@@ -338,6 +365,7 @@ class FormViewModel : ViewModel() {
         }
     }
 
+    private var _teamNumber by mutableStateOf("")
     val teamNumber: Int?
         get() = matches?.let {
             if (matchNumber > 0 && matchNumber <= it.size) {
@@ -353,20 +381,25 @@ class FormViewModel : ViewModel() {
             } else {
                 null
             }
-        }
+        } ?: _teamNumber.toIntOrNull()
+    fun setTeamNumber(value: String) {
+        _teamNumber = value
+    }
 
     operator fun get(key: String): Any? {
         return when (key) {
-            "form" -> form
-            "devices" -> devices
-            "currentDevice" -> currentDevice
-            "currentPosition" -> currentPosition
-            "scoutPos" -> fieldOrientation
+            "form"             -> form
+            "devices"          -> devices
+            "currentDevice"    -> currentDevice
+            "currentPosition"  -> currentPosition
+            "scoutPos"         -> fieldOrientation
             "connectionStatus" -> connectionStatus
-            "answers" -> answers
-            "answersJson" -> answersJson
-            "teamNumber" -> teamNumber
-            else -> null
+            "answers"          -> answers
+            "answersJson"      -> answersJson
+            "teamNumber"       -> teamNumber
+            "eventCode"        -> eventCode
+            "matches"          -> matches
+            else               -> null
         }
     }
 
@@ -381,22 +414,43 @@ class FormViewModel : ViewModel() {
     val matches: List<Pair<Triple<Int, Int, Int>, Triple<Int, Int, Int>>>?
         get() = _matches
     fun fetchMatches() {
+        val client = HttpClient(CIO)
+
+
         //TODO: implement code for getting matches from API
         _matches = if (eventCode == "test") {
             listOf(
                 Pair(
-                    Triple(78, 3494, 1501),
-                    Triple(8564, 256, 119)
-                ),
-                Pair(
-                    Triple(3452, 45, 756),
-                    Triple(2547, 7678, 234)
-                ),
-                Pair(
-                    Triple(4678, 2346, 7345),
-                    Triple(4836, 1563, 8136)
+                    Triple(78, 3494, 1501), Triple(8564, 256, 119)
+                ), Pair(
+                    Triple(3452, 45, 756), Triple(2547, 7678, 234)
+                ), Pair(
+                    Triple(4678, 2346, 7345), Triple(4836, 1563, 8136)
                 )
             )
-        } else { null }
+        } else {
+            runBlocking {
+                val response = client.request("https://api.scout.kennan.tech/graphql/") {
+                    method = HttpMethod.Get
+                    setBody("{ query: \"{ getEvent(key: \"${eventCode}\") { matches { matchEntries { teamNumber, alliance }}}}\" }")
+                    contentType(ContentType.Application.Json)
+                }
+
+                if (!response.status.isSuccess()) {
+                    SideEffect.ShowToast("API Match Schedule Sync failed")
+                    return@runBlocking null
+                }
+
+                val responseBody: String = response.body()
+
+                println(responseBody)
+
+                listOf(
+                    Pair(
+                        Triple(10, 10, 10), Triple(10, 10, 10)
+                    )
+                )
+            }
+        }
     }
 }
