@@ -9,7 +9,6 @@ import { TabsOptions } from "./NewEventModal";
 export const ImportEventModalTab: FC = () => {
   const [key, setKey] = useState<string>();
   const [error, setError] = useState<string>();
-  const navigate = useNavigate();
 
   const importEvent = useMemo(
     () => async () => {
@@ -24,7 +23,8 @@ export const ImportEventModalTab: FC = () => {
 
       if (response.importEvent.key) {
         modals.closeAll();
-        navigate(`/event/${response.importEvent.key}`);
+      } else {
+        setError("Unknown Error, ensure the key exists");
       }
     },
     [key]
