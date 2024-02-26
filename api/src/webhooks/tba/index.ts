@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { RouteHandler } from "../..";
+import { TBAMatchSchema } from "../../connections/thebluealliance/type/matchSchema";
 
 const messageSchema = z.object({
   message_type: z.literal("upcoming_match").or(z.literal("match_score")),
@@ -8,27 +9,7 @@ const messageSchema = z.object({
 
 const matchScoreSchema = z.object({
   event_name: z.string(),
-  match: z.object({
-    comp_level: z.string(),
-    match_number: z.number(),
-    time_string: z.string(),
-    set_number: z.number(),
-    key: z.string(),
-    time: z.number(),
-    winningAlliance: z.literal("red").or(z.literal("blue")).or(z.literal("")),
-    score_breakdown: z.unknown(),
-    alliances: z.object({
-      blue: z.object({
-        score: z.number(),
-        teams: z.string().array(),
-      }),
-      red: z.object({
-        score: z.number(),
-        teams: z.string().array(),
-      }),
-    }),
-    event_key: z.string(),
-  }),
+  match: TBAMatchSchema,
 });
 
 export const TBAWebhookHandler: RouteHandler = async (c) => {
@@ -66,9 +47,10 @@ export const TBAWebhookHandler: RouteHandler = async (c) => {
     if (!eventExists) return c.text("Event not being tracked", 404);
 
     c.env.DB.prepare(
-      "INSERT INTO Matches (reportedWinningAlliance, reportedRedScore, reportedBlueScore) VALUES (?, ?, ?);"
+      "INSERT OR REPLACE INTO Matches (matchKey, reportedWinningAlliance, reportedRedScore, reportedBlueScore) VALUES (?, ?, ?);"
     ).bind(
-      matchScoreData.match.winningAlliance ?? null,
+      matchScoreData.match.key,
+      matchScoreData.match.winningAlliance || null,
       matchScoreData.match.alliances.red,
       matchScoreData.match.alliances.blue
     );

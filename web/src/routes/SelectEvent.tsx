@@ -1,9 +1,9 @@
 import { Button, Divider, Flex, SimpleGrid, Text } from "@mantine/core";
 import { FC } from "react";
 import { Link, LoaderFunction, useLoaderData } from "react-router-dom";
-import { EventCard } from "../components/EventCard";
-import { openImportEventModal } from "../components/modals/ImportEvent";
 import { apiClient } from "../client";
+import { EventCard } from "../components/EventCard";
+import { openNewEventModal } from "../components/modals/NewEventModal";
 
 export const selectEventLoader = (async () => {
   const data = await apiClient<{
@@ -34,7 +34,7 @@ export const SelectEvent: FC = () => {
         <Text p="lg" pb={"sm"} size={"lg"}>
           Select an available event
         </Text>
-        <Button color="green" onClick={openImportEventModal}>
+        <Button color="green" onClick={openNewEventModal}>
           Import new event
         </Button>
       </Flex>
