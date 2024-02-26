@@ -2,7 +2,6 @@ import { Button, Flex, Stack, Tabs, TextInput } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconKey } from "@tabler/icons-react";
 import { FC, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { apiClient } from "../../client";
 import { TabsOptions } from "./NewEventModal";
 
@@ -19,15 +18,19 @@ export const ImportEventModalTab: FC = () => {
 
       const response = await apiClient<{
         importEvent: { key: string };
-      }>(`mutation { importEvent (id:"${key}") { key }}`);
+      } | null>(`mutation { importEvent (id:"${key}") { key }}`);
 
-      if (response.importEvent.key) {
+      if (response && response.importEvent.key) {
         modals.closeAll();
-      } else {
-        setError("Unknown Error, ensure the key exists");
+        window.location.reload();
+        return;
       }
+
+      setError(
+        "Unknown Error, ensure the key exists on TBA and is not already imported"
+      );
     },
-    [key]
+    [key, error, setError]
   );
 
   return (

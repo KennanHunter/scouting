@@ -1,9 +1,16 @@
 import { Button, Divider, Flex, SimpleGrid, Text } from "@mantine/core";
-import { FC } from "react";
-import { Link, LoaderFunction, useLoaderData } from "react-router-dom";
+import { FC, useEffect } from "react";
+import {
+  Link,
+  LoaderFunction,
+  useLoaderData,
+  useRevalidator,
+} from "react-router-dom";
 import { apiClient } from "../client";
 import { EventCard } from "../components/EventCard";
 import { openNewEventModal } from "../components/modals/NewEventModal";
+import { useInterval } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
 
 export const selectEventLoader = (async () => {
   const data = await apiClient<{
