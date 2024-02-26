@@ -118,19 +118,36 @@ export const mutationResolvers: Resolvers["Mutation"] = {
     );
 
     await context.env.DB.batch(
-      matches.map((match) =>
-        context.env.DB.prepare(
-          "INSERT INTO Matches (matchKey, startTime, eventKey, reportedWinningAlliance, reportedRedScore, reportedBlueScore) \
+      matches
+        .map((match) => {
+          const createMatch = context.env.DB.prepare(
+            "INSERT INTO Matches (matchKey, startTime, eventKey, reportedWinningAlliance, reportedRedScore, reportedBlueScore) \
           VALUES (?, ?, ?, ?, ?, ?)"
-        ).bind(
-          match.key,
-          match.time,
-          match.event_key,
-          match.winningAlliance ? match.winningAlliance : null,
-          match.alliances.red.score ?? null,
-          match.alliances.blue.score ?? null
-        )
-      )
+          ).bind(
+            match.key,
+            match.time,
+            match.event_key,
+            match.winningAlliance ? match.winningAlliance : null,
+            match.alliances.red.score ?? null,
+            match.alliances.blue.score ?? null
+          );
+
+          const createTeamMatchConnections = (["red", "blue"] as const)
+            .map((alliance) =>
+              (match.alliances[alliance].team_keys ?? [])
+                .map((teamKey) => Number.parseInt(teamKey.substring(3)))
+                .map((teamNumber) =>
+                  context.env.DB.prepare(
+                    "INSERT OR IGNORE INTO TeamMatchEntry (matchKey, teamNumber, alliance, matchData) \
+                  VALUES (?, ?, ?, ?)"
+                  ).bind(match.key, teamNumber, alliance, null)
+                )
+            )
+            .flat();
+
+          return [createMatch, ...createTeamMatchConnections];
+        })
+        .flat()
     );
 
     return {

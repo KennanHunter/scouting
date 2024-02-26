@@ -13,8 +13,6 @@ export const fetchTBA = async (
       "x-tba-auth-key": key,
     },
   }).then((val) => {
-    console.log(JSON.stringify(val, null, 4));
-
     if (!val.ok) throw new Error("TBA Error: " + val.statusText);
 
     return val.json();

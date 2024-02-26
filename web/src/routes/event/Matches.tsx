@@ -48,58 +48,62 @@ export const MatchesPage: FC = () => {
 
   return (
     <Stack>
-      {matchesData.matches.map(
-        ({ matchKey, startTime, matchEntries }, index) => (
-          <Card
-            component={Link}
-            to={`/event/${matchesData.key}/matches/${matchKey}`}
-            withBorder
-            key={matchKey + index.toString()}
-          >
-            <Stack>
-              <div>
-                {extractTitleFromMatchKey(matchKey) +
-                  " - " +
-                  new Date(startTime).toUTCString()}
-              </div>
-              <Flex>
-                {matchEntries
-                  .filter((val) => val.alliance === "red")
-                  .map(({ teamNumber }) => (
-                    <Chip
-                      onClick={() =>
-                        navigate(
-                          `/event/${matchesData.key}/teams/${teamNumber}`
-                        )
-                      }
-                      variant="light"
-                      checked={false}
-                      color={"red"}
-                    >
-                      {teamNumber.toString()}
-                    </Chip>
-                  ))}
-                <Text px={"md"}>/</Text>
-                {matchEntries
-                  .filter((val) => val.alliance === "blue")
-                  .map(({ teamNumber }) => (
-                    <Chip
-                      onClick={() =>
-                        navigate(
-                          `/event/${matchesData.key}/teams/${teamNumber}`
-                        )
-                      }
-                      variant="light"
-                      checked={false}
-                      color={"blue"}
-                    >
-                      {teamNumber.toString()}
-                    </Chip>
-                  ))}
-              </Flex>
-            </Stack>
-          </Card>
+      {matchesData.matches.length ? (
+        matchesData.matches.map(
+          ({ matchKey, startTime, matchEntries }, index) => (
+            <Card
+              component={Link}
+              to={`/event/${matchesData.key}/matches/${matchKey}`}
+              withBorder
+              key={matchKey + index.toString()}
+            >
+              <Stack>
+                <div>
+                  {extractTitleFromMatchKey(matchKey) +
+                    " - " +
+                    new Date(startTime).toUTCString()}
+                </div>
+                <Flex>
+                  {matchEntries
+                    .filter((val) => val.alliance === "red")
+                    .map(({ teamNumber }) => (
+                      <Chip
+                        onClick={() =>
+                          navigate(
+                            `/event/${matchesData.key}/teams/${teamNumber}`
+                          )
+                        }
+                        variant="light"
+                        checked={false}
+                        color={"red"}
+                      >
+                        {teamNumber.toString()}
+                      </Chip>
+                    ))}
+                  <Text px={"md"}>/</Text>
+                  {matchEntries
+                    .filter((val) => val.alliance === "blue")
+                    .map(({ teamNumber }) => (
+                      <Chip
+                        onClick={() =>
+                          navigate(
+                            `/event/${matchesData.key}/teams/${teamNumber}`
+                          )
+                        }
+                        variant="light"
+                        checked={false}
+                        color={"blue"}
+                      >
+                        {teamNumber.toString()}
+                      </Chip>
+                    ))}
+                </Flex>
+              </Stack>
+            </Card>
+          )
         )
+      ) : (
+        <Text>No Matches yet</Text>
       )}
     </Stack>
   );

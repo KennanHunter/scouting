@@ -22,11 +22,11 @@ export const eventType = g
 
 const matchEntryJoinResult = z.object({
   matchKey: z.string(),
-  startTime: z.number(),
+  startTime: z.number().nullable(),
   eventKey: z.string(),
   teamNumber: z.number(),
   alliance: z.literal("red").or(z.literal("blue")),
-  matchData: z.string(),
+  matchData: z.string().nullable(),
 });
 
 export const eventResolvers: Resolvers["Event"] = {
@@ -70,7 +70,7 @@ export const eventResolvers: Resolvers["Event"] = {
       if (index === -1) {
         prev.push({
           matchKey: cur.matchKey,
-          startTime: new Date(cur.startTime),
+          startTime: cur.startTime ? new Date(cur.startTime) : null,
           eventKey: cur.eventKey,
           matchEntries: [cur],
         });

@@ -13,11 +13,11 @@ export const TBAMatchSchema = z.object({
   alliances: z.object({
     blue: z.object({
       score: z.number().optional(),
-      teams: z.string().array().optional(),
+      team_keys: z.string().array().optional(),
     }),
     red: z.object({
       score: z.number().optional(),
-      teams: z.string().array().optional(),
+      team_keys: z.string().array().optional(),
     }),
   }),
   event_key: z.string(),

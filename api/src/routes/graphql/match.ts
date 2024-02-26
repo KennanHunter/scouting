@@ -10,12 +10,12 @@ export const matchEntry = g.type("MatchEntry", {
   matchKey: g.string(),
   teamNumber: g.int(),
   alliance: allianceEnum,
-  matchData: g.string(),
+  matchData: g.string().optional(),
 });
 
 export const matchType = g.type("Match", {
   matchKey: g.string(),
-  startTime: g.ref(dateType),
+  startTime: g.ref(dateType).optional(),
   eventKey: g.string(),
   reportedWinningAlliance: g.string().optional(),
   reportedRedScore: g.int().optional(),
@@ -36,7 +36,7 @@ export const databaseTeamMatchEntry = z.object({
   matchKey: z.string(),
   teamNumber: z.number(),
   alliance: z.string(),
-  matchData: z.string(),
+  matchData: z.string().nullable(),
 });
 
 export const matchResolvers: Resolvers["Match"] = {
