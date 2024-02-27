@@ -146,7 +146,7 @@ object DataSource {
                                 },
                                 {
                                     "type": "checkbox",
-                                    "label": "Left Robot Starting Zone",
+                                    "label": "Left Robot Starting Zone (bumpers must be fully out of the red-shaded RSZ)",
                                     "name": "leave"
                                 }
                             ]
