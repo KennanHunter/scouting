@@ -316,7 +316,7 @@ object DataSource {
                                 },
                                 {
                                     "type":"checkbox",
-                                    "label": "Buddy Climb",
+                                    "label": "Provided Climb Assistance (for same chain)",
                                     "name": "buddy"
                                 }
                             ]
@@ -377,7 +377,7 @@ object DataSource {
                                 },
                                 {
                                     "type": "checkbox",
-                                    "label": "Tipped",
+                                    "label": "Tipped (completely)",
                                     "name": "tipped"
                                 },
                                 {
