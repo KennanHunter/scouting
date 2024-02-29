@@ -18,11 +18,12 @@ export const UploadPage: FC = () => {
     <>
       <Stack justify="center">
         <FileButton
-          onChange={(file) => {
-            if (!file) return;
+          onChange={(files) => {
+            if (!files) return;
 
-            setFiles(files.concat(file));
+            setFiles(files.concat(files));
           }}
+          multiple
         >
           {(props) => <Button {...props}>Add File</Button>}
         </FileButton>

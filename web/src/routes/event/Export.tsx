@@ -1,6 +1,5 @@
 import { CodeHighlight } from "@mantine/code-highlight";
 import {
-  Box,
   Button,
   Center,
   Code,
@@ -15,6 +14,7 @@ import { useParams } from "react-router-dom";
 
 const availableTargets = ["Raw Matches"] as const;
 type AvailableTarget = (typeof availableTargets)[number];
+
 export const ExportPage: FC = () => {
   const { id } = useParams();
 

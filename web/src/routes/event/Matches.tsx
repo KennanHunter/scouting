@@ -76,6 +76,7 @@ export const MatchesPage: FC = () => {
                         variant="light"
                         checked={false}
                         color={"red"}
+                        key={teamNumber}
                       >
                         {teamNumber.toString()}
                       </Chip>
@@ -90,6 +91,7 @@ export const MatchesPage: FC = () => {
                             `/event/${matchesData.key}/teams/${teamNumber}`
                           )
                         }
+                        key={teamNumber}
                         variant="light"
                         checked={false}
                         color={"blue"}
