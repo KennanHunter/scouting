@@ -34,13 +34,13 @@ fun SummaryScreen(
                         ButtonType.Outlined
                     ),
                     Triple(
-                        onShareButtonClicked,
-                        stringResource(R.string.download_json),
+                        onSubmitButtonClicked,
+                        stringResource(R.string.submit),
                         ButtonType.Filled
                     ),
                     Triple(
-                        onSubmitButtonClicked,
-                        stringResource(R.string.submit),
+                        onShareButtonClicked,
+                        stringResource(R.string.download_json),
                         ButtonType.Filled
                     )
                 )

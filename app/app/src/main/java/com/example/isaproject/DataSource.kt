@@ -260,7 +260,7 @@ object DataSource {
                             "children": [
                                 {
                                     "type": "number",
-                                    "label": "Time Climb Started",
+                                    "label": "Time Climb Started (seconds left)",
                                     "name": "climbtime",
                                     "min": "0",
                                     "max": "135"
