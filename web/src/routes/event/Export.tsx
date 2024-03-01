@@ -4,6 +4,7 @@ import {
   Center,
   Code,
   Flex,
+  List,
   Select,
   Stack,
   Tabs,
@@ -40,6 +41,7 @@ export const ExportPage: FC = () => {
       <Tabs defaultValue={"download"}>
         <Tabs.List>
           <Tabs.Tab value="download">Download</Tabs.Tab>
+          <Tabs.Tab value="excel">Excel</Tabs.Tab>
           <Tabs.Tab value="python">Python</Tabs.Tab>
           <Tabs.Tab value="graphql">GraphIql</Tabs.Tab>
         </Tabs.List>
@@ -98,6 +100,35 @@ for row in reader:
           >
             <Button>Go to GraphIQL</Button>
           </a>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="excel" p={"md"}>
+          <List>
+            <List.Item>Open Excel and navigate to the Data tab.</List.Item>
+            <List.Item>
+              Click From Web in the Get & Transform Data pane.
+            </List.Item>
+            <List.Item>
+              Provide this URL:
+              <a
+                style={{ padding: "0 1ch" }}
+                href={`${import.meta.env.VITE_API_URI}/dump/${id}/CSV/`}
+              >
+                {import.meta.env.VITE_API_URI}/dump/{id}/CSV/
+              </a>
+              and click Ok.
+            </List.Item>
+            <List.Item>
+              Change File Origin to UTF-8 and click Transform Data.
+            </List.Item>
+            <List.Item>
+              Once the window opens, click the Transform tab.
+            </List.Item>
+            <List.Item>Click Use First Row as Headers.</List.Item>
+            <List.Item>
+              Choose between Close & Load or Close & Load To.
+            </List.Item>
+          </List>
         </Tabs.Panel>
       </Tabs>
     </Stack>
