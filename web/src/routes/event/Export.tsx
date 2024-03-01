@@ -13,14 +13,30 @@ import {
 import { FC, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const availableTargets = ["Raw Matches"] as const;
+const availableTargets = ["Raw Matches", "Match Schedule"] as const;
 type AvailableTarget = (typeof availableTargets)[number];
+
+const targetToURL = (
+  target: AvailableTarget,
+  eventId: string,
+  format: "JSON" | "CSV"
+) => {
+  if (target === "Raw Matches") {
+    return `${import.meta.env.VITE_API_URI}/dump/${eventId}/${format}/`;
+  }
+  if (target === "Match Schedule") {
+    return `${import.meta.env.VITE_API_URI}/dump/schedule/${eventId}/${format}/`;
+  }
+  return "";
+};
 
 export const ExportPage: FC = () => {
   const { id } = useParams();
 
   const [exportTarget, setExportTarget] =
     useState<AvailableTarget>("Raw Matches");
+
+  if (!id) return;
 
   return (
     <Stack>
@@ -52,14 +68,14 @@ export const ExportPage: FC = () => {
               <Button
                 component="a"
                 download={true}
-                href={`${import.meta.env.VITE_API_URI}/dump/2024mock/CSV/`}
+                href={targetToURL(exportTarget, id, "CSV")}
               >
                 CSV
               </Button>
               <Button
                 component="a"
                 download={true}
-                href={`${import.meta.env.VITE_API_URI}/dump/2024mock/JSON/`}
+                href={targetToURL(exportTarget, id, "JSON")}
               >
                 JSON
               </Button>
@@ -79,7 +95,7 @@ export const ExportPage: FC = () => {
 import requests
 import csv
 
-r = requests.get("${import.meta.env.VITE_API_URI}/dump/${id}/CSV/")
+r = requests.get(${targetToURL(exportTarget, id, "CSV")})
 
 file = StringIO(r.text)
 
@@ -88,8 +104,12 @@ reader = csv.reader(file)
 header = next(reader)
 
 for row in reader:
-  print(f"Row shows team {row[9]} in match {row[8]}")
-`}
+  ${
+    {
+      "Raw Matches": `print(f"Row shows team {row[9]} in match {row[8]}")`,
+      "Match Schedule": `print(f"Team {row[2]} appears in match {row[0]}")`,
+    }[exportTarget]
+  }`}
           />
         </Tabs.Panel>
 
@@ -98,7 +118,7 @@ for row in reader:
             href={`https://${import.meta.env.VITE_API_URI}/viewer/`}
             style={{ all: "unset" }}
           >
-            <Button>Go to GraphIQL</Button>
+            <Button m={"md"}>Go to GraphIQL</Button>
           </a>
         </Tabs.Panel>
 
@@ -112,9 +132,9 @@ for row in reader:
               Provide this URL:
               <a
                 style={{ padding: "0 1ch" }}
-                href={`${import.meta.env.VITE_API_URI}/dump/${id}/CSV/`}
+                href={targetToURL(exportTarget, id, "CSV")}
               >
-                {import.meta.env.VITE_API_URI}/dump/{id}/CSV/
+                {targetToURL(exportTarget, id, "CSV")}
               </a>
               and click Ok.
             </List.Item>

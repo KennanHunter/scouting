@@ -49,8 +49,19 @@ export const MatchesPage: FC = () => {
   return (
     <Stack>
       {matchesData.matches.length ? (
-        matchesData.matches.map(
-          ({ matchKey, startTime, matchEntries }, index) => (
+        matchesData.matches
+          .sort((a, b) => {
+            const matchNumber = (key: string) => {
+              const subKey = key.split("_")[1];
+              const isQualifier = subKey[0].toLowerCase() === "q";
+              return isQualifier
+                ? Number.parseInt(subKey.substring(2))
+                : Number.MAX_SAFE_INTEGER;
+            };
+
+            return matchNumber(a.matchKey) - matchNumber(b.matchKey);
+          })
+          .map(({ matchKey, startTime, matchEntries }, index) => (
             <Card
               component={Link}
               to={`/event/${matchesData.key}/matches/${matchKey}`}
@@ -102,8 +113,7 @@ export const MatchesPage: FC = () => {
                 </Flex>
               </Stack>
             </Card>
-          )
-        )
+          ))
       ) : (
         <Text>No Matches yet</Text>
       )}
