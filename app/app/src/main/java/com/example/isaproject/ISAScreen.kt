@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -114,25 +115,36 @@ fun ISAScreen(
                     navController.popBackStack(AppScreen.MatchInfo.name, inclusive = false)
                 },
                 onShareButtonClicked = {
-                    val content = formViewModel.answersJson
+                    val content = formViewModel.answersJson.toByteArray()
                     val filename = context.getString(R.string.isa_json, LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy_HH:mm:ss")))
 
                     val directory = File(context.filesDir, "shared_files")
                     if (!directory.exists()) { directory.mkdirs() }
-                    val file = File(directory, filename)
-                    file.parentFile?.mkdirs()
-                    FileOutputStream(file).use {
-                        it.write(content.toByteArray())
+                    val sendFile = File(directory, filename)
+                    sendFile.parentFile?.mkdirs()
+                    FileOutputStream(sendFile).use {
+                        it.write(content)
                     }
-                    val fileUri = FileProvider.getUriForFile(context, "com.example.isaproject.provider", file)
+                    val uri = FileProvider.getUriForFile(context, "com.example.isaproject.provider", sendFile)
 
-                    val intent = Intent(Intent.ACTION_SEND).apply {
+                    val contentResolver = context.contentResolver
+                    val outputStream = contentResolver.openOutputStream(uri)
+                    try {
+                        outputStream?.write(content)
+                        outputStream?.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    } finally {
+                        outputStream?.close()
+                    }
+
+                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
                         type = "application/json"
-                        putExtra(Intent.EXTRA_STREAM, fileUri)
+                        putExtra(Intent.EXTRA_STREAM, uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
                     try {
-                        context.startActivity(Intent.createChooser(intent, "Share JSON File"))
+                        context.startActivity(Intent.createChooser(sendIntent, "Share JSON File"))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

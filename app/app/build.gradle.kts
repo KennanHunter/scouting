@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.isaproject"
-        minSdk = 26
+        minSdk = 29
         targetSdk = 34
         versionCode = 21
         versionName = "0.5.6"
