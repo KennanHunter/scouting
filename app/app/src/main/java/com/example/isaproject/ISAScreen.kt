@@ -1,5 +1,6 @@
 package com.example.isaproject
 
+import android.app.Activity
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -117,6 +118,7 @@ fun ISAScreen(
                 onShareButtonClicked = {
                     val content = formViewModel.answersJson.toByteArray()
                     val filename = context.getString(R.string.isa_json, LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy_HH:mm:ss")))
+                    val activity = context as? Activity
 
                     val directory = File(context.filesDir, "shared_files")
                     if (!directory.exists()) { directory.mkdirs() }
