@@ -10,7 +10,7 @@ const teamMatchEntrySchema = z.object({
   teamNumber: z.number(),
   alliance: allianceType,
   matchData: z.string().optional().nullable(),
-  startTime: z.number(),
+  startTime: z.number().nullable(),
   eventKey: z.string(),
   reportedWinningAlliance: allianceType.optional().nullable(),
   reportedRedScore: z.number().optional().nullable(),
