@@ -9,10 +9,10 @@ const teamMatchEntrySchema = z.object({
   matchKey: z.string(),
   teamNumber: z.number(),
   alliance: allianceType,
-  matchData: z.string().optional(),
+  matchData: z.string().optional().nullable(),
   startTime: z.number(),
   eventKey: z.string(),
-  reportedWinningAlliance: allianceType.optional(),
+  reportedWinningAlliance: allianceType.optional().nullable(),
   reportedRedScore: z.number().optional(),
   reportedBlueScore: z.number().optional(),
 });
@@ -30,9 +30,9 @@ export const dumpHandler: RouteHandler = async (c) => {
     .array()
     .parse(results)
     .map((row) => {
-      const matchDataObj = matchDataSchema.parse(
-        JSON.parse(row["matchData"] ?? "{}")
-      );
+      if (!row["matchData"]) return;
+
+      const matchDataObj = matchDataSchema.parse(JSON.parse(row["matchData"]));
 
       const matchRow = {
         ...row,
@@ -42,7 +42,8 @@ export const dumpHandler: RouteHandler = async (c) => {
       delete matchRow.matchData;
 
       return matchRow;
-    });
+    })
+    .filter(Boolean);
 
   const date = new Date();
 
