@@ -4,7 +4,7 @@ export const TBAEventSchema = z.object({
   address: z.string(),
   city: z.string(),
   country: z.string(),
-  district: z.null(),
+  district: z.unknown(),
   division_keys: z.string().array(),
   end_date: z.string(),
   event_code: z.string(),
@@ -29,6 +29,6 @@ export const TBAEventSchema = z.object({
   timezone: z.string(),
   webcasts: z.object({ channel: z.string(), type: z.string() }).array(),
   website: z.string(),
-  week: z.null(),
+  week: z.number().nullable(),
   year: z.number(),
 });
