@@ -70,6 +70,7 @@ data class MatchDataC(
 
 @Serializable
 data class Match(
+    val matchKey: String,
     val matchEntries: List<MatchEntry>
 )
 
@@ -194,8 +195,17 @@ fun <T : Any> SingleEventEffect(
 }
 
 // From Baeldung
-inline fun <reified T : Enum<T>> enumByNameIgnoreCase(input: String, default: T? = null): T? {
+inline fun <reified T : Enum<T>> enumByNameIgnoreCase(
+    input: String,
+    default: T? = null
+): T? {
     return enumValues<T>().firstOrNull { it.name.equals(input, true) } ?: default
+}
+
+fun extractMatchNumberFromKey(key: String): Int {
+    val subKey = key.split("_")[1]
+    val isQualifier = subKey[0].lowercaseChar() == 'q'
+    return if (isQualifier) subKey.substring(2).toInt() else Int.MAX_VALUE
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -268,7 +278,8 @@ fun BottomNavBar(
                             Text(it.second)
                         }
                     }
-                    ButtonType.Filled -> {
+
+                    ButtonType.Filled   -> {
                         Button(
                             onClick = it.first,
                             modifier = Modifier

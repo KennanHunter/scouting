@@ -442,7 +442,7 @@ class FormViewModel : ViewModel() {
                 runBlocking {
                     val response = client.request("https://api.scout.kennan.tech/graphql/") {
                         method = HttpMethod.Post
-                        setBody("{ \"query\": \"{ getEvent(key: \\\"${eventCode}\\\") { matches { matchEntries { teamNumber, alliance }}}}\" }")
+                        setBody("{ \"query\": \"{ getEvent(key: \\\"${eventCode}\\\") { matches { matchKey, matchEntries { teamNumber, alliance }}}}\" }")
                         contentType(ContentType.Application.Json)
                     }
 
@@ -453,7 +453,11 @@ class FormViewModel : ViewModel() {
 
                     val responseBody: String = response.body()
                     Log.d("GqlResponse", responseBody)
-                    val parsedResponse = Json.decodeFromString<MatchDataA>(responseBody).data.getEvent.matches
+
+                    val parsedResponse = Json.decodeFromString<MatchDataA>(responseBody).data.getEvent.matches.sortedBy {
+                        extractMatchNumberFromKey(it.matchKey)
+                    }
+
                     Log.d("GqlResponse", parsedResponse.toString())
                     val finalResponse = mutableListOf<Pair<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>>>()
 
