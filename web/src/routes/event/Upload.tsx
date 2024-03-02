@@ -51,8 +51,12 @@ export const UploadPage: FC = () => {
 
             Promise.all(
               files.map(async (file) => {
-                const text = await file.text();
+                const text = (await file.text()).replace(
+                  /[\u0000-\u001F\u007F-\u009F]/g,
+                  " "
+                );
 
+                console.log(text);
                 try {
                   JSON.parse(text);
                 } catch (error) {
