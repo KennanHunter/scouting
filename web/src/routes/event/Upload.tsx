@@ -21,7 +21,7 @@ export const UploadPage: FC = () => {
           onChange={(files) => {
             if (!files) return;
 
-            setFiles(files.concat(files));
+            setFiles(files);
           }}
           multiple
         >
@@ -60,7 +60,7 @@ export const UploadPage: FC = () => {
                 }
 
                 return apiClient(
-                  `mutation { addMatchEntry(eventKey: ${id}, data: ${text}) { matchKey }}`
+                  `mutation { addMatchEntry(eventKey: "${id}", data: """${text}""") { matchKey }}`
                 )
                   .then((res) => {
                     const errors: { message: string } = (res as any)["errors"];
