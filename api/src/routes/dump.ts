@@ -114,7 +114,7 @@ export const dumpHandler: RouteHandler = async (c) => {
         if (columnLabel === "startTime") {
           const startTime = columnValue as (typeof row)["startTime"];
 
-          return convertEpochToExcel(startTime);
+          return convertEpochToExcel(startTime ?? 0);
         }
 
         return columnValue;
