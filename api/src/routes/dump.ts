@@ -13,8 +13,8 @@ const teamMatchEntrySchema = z.object({
   startTime: z.number(),
   eventKey: z.string(),
   reportedWinningAlliance: allianceType.optional().nullable(),
-  reportedRedScore: z.number().optional(),
-  reportedBlueScore: z.number().optional(),
+  reportedRedScore: z.number().optional().nullable(),
+  reportedBlueScore: z.number().optional().nullable(),
 });
 
 export const dumpHandler: RouteHandler = async (c) => {
@@ -107,6 +107,8 @@ export const dumpHandler: RouteHandler = async (c) => {
 
     const rows = matchEntries.map((row) => {
       const columnValues = header.map((columnLabel) => {
+        if (!row) throw new Error("empty row not filtered out");
+
         const columnValue = row[columnLabel];
 
         if (columnLabel === "startTime") {
