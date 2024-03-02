@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
@@ -307,51 +308,54 @@ class FormViewModel : ViewModel() {
         get() {
             return (
                     answers +
-                    ("position" to currentPosition.name) +
-                    ("scoutname" to currentScout) +
-                    ("matchnumber" to matchNumber) +
-                    ("teamnumber" to (teamNumber ?: 0)) +
-                    ("noshow" to noShow)
-            ).entries.toSortedSet(compareBy { it.key }).joinToString(
-                prefix = "{\n", postfix = "\n}", separator = ",\n"
-            ) {
-                val element: FormElement? = run {
-                    for (j in form) {
-                        for (k in j.page) {
-                            if (k.name == it.key) return@run k
+                            ("position" to currentPosition.name) +
+                            ("scoutname" to currentScout) +
+                            ("matchnumber" to matchNumber) +
+                            ("teamnumber" to (teamNumber ?: 0)) +
+                            ("noshow" to noShow)
+                    ).entries.toSortedSet(compareBy { it.key }).joinToString(
+                    prefix = "{\n", postfix = "\n}", separator = ",\n"
+                ) {
+                    val element: FormElement? = run {
+                        for (j in form) {
+                            for (k in j.page) {
+                                if (k.name == it.key) return@run k
+                            }
                         }
+                        return@run null
                     }
-                    return@run null
-                }
-                var value = it.value
-                if (value is Int && (value == Int.MIN_VALUE || value == Int.MAX_VALUE)) {
-                    value = 0
-                }
-                if (element != null && value::class.simpleName != element.exportAs.name) {
-                    value = when (element.exportAs) {
-                        DataType.Int     -> when (value) {
-                            is Boolean -> if (value) 1 else 0
-                            is String  -> value.toIntOrNull() ?: 0
-                            else       -> value.toString().toIntOrNull() ?: 0 }
-                        DataType.Boolean -> when (value) {
-                            is Int    -> value > 0
-                            is String -> value.toBooleanStrictOrNull() ?: false
-                            else      -> value.toString().toBooleanStrictOrNull() ?: false
-                        }
-                        DataType.String  -> value.toString()
+                    var value = it.value
+                    if (value is Int && (value == Int.MIN_VALUE || value == Int.MAX_VALUE)) {
+                        value = 0
                     }
-                }
+                    if (element != null && value::class.simpleName != element.exportAs.name) {
+                        value = when (element.exportAs) {
+                            DataType.Int     -> when (value) {
+                                is Boolean -> if (value) 1 else 0
+                                is String  -> value.toIntOrNull() ?: 0
+                                else       -> value.toString().toIntOrNull() ?: 0
+                            }
 
-                "    \"" + it.key + "\": " + if (it.value is Int || it.value is Boolean) {
-                    ""
-                } else {
-                    "\""
-                } + value.toString() + if (it.value is Int || it.value is Boolean) {
-                    ""
-                } else {
-                    "\""
+                            DataType.Boolean -> when (value) {
+                                is Int    -> value > 0
+                                is String -> value.toBooleanStrictOrNull() ?: false
+                                else      -> value.toString().toBooleanStrictOrNull() ?: false
+                            }
+
+                            DataType.String  -> value.toString()
+                        }
+                    }
+
+                    "    \"" + it.key + "\": " + if (it.value is Int || it.value is Boolean) {
+                        ""
+                    } else {
+                        "\""
+                    } + value.toString() + if (it.value is Int || it.value is Boolean) {
+                        ""
+                    } else {
+                        "\""
+                    }
                 }
-            }
         }
 
 
@@ -382,6 +386,7 @@ class FormViewModel : ViewModel() {
                 null
             }
         } ?: _teamNumber.toIntOrNull()
+
     fun setTeamNumber(value: String) {
         _teamNumber = value
     }
@@ -406,14 +411,18 @@ class FormViewModel : ViewModel() {
     private var _eventCode by mutableStateOf("")
     val eventCode: String
         get() = _eventCode
+
     fun setEventCode(code: String) {
         _eventCode = code
     }
 
-    private var _matches: List<Pair<Triple<Int, Int, Int>, Triple<Int, Int, Int>>>? by mutableStateOf(null)
-    val matches: List<Pair<Triple<Int, Int, Int>, Triple<Int, Int, Int>>>?
+    private var _matches: List<Pair<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>>>? by mutableStateOf(null)
+    val matches: List<Pair<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>>>?
         get() = _matches
+
     fun fetchMatches() {
+        setEventCode(eventCode.trim())
+
         val client = HttpClient(CIO)
 
 
@@ -429,27 +438,47 @@ class FormViewModel : ViewModel() {
                 )
             )
         } else {
-            runBlocking {
-                val response = client.request("https://api.scout.kennan.tech/graphql/") {
-                    method = HttpMethod.Get
-                    setBody("{ query: \"{ getEvent(key: \"${eventCode}\") { matches { matchEntries { teamNumber, alliance }}}}\" }")
-                    contentType(ContentType.Application.Json)
+            try {
+                runBlocking {
+                    val response = client.request("https://api.scout.kennan.tech/graphql/") {
+                        method = HttpMethod.Post
+                        setBody("{ \"query\": \"{ getEvent(key: \\\"${eventCode}\\\") { matches { matchEntries { teamNumber, alliance }}}}\" }")
+                        contentType(ContentType.Application.Json)
+                    }
+
+                    if (!response.status.isSuccess()) {
+                        SideEffect.ShowToast("API Match Schedule Sync failed")
+                        return@runBlocking null
+                    }
+
+                    val responseBody: String = response.body()
+                    Log.d("GqlResponse", responseBody)
+                    val parsedResponse = Json.decodeFromString<MatchDataA>(responseBody).data.getEvent.matches
+                    Log.d("GqlResponse", parsedResponse.toString())
+                    val finalResponse = mutableListOf<Pair<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>>>()
+
+                    for (i in parsedResponse) {
+                        val red = mutableListOf<Int>()
+                        val blue = mutableListOf<Int>()
+                        for (j in i.matchEntries) {
+                            when (j.alliance) {
+                                "red"  -> red.add(j.teamNumber)
+                                "blue" -> blue.add(j.teamNumber)
+                            }
+                        }
+                        finalResponse.add(
+                            Pair(
+                                Triple(red.getOrNull(0), red.getOrNull(1), red.getOrNull(2)),
+                                Triple(blue.getOrNull(0), blue.getOrNull(1), blue.getOrNull(2))
+                            )
+                        )
+                    }
+
+                    finalResponse
                 }
-
-                if (!response.status.isSuccess()) {
-                    SideEffect.ShowToast("API Match Schedule Sync failed")
-                    return@runBlocking null
-                }
-
-                val responseBody: String = response.body()
-
-                println(responseBody)
-
-                listOf(
-                    Pair(
-                        Triple(10, 10, 10), Triple(10, 10, 10)
-                    )
-                )
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+                return
             }
         }
     }

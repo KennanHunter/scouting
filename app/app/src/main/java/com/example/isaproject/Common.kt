@@ -54,6 +54,32 @@ enum class DataType {
 }
 
 @Serializable
+data class MatchDataA(
+    val data: MatchDataB
+)
+
+@Serializable
+data class MatchDataB(
+    val getEvent: MatchDataC
+)
+
+@Serializable
+data class MatchDataC(
+    val matches: List<Match>
+)
+
+@Serializable
+data class Match(
+    val matchEntries: List<MatchEntry>
+)
+
+@Serializable
+data class MatchEntry(
+    val teamNumber: Int,
+    val alliance: String
+)
+
+@Serializable
 data class SerializableFormPage(
     val name: String,
     val page: List<SerializableFormElement>

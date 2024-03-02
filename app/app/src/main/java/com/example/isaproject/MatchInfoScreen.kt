@@ -82,10 +82,17 @@ fun MatchInfoScreen(
                 context = context
             )
             if (formViewModel.eventCode != "") {
-                Text(
-                    text = stringResource(R.string.team_number_is, formViewModel.teamNumber?.toString() ?: ""),
-                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
-                )
+                if (formViewModel.teamNumber != null) {
+                    Text(
+                        text = stringResource(R.string.team_number_is, formViewModel.teamNumber?.toString() ?: ""),
+                        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.team_number_is, ""),
+                        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+                    )
+                }
             } else {
                 NumberInput(
                     value = formViewModel.teamNumber ?: Int.MAX_VALUE,
