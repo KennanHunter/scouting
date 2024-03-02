@@ -32,6 +32,7 @@ export const UploadPage: FC = () => {
 
         {files.map((file) => (
           <Chip
+            key={file.name}
             checked={false}
             onClick={() => {
               setFiles(

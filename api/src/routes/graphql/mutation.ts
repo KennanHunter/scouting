@@ -1,7 +1,7 @@
 // cspell:disable
 
 import { g } from "garph";
-import { GraphQLError } from "graphql";
+import { GraphQLError, graphql } from "graphql";
 import { z } from "zod";
 import { Resolvers } from ".";
 import { fetchTBA } from "../../connections/thebluealliance/client";
@@ -205,7 +205,7 @@ export const mutationResolvers: Resolvers["Mutation"] = {
     if (!matchDataParseResult.success)
       throw new GraphQLError("Unrecognized data");
 
-    context.env.DB.batch([
+    const matchInsertResults = await context.env.DB.batch([
       context.env.DB.prepare(
         "INSERT OR IGNORE INTO Matches \
       (matchKey, eventKey) \
@@ -219,9 +219,21 @@ export const mutationResolvers: Resolvers["Mutation"] = {
         matchEntry.matchKey,
         matchEntry.teamNumber,
         matchEntry.alliance,
-        JSON.stringify(matchDataParseResult.data)
+        data
       ),
     ]);
+
+    matchInsertResults.forEach((res, i) =>
+      console.log(JSON.stringify({ [i]: res }, null, 4))
+    );
+
+    const success = matchInsertResults.every((val) => val.success);
+    if (!success)
+      throw new GraphQLError(
+        matchInsertResults
+          .map((val) => (val.error ? val.error : ""))
+          .join(",\n ")
+      );
 
     return matchEntry;
   },
