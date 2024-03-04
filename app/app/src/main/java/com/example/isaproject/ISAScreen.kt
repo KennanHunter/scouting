@@ -2,6 +2,8 @@ package com.example.isaproject
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -13,7 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -130,15 +131,25 @@ fun ISAScreen(
                     val uri = FileProvider.getUriForFile(context, "com.example.isaproject.provider", sendFile)
 
                     val contentResolver = context.contentResolver
-                    val outputStream = contentResolver.openOutputStream(uri)
-                    try {
-                        outputStream?.write(content)
-                        outputStream?.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    } finally {
-                        outputStream?.close()
-                    }
+//                    contentResolver.openInputStream(uri)?.use { inputStream ->
+//                        FileOutputStream(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename)).use { outputStream ->
+//                            inputStream.copyTo(outputStream)
+//                        }
+//                    }
+
+//                    val outputStream = contentResolver.openOutputStream(uri)
+//                    try {
+//                        outputStream?.write(content)
+//                        outputStream?.close()
+//                    } catch (e: IOException) {
+//                        e.printStackTrace()
+//                    } finally {
+//                        outputStream?.close()
+//                    }
+
+                    val downloadUri = Uri.withAppendedPath(MediaStore.Downloads.EXTERNAL_CONTENT_URI, filename)
+                    val writeRequest = MediaStore.createWriteRequest(contentResolver, listOf(downloadUri))
+                    activity?.startIntentSenderForResult(writeRequest.intentSender, 1, null, 0, 0, 0)
 
                     val sendIntent = Intent(Intent.ACTION_SEND).apply {
                         type = "application/json"
