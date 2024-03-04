@@ -1,9 +1,10 @@
 package com.example.isaproject
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
-import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -121,16 +122,62 @@ fun ISAScreen(
                     val filename = context.getString(R.string.isa_json, LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy_HH:mm:ss")))
                     val activity = context as? Activity
 
-                    val directory = File(context.filesDir, "shared_files")
-                    if (!directory.exists()) { directory.mkdirs() }
-                    val sendFile = File(directory, filename)
+                    val sendDirectory = File(context.filesDir, "shared_files")
+                    if (!sendDirectory.exists()) { sendDirectory.mkdirs() }
+                    val sendFile = File(sendDirectory, filename)
                     sendFile.parentFile?.mkdirs()
                     FileOutputStream(sendFile).use {
                         it.write(content)
                     }
-                    val uri = FileProvider.getUriForFile(context, "com.example.isaproject.provider", sendFile)
+                    val uri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", sendFile)
+                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "application/json"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    try {
+                        context.startActivity(Intent.createChooser(sendIntent, "Share JSON File"))
+                    } catch (e: Exception) {
+                        Log.e("JsonExport", "Error sharing JSON file", e)
+                    }
 
-                    val contentResolver = context.contentResolver
+//                    val saveDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+//                    if (!saveDirectory.exists()) { saveDirectory.mkdirs() }
+//                    val downloadFile = File(saveDirectory, filename)
+//                    downloadFile.parentFile?.mkdirs()
+//                    FileOutputStream(downloadFile).use {
+//                        it.write(content)
+//                    }
+//                    val downloadIntent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+//                        type = "application/json"
+//                        putExtra(Intent.EXTRA_STREAM, uri)
+//                    }
+//                    try {
+//                        context.startActivity(Intent.createChooser(downloadIntent, "Download JSON File"))
+//                    } catch (e: Exception) {
+//                        Log.e("JsonExport", "Error downloading JSON file", e)
+//                    }
+
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                    }
+                    val downloadUri = context.applicationContext.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+                    if (downloadUri != null) {
+//                        val dst = context.applicationContext.contentResolver.openInputStream(downloadUri)
+//
+//                        dst?.close()
+                        val downloadIntent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                            type = "application/json"
+                            putExtra(Intent.EXTRA_STREAM, uri)
+                        }
+                        try {
+                            context.startActivity(Intent.createChooser(downloadIntent, "Download JSON File"))
+                        } catch (e: Exception) {
+                            Log.e("JsonExport", "Error downloading JSON file", e)
+                        }
+                    }
+
+//                    val contentResolver = context.contentResolver
 //                    contentResolver.openInputStream(uri)?.use { inputStream ->
 //                        FileOutputStream(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename)).use { outputStream ->
 //                            inputStream.copyTo(outputStream)
@@ -147,20 +194,14 @@ fun ISAScreen(
 //                        outputStream?.close()
 //                    }
 
-                    val downloadUri = Uri.withAppendedPath(MediaStore.Downloads.EXTERNAL_CONTENT_URI, filename)
-                    val writeRequest = MediaStore.createWriteRequest(contentResolver, listOf(downloadUri))
-                    activity?.startIntentSenderForResult(writeRequest.intentSender, 1, null, 0, 0, 0)
-
-                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "application/json"
-                        putExtra(Intent.EXTRA_STREAM, uri)
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    try {
-                        context.startActivity(Intent.createChooser(sendIntent, "Share JSON File"))
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+//                    val downloadUri = Uri.withAppendedPath(MediaStore.Downloads.EXTERNAL_CONTENT_URI, filename)
+//                    Log.d("JsonDownload", "Download URI: $downloadUri, Filename: $filename")
+//                    try {
+//                        val writeRequest = MediaStore.createWriteRequest(contentResolver, listOf(downloadUri))
+//                        activity?.startIntentSenderForResult(writeRequest.intentSender, 1, null, 0, 0, 0)
+//                    } catch (e: Exception) {
+//                        Log.e("JsonDownload", "Error creating write request or starting intent sender", e)
+//                    }
                 }
             )
         }
