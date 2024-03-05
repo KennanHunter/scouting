@@ -8,14 +8,11 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import java.io.File
-import java.io.FileOutputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -122,24 +119,77 @@ fun ISAScreen(
                     val filename = context.getString(R.string.isa_json, LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy_HH:mm:ss")))
                     val activity = context as? Activity
 
-                    val sendDirectory = File(context.filesDir, "shared_files")
-                    if (!sendDirectory.exists()) { sendDirectory.mkdirs() }
-                    val sendFile = File(sendDirectory, filename)
-                    sendFile.parentFile?.mkdirs()
-                    FileOutputStream(sendFile).use {
-                        it.write(content)
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
                     }
-                    val uri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", sendFile)
-                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "application/json"
-                        putExtra(Intent.EXTRA_STREAM, uri)
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                    val downloadUri = context.applicationContext.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+
+                    if (downloadUri != null) {
+                        val outputStream = context.applicationContext.contentResolver.openOutputStream(downloadUri)
+                        outputStream?.use {
+                            it.write(content)
+                        }
+
+                        // Use Intent.ACTION_VIEW or Intent.ACTION_SEND for downloading or opening the file
+                        val downloadIntent = Intent(Intent.ACTION_VIEW).apply {
+                            type = "application/json"
+                            putExtra(Intent.EXTRA_STREAM, downloadUri)
+                        }
+
+                        try {
+                            context.startActivity(Intent.createChooser(downloadIntent, "Download JSON File"))
+                        } catch (e: Exception) {
+                            Log.e("JsonExport", "Error downloading JSON file", e)
+                        }
                     }
-                    try {
-                        context.startActivity(Intent.createChooser(sendIntent, "Share JSON File"))
-                    } catch (e: Exception) {
-                        Log.e("JsonExport", "Error sharing JSON file", e)
-                    }
+
+
+
+
+
+//                    val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+//                    if (!directory.exists()) { directory.mkdirs() }
+//                    val file = File(directory, filename)
+//                    file.parentFile?.mkdirs()
+//                    FileOutputStream(file).use {
+//                        it.write(content)
+//                    }
+//                    val uri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
+//                    val intent = Intent(Intent.ACTION_SEND).apply {
+//                        type = "application/json"
+//                        putExtra(Intent.EXTRA_STREAM, uri)
+//                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+//                    }
+//                    try {
+//                        context.startActivity(Intent.createChooser(intent, "Share JSON File"))
+//                    } catch (e: Exception) {
+//                        Log.e("JSON Sharing", "Error sharing JSON file", e)
+//                    }
+
+
+
+
+
+
+//                    val sendDirectory = File(context.filesDir, "shared_files")
+//                    if (!sendDirectory.exists()) { sendDirectory.mkdirs() }
+//                    val sendFile = File(sendDirectory, filename)
+//                    sendFile.parentFile?.mkdirs()
+//                    FileOutputStream(sendFile).use {
+//                        it.write(content)
+//                    }
+//                    val uri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", sendFile)
+//                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+//                        type = "application/json"
+//                        putExtra(Intent.EXTRA_STREAM, uri)
+//                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+//                    }
+//                    try {
+//                        context.startActivity(Intent.createChooser(sendIntent, "Share JSON File"))
+//                    } catch (e: Exception) {
+//                        Log.e("JsonExport", "Error sharing JSON file", e)
+//                    }
 
 //                    val saveDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 //                    if (!saveDirectory.exists()) { saveDirectory.mkdirs() }
@@ -158,24 +208,28 @@ fun ISAScreen(
 //                        Log.e("JsonExport", "Error downloading JSON file", e)
 //                    }
 
-                    val contentValues = ContentValues().apply {
-                        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
-                    }
-                    val downloadUri = context.applicationContext.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-                    if (downloadUri != null) {
-//                        val dst = context.applicationContext.contentResolver.openInputStream(downloadUri)
-//
-//                        dst?.close()
-                        val downloadIntent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                            type = "application/json"
-                            putExtra(Intent.EXTRA_STREAM, uri)
-                        }
-                        try {
-                            context.startActivity(Intent.createChooser(downloadIntent, "Download JSON File"))
-                        } catch (e: Exception) {
-                            Log.e("JsonExport", "Error downloading JSON file", e)
-                        }
-                    }
+
+
+
+
+//                    val contentValues = ContentValues().apply {
+//                        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+//                    }
+//                    val downloadUri = context.applicationContext.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+//                    if (downloadUri != null) {
+////                        val dst = context.applicationContext.contentResolver.openInputStream(downloadUri)
+////
+////                        dst?.close()
+//                        val downloadIntent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+//                            type = "application/json"
+//                            putExtra(Intent.EXTRA_STREAM, uri)
+//                        }
+//                        try {
+//                            context.startActivity(Intent.createChooser(downloadIntent, "Download JSON File"))
+//                        } catch (e: Exception) {
+//                            Log.e("JsonExport", "Error downloading JSON file", e)
+//                        }
+//                    }
 
 //                    val contentResolver = context.contentResolver
 //                    contentResolver.openInputStream(uri)?.use { inputStream ->
