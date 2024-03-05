@@ -4,3 +4,4 @@ node_modules
 
 # We preserve .idea in the app directory but not in root
 .idea
+app/.idea/deploymentTargetDropDown.xml
