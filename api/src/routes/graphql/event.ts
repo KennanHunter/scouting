@@ -81,6 +81,12 @@ export const eventResolvers: Resolvers["Event"] = {
       return prev;
     }, []);
 
-    return matches;
+    const matchNumber = (key: string) =>
+      Number.parseInt(key.split("_")[1].substring(2));
+
+    return matches.sort(
+      (matchA, matchB) =>
+        matchNumber(matchA.matchKey) - matchNumber(matchB.matchKey)
+    );
   },
 };

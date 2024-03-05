@@ -105,23 +105,37 @@ export const dumpHandler: RouteHandler = async (c) => {
       "comments",
     ] as (keyof (typeof matchEntries)[number])[];
 
-    const rows = matchEntries.map((row) => {
-      const columnValues = header.map((columnLabel) => {
-        if (!row) throw new Error("empty row not filtered out");
+    const rows = matchEntries
+      .sort((a, b) => {
+        const matchNumber = (key: string | undefined) => {
+          if (!key) return Number.MIN_SAFE_INTEGER;
 
-        const columnValue = row[columnLabel];
+          const subKey = key.split("_")[1];
+          const isQualifier = subKey[0].toLowerCase() === "q";
+          return isQualifier
+            ? Number.parseInt(subKey.substring(2))
+            : Number.MAX_SAFE_INTEGER;
+        };
 
-        if (columnLabel === "startTime") {
-          const startTime = columnValue as (typeof row)["startTime"];
+        return matchNumber(a?.matchKey) - matchNumber(b?.matchKey);
+      })
+      .map((row) => {
+        const columnValues = header.map((columnLabel) => {
+          if (!row) throw new Error("empty row not filtered out");
 
-          return convertEpochToExcel(startTime ?? 0);
-        }
+          const columnValue = row[columnLabel];
 
-        return columnValue;
+          if (columnLabel === "startTime") {
+            const startTime = columnValue as (typeof row)["startTime"];
+
+            return convertEpochToExcel(startTime ?? 0);
+          }
+
+          return columnValue;
+        });
+
+        return columnValues.map(escapeValue).join(",");
       });
-
-      return columnValues.map(escapeValue).join(",");
-    });
 
     return c.body(
       [header.map(escapeValue).join(","), ...rows].join("\n"),
