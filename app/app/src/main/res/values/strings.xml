@@ -13,7 +13,7 @@
     <string name="maximum_value_is">"Maximum value is %s"</string>
     <string name="now_scouting">"Now Scouting: %1$s / %2$s"</string>
     <string name="submit_quickshare">Download &amp; Submit JSON via Quickshare</string>
-    <string name="isa_json">ISA_JSON_%1$s.json</string>
+    <string name="isa_json">ISA_%1$s_%2$d_%3$s_%4$d.json</string>
     <string name="must_be_an_integer">Must be an integer</string>
     <string name="select_device">Select Device</string>
     <string name="scouter_position">Scouter Position</string>

@@ -16,8 +16,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import java.io.File
 import java.io.FileOutputStream
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun ISAScreen(
@@ -120,7 +118,13 @@ fun ISAScreen(
                 onShareButtonClicked = {
                     val activity = context as? Activity
                     val content = formViewModel.answersJson.toByteArray()
-                    val filename = context.getString(R.string.isa_json, LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy_HH:mm:ss")))
+                    val filename = context.getString(
+                        R.string.isa_json,
+                        formViewModel.eventCode,
+                        formViewModel.matchNumber,
+                        formViewModel.currentPosition.name,
+                        formViewModel.teamNumber ?: 0
+                    )
 
                     val contentValues = ContentValues().apply {
                         put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
@@ -137,7 +141,7 @@ fun ISAScreen(
                         }
 
                         try {
-                            // DO NOT REMOVE THE FOLLOWING COMMENT!!!!! The app will crash otherwise
+                            // DO NOT REMOVE THE FOLLOWING LINE!!!!! The app will crash otherwise
 //                            context.startActivity(downloadIntent)
                             activity?.startActivity(downloadIntent)
                         } catch (e: Exception) {
@@ -147,7 +151,13 @@ fun ISAScreen(
                 },
                 onQuickshareButtonClicked = {
                     val content = formViewModel.answersJson.toByteArray()
-                    val filename = context.getString(R.string.isa_json, LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy_HH:mm:ss")))
+                    val filename = context.getString(
+                        R.string.isa_json,
+                        formViewModel.eventCode,
+                        formViewModel.matchNumber,
+                        formViewModel.currentPosition.name,
+                        formViewModel.teamNumber ?: 0
+                    )
 
                     val sendDirectory = File(context.filesDir, "shared_files")
                     if (!sendDirectory.exists()) { sendDirectory.mkdirs() }
