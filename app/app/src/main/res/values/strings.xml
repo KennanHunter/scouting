@@ -2,7 +2,7 @@
     <string name="app_name">Indiana Scouting Alliance App</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="submit">New Match</string>
+    <string name="new_match">New Match</string>
     <string name="connect">Connect</string>
     <string name="loading">Loading…</string>
     <string name="no_device_selected">No Device Selected</string>
@@ -12,7 +12,7 @@
     <string name="minimum_value_is">"Minimum value is %s"</string>
     <string name="maximum_value_is">"Maximum value is %s"</string>
     <string name="now_scouting">"Now Scouting: %1$s / %2$s"</string>
-    <string name="download_json">Submit JSON</string>
+    <string name="submit_quickshare">Download &amp; Submit JSON via Quickshare</string>
     <string name="isa_json">ISA_JSON_%1$s.json</string>
     <string name="must_be_an_integer">Must be an integer</string>
     <string name="select_device">Select Device</string>
@@ -27,4 +27,11 @@
     <string name="invalid_event_code">Invalid Event Code</string>
     <string name="team_number_is">"Team Number: %s"</string>
     <string name="team_number">Team Number</string>
+    <string name="preview_json">Preview JSON</string>
+    <string name="submit_qrcode"><![CDATA[Download & Submit via QR Code]]></string>
+    <string name="done">Done</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="new_match_confirmation_title">Are you sure you want to start a new match?</string>
+    <string name="new_match_confirmation_description">This will clear the form completely. Your data will be lost if it has not been submitted.</string>
 </resources>
