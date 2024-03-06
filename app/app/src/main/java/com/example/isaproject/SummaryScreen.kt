@@ -1,14 +1,14 @@
 package com.example.isaproject
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -17,34 +17,15 @@ import androidx.compose.ui.res.stringResource
 fun SummaryScreen(
     formViewModel: FormViewModel,
     onPreviousButtonClicked: () -> Unit,
-    onSubmitButtonClicked: () -> Unit,
+    onNewMatchButtonClicked: () -> Unit,
     onShareButtonClicked: () -> Unit,
+    onQuickshareButtonClicked: () -> Unit,
+    onQrcodeButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
             PageTitle(text = AppScreen.Summary.label)
-        },
-        bottomBar = {
-            BottomNavBar(
-                buttons = listOf(
-                    Triple(
-                        onPreviousButtonClicked,
-                        stringResource(R.string.previous),
-                        ButtonType.Outlined
-                    ),
-                    Triple(
-                        onSubmitButtonClicked,
-                        stringResource(R.string.submit),
-                        ButtonType.Filled
-                    ),
-                    Triple(
-                        onShareButtonClicked,
-                        stringResource(R.string.download_json),
-                        ButtonType.Filled
-                    )
-                )
-            )
         },
         modifier = modifier
     ) { innerPadding ->
@@ -52,13 +33,65 @@ fun SummaryScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(all = dimensionResource(R.dimen.margin))
-                .verticalScroll(rememberScrollState())
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = formViewModel.answersJson,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Button(
+                onClick = {
+                    onShareButtonClicked()
+                    onQuickshareButtonClicked()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = dimensionResource(R.dimen.margin))
+            ) {
+                Text(stringResource(R.string.submit_quickshare))
+            }
+            Button(
+                onClick = {
+                    onShareButtonClicked()
+                    onQrcodeButtonClicked()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = dimensionResource(R.dimen.margin))
+            ) {
+                Text(stringResource(R.string.submit_qrcode))
+            }
+            Button(
+                onClick = {
+                    /*TODO*/
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = dimensionResource(R.dimen.margin))
+            ) {
+                Text(stringResource(R.string.preview_json))
+            }
+            Row {
+                OutlinedButton(
+                    onClick = onPreviousButtonClicked,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(stringResource(R.string.previous))
+                }
+                Spacer(
+                    modifier = Modifier.width(dimensionResource(R.dimen.margin))
+                )
+                Button(
+                    onClick = onNewMatchButtonClicked,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(stringResource(R.string.new_match))
+                }
+            }
+//            Text(
+//                text = formViewModel.answersJson,
+//                style = MaterialTheme.typography.bodyLarge,
+//                modifier = Modifier.fillMaxWidth()
+//            )
         }
     }
 }

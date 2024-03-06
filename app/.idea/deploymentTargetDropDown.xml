@@ -10,12 +10,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Samsung_Galaxy_Tab_A_8.0_2019_API_34.avd" />
+                  <value value="$USER_HOME$/.android/avd/Medium_Tablet_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-04T20:47:33.584635Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-05T23:34:44.517038Z" />
         </State>
       </entry>
     </value>
