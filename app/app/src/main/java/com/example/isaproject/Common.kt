@@ -1,16 +1,29 @@
 package com.example.isaproject
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
+import com.google.zxing.WriterException
+import com.google.zxing.qrcode.QRCodeWriter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 enum class ConnectionStatus {
@@ -292,5 +305,52 @@ fun BottomNavBar(
                 }
             }
         }
+    }
+}
+
+// From https://dev.to/devniiaddy/qr-code-with-jetpack-compose-47e
+@Composable
+fun rememberQrBitmapPainter(
+    content: String,
+    size: Dp = 150.dp,
+    padding: Dp = 0.dp
+): BitmapPainter {
+    val density = LocalDensity.current
+    val sizePx = with(density) { size.roundToPx() }
+    val paddingPx = with(density) { padding.roundToPx() }
+
+    var bitmap by remember(content) { mutableStateOf<Bitmap?>(null) }
+    LaunchedEffect(bitmap) {
+        if (bitmap != null) return@LaunchedEffect
+        launch(Dispatchers.IO) {
+            val qrCodeWriter = QRCodeWriter()
+            val encodeHints = mutableMapOf<EncodeHintType, Any?>().apply {
+                this[EncodeHintType.MARGIN] = paddingPx
+            }
+            val bitmapMatrix = try {
+                qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, sizePx, sizePx, encodeHints)
+            } catch (e: WriterException) {
+                null
+            }
+
+            val matrixWidth = bitmapMatrix?.width ?: sizePx
+            val matrixHeight = bitmapMatrix?.height ?: sizePx
+            val newBitmap = Bitmap.createBitmap(matrixWidth, matrixHeight, Bitmap.Config.ARGB_8888)
+            for (x in 0 until matrixWidth) {
+                for (y in 0 until matrixHeight) {
+                    val shouldColorPixel = bitmapMatrix?.get(x, y) ?: false
+                    val pixelColor = if (shouldColorPixel) Color.BLACK else Color.WHITE
+                    newBitmap.setPixel(x, y, pixelColor)
+                }
+            }
+            bitmap = newBitmap
+        }
+    }
+    
+    return remember(bitmap) {
+        val currentBitmap = bitmap ?: Bitmap.createBitmap(
+            sizePx, sizePx, Bitmap.Config.ARGB_8888
+        ).apply { Color.TRANSPARENT }
+        BitmapPainter(currentBitmap.asImageBitmap())
     }
 }

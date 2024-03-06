@@ -11,11 +11,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.ktor.client.*
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.request
+import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import kotlin.collections.set
 
 @SuppressLint("MutableCollectionMutableState")
 class FormViewModel : ViewModel() {
@@ -406,6 +407,27 @@ class FormViewModel : ViewModel() {
             "matches"          -> matches
             else               -> null
         }
+    }
+
+    private var _jsonDialog by mutableStateOf(false)
+    val jsonDialog: Boolean
+        get() = _jsonDialog
+    fun setJsonDialog(value: Boolean) {
+        _jsonDialog = value
+    }
+
+    private var _qrcodeDialog by mutableStateOf(false)
+    val qrcodeDialog: Boolean
+        get() = _qrcodeDialog
+    fun setQrcodeDialog(value: Boolean) {
+        _qrcodeDialog = value
+    }
+
+    private var _newMatchDialog by mutableStateOf(false)
+    val newMatchDialog: Boolean
+        get() = _newMatchDialog
+    fun setNewMatchDialog(value: Boolean) {
+        _newMatchDialog = value
     }
 
     private var _eventCode by mutableStateOf("")

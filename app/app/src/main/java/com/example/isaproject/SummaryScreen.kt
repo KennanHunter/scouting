@@ -1,15 +1,14 @@
 package com.example.isaproject
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 
@@ -20,7 +19,6 @@ fun SummaryScreen(
     onNewMatchButtonClicked: () -> Unit,
     onShareButtonClicked: () -> Unit,
     onQuickshareButtonClicked: () -> Unit,
-    onQrcodeButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -51,8 +49,8 @@ fun SummaryScreen(
             }
             Button(
                 onClick = {
+                    formViewModel.setQrcodeDialog(true)
                     onShareButtonClicked()
-                    onQrcodeButtonClicked()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,7 +60,7 @@ fun SummaryScreen(
             }
             Button(
                 onClick = {
-                    /*TODO*/
+                    formViewModel.setJsonDialog(true)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -81,17 +79,87 @@ fun SummaryScreen(
                     modifier = Modifier.width(dimensionResource(R.dimen.margin))
                 )
                 Button(
-                    onClick = onNewMatchButtonClicked,
+                    onClick = {
+                        formViewModel.setNewMatchDialog(true)
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(stringResource(R.string.new_match))
                 }
             }
-//            Text(
-//                text = formViewModel.answersJson,
-//                style = MaterialTheme.typography.bodyLarge,
-//                modifier = Modifier.fillMaxWidth()
-//            )
+        }
+        if (formViewModel.jsonDialog) {
+            AlertDialog(
+                onDismissRequest = { formViewModel.setJsonDialog(false) },
+                confirmButton = {
+                    TextButton(
+                        onClick = { formViewModel.setJsonDialog(false) }
+                    ) {
+                        Text(stringResource(R.string.done))
+                    }
+                },
+                text = {
+                    Text(
+                        text = formViewModel.answersJson,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                    )
+                }
+            )
+        }
+        if (formViewModel.qrcodeDialog) {
+            AlertDialog(
+                onDismissRequest = { formViewModel.setQrcodeDialog(false) },
+                confirmButton = {
+                    TextButton(
+                        onClick = { formViewModel.setQrcodeDialog(false) }
+                    ) {
+                        Text(stringResource(R.string.done))
+                    }
+                },
+                text = {
+                    Image(
+                        painter = rememberQrBitmapPainter(content = formViewModel.answersJson),
+                        contentDescription = "Form results as a QR Code",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            )
+        }
+        if (formViewModel.newMatchDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    formViewModel.setNewMatchDialog(false)
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            formViewModel.setNewMatchDialog(false)
+                            onNewMatchButtonClicked()
+                        }
+                    ) {
+                        Text(stringResource(R.string.yes))
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            formViewModel.setNewMatchDialog(false)
+                        }
+                    ) {
+                        Text(stringResource(R.string.no))
+                    }
+                },
+                title = {
+                    Text(stringResource(R.string.new_match_confirmation_title))
+                },
+                text = {
+                    Text(stringResource(R.string.new_match_confirmation_description))
+                }
+            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.isaproject
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.provider.MediaStore
@@ -117,6 +118,7 @@ fun ISAScreen(
                     navController.popBackStack(AppScreen.MatchInfo.name, inclusive = false)
                 },
                 onShareButtonClicked = {
+                    val activity = context as? Activity
                     val content = formViewModel.answersJson.toByteArray()
                     val filename = context.getString(R.string.isa_json, LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy_HH:mm:ss")))
 
@@ -135,7 +137,8 @@ fun ISAScreen(
                         }
 
                         try {
-                            context.startActivity(Intent.createChooser(downloadIntent, "Download JSON File"))
+//                            context.startActivity(downloadIntent)
+                            activity?.startActivity(downloadIntent)
                         } catch (e: Exception) {
                             Log.e("JsonExport", "Error downloading JSON file", e)
                         }
@@ -163,9 +166,6 @@ fun ISAScreen(
                     } catch (e: Exception) {
                         Log.e("JsonExport", "Error sharing JSON file", e)
                     }
-                },
-                onQrcodeButtonClicked = {
-
                 }
             )
         }
