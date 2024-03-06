@@ -137,6 +137,7 @@ fun ISAScreen(
                         }
 
                         try {
+                            // DO NOT REMOVE THE FOLLOWING COMMENT!!!!! The app will crash otherwise
 //                            context.startActivity(downloadIntent)
                             activity?.startActivity(downloadIntent)
                         } catch (e: Exception) {

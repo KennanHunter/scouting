@@ -409,27 +409,6 @@ class FormViewModel : ViewModel() {
         }
     }
 
-    private var _jsonDialog by mutableStateOf(false)
-    val jsonDialog: Boolean
-        get() = _jsonDialog
-    fun setJsonDialog(value: Boolean) {
-        _jsonDialog = value
-    }
-
-    private var _qrcodeDialog by mutableStateOf(false)
-    val qrcodeDialog: Boolean
-        get() = _qrcodeDialog
-    fun setQrcodeDialog(value: Boolean) {
-        _qrcodeDialog = value
-    }
-
-    private var _newMatchDialog by mutableStateOf(false)
-    val newMatchDialog: Boolean
-        get() = _newMatchDialog
-    fun setNewMatchDialog(value: Boolean) {
-        _newMatchDialog = value
-    }
-
     private var _eventCode by mutableStateOf("")
     val eventCode: String
         get() = _eventCode

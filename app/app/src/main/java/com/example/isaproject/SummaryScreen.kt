@@ -5,12 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun SummaryScreen(
@@ -21,9 +22,28 @@ fun SummaryScreen(
     onQuickshareButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var jsonDialog by remember { mutableStateOf(false) }
+    var qrCodeDialog by remember { mutableStateOf(false) }
+    var newMatchDialog by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             PageTitle(text = AppScreen.Summary.label)
+        },
+        bottomBar = {
+            BottomNavBar(
+                buttons = listOf(
+                    Triple(
+                        onPreviousButtonClicked,
+                        stringResource(R.string.previous),
+                        ButtonType.Outlined
+                    ),
+                    Triple(
+                        { newMatchDialog = true },
+                        stringResource(R.string.new_match),
+                        ButtonType.Filled
+                    )
+                )
+            )
         },
         modifier = modifier
     ) { innerPadding ->
@@ -49,7 +69,7 @@ fun SummaryScreen(
             }
             Button(
                 onClick = {
-                    formViewModel.setQrcodeDialog(true)
+                    qrCodeDialog = true
                     onShareButtonClicked()
                 },
                 modifier = Modifier
@@ -59,41 +79,20 @@ fun SummaryScreen(
                 Text(stringResource(R.string.submit_qrcode))
             }
             Button(
-                onClick = {
-                    formViewModel.setJsonDialog(true)
-                },
+                onClick = { jsonDialog = true },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = dimensionResource(R.dimen.margin))
             ) {
                 Text(stringResource(R.string.preview_json))
             }
-            Row {
-                OutlinedButton(
-                    onClick = onPreviousButtonClicked,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(stringResource(R.string.previous))
-                }
-                Spacer(
-                    modifier = Modifier.width(dimensionResource(R.dimen.margin))
-                )
-                Button(
-                    onClick = {
-                        formViewModel.setNewMatchDialog(true)
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(stringResource(R.string.new_match))
-                }
-            }
         }
-        if (formViewModel.jsonDialog) {
+        if (jsonDialog) {
             AlertDialog(
-                onDismissRequest = { formViewModel.setJsonDialog(false) },
+                onDismissRequest = { jsonDialog = false },
                 confirmButton = {
                     TextButton(
-                        onClick = { formViewModel.setJsonDialog(false) }
+                        onClick = { jsonDialog = false }
                     ) {
                         Text(stringResource(R.string.done))
                     }
@@ -109,19 +108,23 @@ fun SummaryScreen(
                 }
             )
         }
-        if (formViewModel.qrcodeDialog) {
+        if (qrCodeDialog) {
             AlertDialog(
-                onDismissRequest = { formViewModel.setQrcodeDialog(false) },
+                onDismissRequest = { qrCodeDialog = false },
                 confirmButton = {
                     TextButton(
-                        onClick = { formViewModel.setQrcodeDialog(false) }
+                        onClick = { qrCodeDialog = false }
                     ) {
                         Text(stringResource(R.string.done))
                     }
                 },
                 text = {
                     Image(
-                        painter = rememberQrBitmapPainter(content = formViewModel.answersJson),
+                        painter = rememberQrBitmapPainter(
+                            content = formViewModel.answersJson,
+                            padding = 0.dp,
+                            size = 350.dp
+                        ),
                         contentDescription = "Form results as a QR Code",
                         contentScale = ContentScale.FillWidth,
                         modifier = Modifier.fillMaxWidth()
@@ -129,15 +132,13 @@ fun SummaryScreen(
                 }
             )
         }
-        if (formViewModel.newMatchDialog) {
+        if (newMatchDialog) {
             AlertDialog(
-                onDismissRequest = {
-                    formViewModel.setNewMatchDialog(false)
-                },
+                onDismissRequest = { newMatchDialog = false },
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            formViewModel.setNewMatchDialog(false)
+                            newMatchDialog = false
                             onNewMatchButtonClicked()
                         }
                     ) {
@@ -146,9 +147,7 @@ fun SummaryScreen(
                 },
                 dismissButton = {
                     TextButton(
-                        onClick = {
-                            formViewModel.setNewMatchDialog(false)
-                        }
+                        onClick = { newMatchDialog = false }
                     ) {
                         Text(stringResource(R.string.no))
                     }
