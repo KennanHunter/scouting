@@ -1,4 +1,4 @@
-val ktorVersion: String by project
+val ktor_version: String by project
 
 plugins {
     id("com.android.application")
@@ -77,6 +77,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.2")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
     implementation("org.jetbrains.kotlin:kotlin-serialization-compiler-plugin-embeddable:2.0.0-Beta4")
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
 }
