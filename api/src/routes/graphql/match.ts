@@ -10,18 +10,35 @@ export const matchEntry = g.type("MatchEntry", {
   matchKey: g.string(),
   teamNumber: g.int(),
   alliance: allianceEnum,
-  matchData: g.string().optional(),
+  matchData: g
+    .string()
+    .optional()
+    .description("JSON data containing reported information from scouters"),
 });
 
 export const matchType = g.type("Match", {
   matchKey: g.string(),
-  matchNumber: g.int().optional().omitResolver(),
+  matchNumber: g
+    .int()
+    .optional()
+    .omitResolver()
+    .description("Qualifier match number, returns zero for non-qualifiers"),
   startTime: g.ref(dateType).optional(),
   eventKey: g.string(),
-  reportedWinningAlliance: g.string().optional(),
-  reportedRedScore: g.int().optional(),
-  reportedBlueScore: g.int().optional(),
-  matchEntries: g.ref(matchEntry).list().omitResolver(),
+  reportedWinningAlliance: g
+    .string()
+    .optional()
+    .description("Winning alliance reported by The Blue Alliance"),
+  reportedRedScore: g.int().optional().description("Red score reported by FMS"),
+  reportedBlueScore: g
+    .int()
+    .optional()
+    .description("Blue score reported by FMS"),
+  matchEntries: g
+    .ref(matchEntry)
+    .list()
+    .omitResolver()
+    .description("Collected data for this match"),
 });
 
 export const databaseMatch = z.object({
@@ -50,8 +67,6 @@ export const matchResolvers: Resolvers["Match"] = {
 
     if (!result.success)
       throw new GraphQLError("Getting matches from D1 failed");
-
-    console.log(JSON.stringify(result.results, null, 4));
 
     return databaseTeamMatchEntry.array().parse(result.results);
   },
