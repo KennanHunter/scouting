@@ -84,6 +84,7 @@ data class MatchDataC(
 @Serializable
 data class Match(
     val matchKey: String,
+    val matchNumber: Int,
     val matchEntries: List<MatchEntry>
 )
 

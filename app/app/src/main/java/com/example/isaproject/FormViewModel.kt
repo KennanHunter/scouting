@@ -443,7 +443,7 @@ class FormViewModel : ViewModel() {
                 runBlocking {
                     val response = client.request("https://api.scout.kennan.tech/graphql/") {
                         method = HttpMethod.Post
-                        setBody("{ \"query\": \"{ getEvent(key: \\\"${eventCode}\\\") { matches { matchKey, matchEntries { teamNumber, alliance }}}}\" }")
+                        setBody("{ \"query\": \"{ getEvent(key: \\\"${eventCode}\\\") { matches { matchKey, matchNumber, matchEntries { teamNumber, alliance }}}}\" }")
                         contentType(ContentType.Application.Json)
                     }
 
