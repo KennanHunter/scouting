@@ -2,6 +2,7 @@ import { z } from "zod";
 import { RouteHandler } from "..";
 import { matchDataSchema } from "../matchDataSchema";
 import { convertEpochToExcel } from "../util/convertEpochToExcel";
+import { extractMatchNumberFromKey } from "../util/extractMatchNumberFromKey";
 
 const allianceType = z.literal("red").or(z.literal("blue"));
 

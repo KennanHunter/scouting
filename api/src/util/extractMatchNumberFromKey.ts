@@ -1,4 +1,4 @@
-const extractMatchNumberFromKey = (key: string | undefined) => {
+export const extractMatchNumberFromKey = (key: string | undefined) => {
   if (!key) return Number.MIN_SAFE_INTEGER;
 
   const subKey = key.split("_")[1];
