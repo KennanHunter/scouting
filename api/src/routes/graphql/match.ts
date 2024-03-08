@@ -15,6 +15,7 @@ export const matchEntry = g.type("MatchEntry", {
 
 export const matchType = g.type("Match", {
   matchKey: g.string(),
+  matchNumber: g.int().optional().omitResolver(),
   startTime: g.ref(dateType).optional(),
   eventKey: g.string(),
   reportedWinningAlliance: g.string().optional(),
@@ -53,5 +54,11 @@ export const matchResolvers: Resolvers["Match"] = {
     console.log(JSON.stringify(result.results, null, 4));
 
     return databaseTeamMatchEntry.array().parse(result.results);
+  },
+  matchNumber: async (parent) => {
+    const subKey = parent.matchKey.split("_")[1];
+    const isQualifier = subKey[0].toLowerCase() === "q";
+
+    return isQualifier ? Number.parseInt(subKey.substring(2)) : 0;
   },
 };

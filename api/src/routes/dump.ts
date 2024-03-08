@@ -107,17 +107,10 @@ export const dumpHandler: RouteHandler = async (c) => {
 
     const rows = matchEntries
       .sort((a, b) => {
-        const matchNumber = (key: string | undefined) => {
-          if (!key) return Number.MIN_SAFE_INTEGER;
-
-          const subKey = key.split("_")[1];
-          const isQualifier = subKey[0].toLowerCase() === "q";
-          return isQualifier
-            ? Number.parseInt(subKey.substring(2))
-            : Number.MAX_SAFE_INTEGER;
-        };
-
-        return matchNumber(a?.matchKey) - matchNumber(b?.matchKey);
+        return (
+          extractMatchNumberFromKey(a?.matchKey) -
+          extractMatchNumberFromKey(b?.matchKey)
+        );
       })
       .map((row) => {
         const columnValues = header.map((columnLabel) => {
