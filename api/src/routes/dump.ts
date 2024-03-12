@@ -17,6 +17,7 @@ const teamMatchEntrySchema = z.object({
   reportedRedScore: z.number().optional().nullable(),
   reportedBlueScore: z.number().optional().nullable(),
 });
+type TeamMatchEntrySchema = z.infer<typeof teamMatchEntrySchema>;
 
 export const dumpHandler: RouteHandler = async (c) => {
   const { eventId, format } = c.req.param();
@@ -27,24 +28,34 @@ export const dumpHandler: RouteHandler = async (c) => {
 
   const { results } = await query.all();
 
-  const matchEntries = teamMatchEntrySchema
-    .array()
-    .parse(results)
-    .map((row) => {
-      if (!row["matchData"]) return;
+  type MatchEntry = z.infer<typeof teamMatchEntrySchema> &
+    z.infer<typeof matchDataSchema>;
 
-      const matchDataObj = matchDataSchema.parse(JSON.parse(row["matchData"]));
+  const matchEntries: (MatchEntry | TeamMatchEntrySchema)[] =
+    teamMatchEntrySchema
+      .array()
+      .parse(results)
+      .map((row) => {
+        if (!row["matchData"]) return row;
 
-      const matchRow = {
-        ...row,
-        ...matchDataObj,
-      };
+        const matchDataObj = matchDataSchema.parse(
+          JSON.parse(row["matchData"])
+        );
 
-      delete matchRow.matchData;
+        const matchRow = {
+          ...row,
+          ...matchDataObj,
+          matchData: undefined,
+        };
 
-      return matchRow;
-    })
-    .filter(Boolean);
+        return matchRow;
+      });
+
+  const filteredMatchEntries = matchEntries.filter(
+    (row) => !row.matchData
+  ) as MatchEntry[];
+
+  console.log(JSON.stringify(filteredMatchEntries, null, 4));
 
   const date = new Date();
 
@@ -57,6 +68,7 @@ export const dumpHandler: RouteHandler = async (c) => {
   }
 
   if (format.toUpperCase() === "CSV") {
+    type AddedHeaderTypes = "teamOccurrence";
     const header = [
       "matchKey",
       "matchnumber",
@@ -68,6 +80,7 @@ export const dumpHandler: RouteHandler = async (c) => {
       "reportedBlueScore",
       "scoutname",
       "teamNumber",
+      "teamOccurrence",
       "noshow",
       "autonote1",
       "autonote2",
@@ -104,25 +117,34 @@ export const dumpHandler: RouteHandler = async (c) => {
       "broke",
       "rating",
       "comments",
-    ] as (keyof (typeof matchEntries)[number])[];
+    ] as (keyof MatchEntry | AddedHeaderTypes)[];
 
-    const rows = matchEntries
+    const rows = filteredMatchEntries
       .sort((a, b) => {
         return (
-          extractMatchNumberFromKey(a?.matchKey) -
-          extractMatchNumberFromKey(b?.matchKey)
+          extractMatchNumberFromKey(a.matchKey) -
+          extractMatchNumberFromKey(b.matchKey)
         );
       })
       .map((row) => {
         const columnValues = header.map((columnLabel) => {
           if (!row) throw new Error("empty row not filtered out");
 
-          const columnValue = row[columnLabel];
+          const columnValue = row[columnLabel as keyof typeof row];
 
           if (columnLabel === "startTime") {
             const startTime = columnValue as (typeof row)["startTime"];
 
             return convertEpochToExcel(startTime ?? 0);
+          }
+
+          if (columnLabel === "teamOccurrence") {
+            return matchEntries
+              .filter(
+                ({ matchKey }) =>
+                  extractMatchNumberFromKey(matchKey) <= row.matchnumber
+              )
+              .filter(({ teamNumber }) => teamNumber === row.teamNumber).length;
           }
 
           return columnValue;
