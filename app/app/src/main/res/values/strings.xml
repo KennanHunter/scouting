@@ -33,5 +33,5 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="new_match_confirmation_title">Are you sure you want to start a new match?</string>
-    <string name="new_match_confirmation_description">This will clear the form completely. Your data will be lost if it has not been submitted.</string>
+    <string name="new_match_confirmation_description">This will clear the form completely. A copy of the data will be saved locally but there is no easy way to edit it.</string>
 </resources>

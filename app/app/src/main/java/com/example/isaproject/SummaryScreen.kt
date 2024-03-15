@@ -38,7 +38,9 @@ fun SummaryScreen(
                         ButtonType.Outlined
                     ),
                     Triple(
-                        { newMatchDialog = true },
+                        {
+                            newMatchDialog = true
+                        },
                         stringResource(R.string.new_match),
                         ButtonType.Filled
                     )
@@ -58,7 +60,6 @@ fun SummaryScreen(
         ) {
             Button(
                 onClick = {
-                    onShareButtonClicked()
                     onQuickshareButtonClicked()
                 },
                 modifier = Modifier
@@ -67,17 +68,17 @@ fun SummaryScreen(
             ) {
                 Text(stringResource(R.string.submit_quickshare))
             }
-            Button(
-                onClick = {
-                    qrCodeDialog = true
-                    onShareButtonClicked()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = dimensionResource(R.dimen.margin))
-            ) {
-                Text(stringResource(R.string.submit_qrcode))
-            }
+//            Button(
+//                onClick = {
+//                    qrCodeDialog = true
+//                    onShareButtonClicked()
+//                },
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(bottom = dimensionResource(R.dimen.margin))
+//            ) {
+//                Text(stringResource(R.string.submit_qrcode))
+//            }
             Button(
                 onClick = { jsonDialog = true },
                 modifier = Modifier
@@ -139,6 +140,7 @@ fun SummaryScreen(
                     TextButton(
                         onClick = {
                             newMatchDialog = false
+                            onShareButtonClicked()
                             onNewMatchButtonClicked()
                         }
                     ) {
