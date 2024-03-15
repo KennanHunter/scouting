@@ -1,9 +1,10 @@
 package com.example.isaproject
 
-//TODO: put data about the form and devices into here or go change FormViewModel.kt
+// TODO: put data about the form and devices into here or go change FormViewModel.kt
 
 object DataSource {
-    val deviceJSON = """[
+    val deviceJSON =
+            """[
         {
             "name": "Device1",
             "id": "device1"
@@ -34,7 +35,8 @@ object DataSource {
         }
     ]""".trimIndent()
 
-    val formJSON = """[
+    val formJSON =
+            """[
         {
             "name": "Part 1: Autonomous",
             "page": [
@@ -439,54 +441,50 @@ object DataSource {
     ]""".trimIndent()
 
     // TODO: update this at some point?
-    val scouts = listOf(
-        "Aaron D. (461)",
-        "Alasdair W. (461)",
-        "Alex S. (45)",
-        "Annika L. (5402)",
-        "Baileigh D. (829)",
-        "Brianna S. (829)",
-        "Bryce G. (461)",
-        "Ceci W. (9431)",
-        "Cindy G. (461)",
-        "Cody S. (4272)",
-        "Daimon O. (461)",
-        "Dalton M. (829)",
-        "David H. (5484)",
-        "Donna S. (1501)",
-        "Doug R. (1501)",
-        "Dylan R. (461)",
-        "Emma S. (1501)",
-        "Ethan J (5484)",
-        "Ewan B. (45)",
-        "Hafsa H. (461)",
-        "Isaac W. (461)",
-        "Ismail T. (461)",
-        "Jared R. (3940)",
-        "Jaxon B. (45)",
-        "Jayden E. (4272)",
-        "Jenna G. (45)",
-        "JiuJiu L. (461)",
-        "Joe S. (1501)",
-        "Jonathon R. (3940)",
-        "Jordin C. (5402)",
-        "Juana (Jay) G. (829)",
-        "Kaileb H. (3940)",
-        "Kelton S. (45)",
-        "Levi S. (1501)",
-        "Melody B. (9431)",
-        "Noelle C. (829)",
-        "Phoenix R. (829)",
-        "Piper G. (3940)",
-        "Raphael Y. (461)",
-        "Rita C. (461)",
-        "Sarah S. (1501)",
-        "Serena M. (461)",
-        "Shelby P. (5402)",
-        "Trevor G. (45)",
-        "Valeria C. (5402)",
-        "Vinrai B. (45)",
-        "Xander K. (45)",
-        "Zach Z. (45)"
-    )
+    val scouts =
+            listOf(
+                    "Team 71",
+                    "Abraham (5010)",
+                    "Alexis (7617)",
+                    "Allen (3494)",
+                    "Anthony (45)",
+                    "Beau (5010)",
+                    "Ben (3494)",
+                    "Bence (5010)",
+                    "Brighid (5188)",
+                    "Carter (7457)",
+                    "Cody (4272)",
+                    "Connor (7617)",
+                    "Eli (7657)",
+                    "Esteban (5010)",
+                    "Ethan (5188)",
+                    "Ethan (7657)",
+                    "Evan (3494)",
+                    "Ewan (45)",
+                    "Fernando (5010)",
+                    "Gillian (7617)",
+                    "Haneef (5010)",
+                    "Jacob (5010)",
+                    "Jayden (4272)",
+                    "Jenna (45)",
+                    "Jessica (3494)",
+                    "Kai (7457)",
+                    "Kaine (7457)",
+                    "Kara (7617)",
+                    "Linus (5010)",
+                    "Mallory (7657)",
+                    "Marie (7617)",
+                    "Max (7617)",
+                    "Milla (7617)",
+                    "Nathan (7457)",
+                    "Odin (3494)",
+                    "Oliver (7657)",
+                    "Riley (7617)",
+                    "Rishabh (3494)",
+                    "Rose (7457)",
+                    "San (7617)",
+                    "Tony (7457)",
+                    "Victor (5010)",
+                    "Zachary (5010)"
+            )
 }
