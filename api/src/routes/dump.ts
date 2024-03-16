@@ -45,14 +45,13 @@ export const dumpHandler: RouteHandler = async (c) => {
         const matchRow = {
           ...row,
           ...matchDataObj,
-          matchData: undefined,
         };
 
         return matchRow;
       });
 
   const filteredMatchEntries = matchEntries.filter(
-    (row) => !row.matchData
+    (row) => row.matchData
   ) as MatchEntry[];
 
   console.log(JSON.stringify(filteredMatchEntries, null, 4));
