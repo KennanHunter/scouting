@@ -12,7 +12,7 @@
     <string name="minimum_value_is">"Minimum value is %s"</string>
     <string name="maximum_value_is">"Maximum value is %s"</string>
     <string name="now_scouting">"Now Scouting: %1$s / %2$s"</string>
-    <string name="submit_quickshare">Download &amp; Submit JSON via Quickshare</string>
+    <string name="submit_quickshare">Submit JSON via Quickshare</string>
     <string name="isa_json">ISA_%1$s_%2$d_%3$s_%4$d.json</string>
     <string name="must_be_an_integer">Must be an integer</string>
     <string name="select_device">Select Device</string>
@@ -34,4 +34,7 @@
     <string name="no">No</string>
     <string name="new_match_confirmation_title">Are you sure you want to start a new match?</string>
     <string name="new_match_confirmation_description">This will clear the form completely. A copy of the data will be saved locally but there is no easy way to edit it.</string>
+    <string name="no_scout_name_selected">No Scout Name Selected</string>
+    <string name="no_team_number_selected">No Team Number Selected</string>
+    <string name="invalid_match_number">Invalid Match Number</string>
 </resources>

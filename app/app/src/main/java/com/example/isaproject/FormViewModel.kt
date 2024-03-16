@@ -417,8 +417,8 @@ class FormViewModel : ViewModel() {
         _eventCode = code
     }
 
-    private var _matches: List<Pair<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>>>? by mutableStateOf(null)
-    val matches: List<Pair<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>>>?
+    private var _matches: List<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>? by mutableStateOf(null)
+    val matches: List<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>?
         get() = _matches
 
     fun fetchMatches() {
@@ -430,12 +430,12 @@ class FormViewModel : ViewModel() {
         //TODO: implement code for getting matches from API
         _matches = if (eventCode == "test") {
             listOf(
-                Pair(
-                    Triple(78, 3494, 1501), Triple(8564, 256, 119)
-                ), Pair(
-                    Triple(3452, 45, 756), Triple(2547, 7678, 234)
-                ), Pair(
-                    Triple(4678, 2346, 7345), Triple(4836, 1563, 8136)
+                Triple(
+                    Triple(78, 3494, 1501), Triple(8564, 256, 119), 1
+                ), Triple(
+                    Triple(3452, 45, 756), Triple(2547, 7678, 234), 2
+                ), Triple(
+                    Triple(4678, 2346, 7345), Triple(4836, 1563, 8136), 3
                 )
             )
         } else {
@@ -460,7 +460,7 @@ class FormViewModel : ViewModel() {
                     }
 
                     Log.d("GqlResponse", parsedResponse.toString())
-                    val finalResponse = mutableListOf<Pair<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>>>()
+                    val finalResponse = mutableListOf<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>()
 
                     for (i in parsedResponse) {
                         val red = mutableListOf<Int>()
@@ -472,9 +472,10 @@ class FormViewModel : ViewModel() {
                             }
                         }
                         finalResponse.add(
-                            Pair(
+                            Triple(
                                 Triple(red.getOrNull(0), red.getOrNull(1), red.getOrNull(2)),
-                                Triple(blue.getOrNull(0), blue.getOrNull(1), blue.getOrNull(2))
+                                Triple(blue.getOrNull(0), blue.getOrNull(1), blue.getOrNull(2)),
+                                i.matchNumber
                             )
                         )
                     }

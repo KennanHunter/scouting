@@ -74,10 +74,18 @@ fun ISAScreen(
                 formViewModel = formViewModel,
                 onPreviousButtonClicked = { navController.navigate(AppScreen.SetupDevice.name) },
                 onNextButtonClicked = {
-                    if (formViewModel.noShow) {
-                        navController.navigate(AppScreen.Summary.name)
+                    if (formViewModel.currentScout == "") {
+                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_scout_name_selected)))
+                    } else if (formViewModel.matches?.indexOfFirst { it.third == formViewModel.matchNumber } == -1) {
+                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.invalid_match_number)))
+                    } else if (formViewModel.teamNumber == 0) {
+                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_team_number_selected)))
                     } else {
-                        navController.navigate(formViewModel.form[0].name)
+                        if (formViewModel.noShow) {
+                            navController.navigate(AppScreen.Summary.name)
+                        } else {
+                            navController.navigate(formViewModel.form[0].name)
+                        }
                     }
                 }
             )
