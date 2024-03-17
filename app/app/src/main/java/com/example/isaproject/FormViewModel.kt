@@ -198,6 +198,18 @@ class FormViewModel : ViewModel() {
         }
     }
 
+    fun setSelected(
+        page: String,
+        item: String,
+        selected: Boolean
+    ) {
+        _form.find { it.name == page }?.let { i ->
+            i.page.find { it.name == item }?.let { j ->
+                j.selected = selected
+            }
+        }
+    }
+
 
     private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent())
         .toMutableStateList()
@@ -298,9 +310,25 @@ class FormViewModel : ViewModel() {
     }
 
     fun resetForm() {
-        val matchNumber = (_answers["matchnumber"].toString().toIntOrNull() ?: 0) + 1
         _answers = initAnswers()
-        _matchNumber += 1
+        _matchNumber = run {
+            if (matchNumber == Int.MIN_VALUE || matchNumber == Int.MAX_VALUE) {
+                null
+            } else {
+                val index = matches?.indexOfFirst { it.third == matchNumber }
+                if (index == -1) {
+                    matches?.get(0)?.third
+                } else if (index == matches?.size?.minus(1)) {
+                    null
+                } else {
+                    if (index != null) {
+                        matches?.get(index + 1)?.third
+                    } else {
+                        null
+                    }
+                }
+            }
+        } ?: (matchNumber + 1)
         _noShow = false
         setAnswer("matchnumber", matchNumber)
     }

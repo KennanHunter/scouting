@@ -165,11 +165,13 @@ data class FormElement(
     val exportAs: DataType,
     private val _expanded: Boolean = false,
     private val _filter: String = "",
-    private val _error: String = ""
+    private val _error: String = "",
+    private val _selected: Boolean = false
 ) {
     var expanded by mutableStateOf(_expanded)
     var filter by mutableStateOf(_filter)
     var error by mutableStateOf(_error)
+    var selected by mutableStateOf(_selected)
 }
 
 @Serializable

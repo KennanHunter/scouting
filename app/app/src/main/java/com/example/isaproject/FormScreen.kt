@@ -77,20 +77,23 @@ fun FormScreen(
                             onValueChange = { name, value ->
                                 formViewModel.setAnswer(name, value)
                             },
-                            onExpandedChange = { itemName, it ->
-                                formViewModel.setExpanded(page, itemName, it)
+                            onExpandedChange = { name, it ->
+                                formViewModel.setExpanded(page, name, it)
                             },
-                            onFilterChange = { itemName, it ->
-                                formViewModel.setFilter(page, itemName, it)
+                            onFilterChange = { name, it ->
+                                formViewModel.setFilter(page, name, it)
                             },
-                            onErrorChange = { itemName, it ->
-                                formViewModel.setError(page, itemName, it)
+                            onErrorChange = { name, it ->
+                                formViewModel.setError(page, name, it)
+                            },
+                            onSelectedChange = { name, it ->
+                                formViewModel.setSelected(page, name, it)
                             },
                             getValue = {
                                 formViewModel.answers[it] ?: "No such key"
                             },
-                            getElement = { itemName ->
-                                formViewModel.form.find { it.name == page }?.page?.find { it.name == itemName }
+                            getElement = { name ->
+                                formViewModel.form.find { it.name == page }?.page?.find { it.name == name }
                             },
                             getData = {
                                 formViewModel[it]
@@ -112,6 +115,7 @@ fun FormItem(
     onExpandedChange: (String, Boolean) -> Unit,
     onFilterChange: (String, String) -> Unit,
     onErrorChange: (String, String) -> Unit,
+    onSelectedChange: (String, Boolean) -> Unit,
     getValue: (String) -> Any,
     getElement: (String) -> FormElement?,
     getData: (String) -> Any?,
@@ -153,6 +157,7 @@ fun FormItem(
                 onExpandedChange = onExpandedChange,
                 onFilterChange = onFilterChange,
                 onErrorChange = onErrorChange,
+                onSelectedChange = onSelectedChange,
                 getElement = getElement,
                 getData = getData,
                 context = context,
@@ -168,6 +173,7 @@ fun FormItem(
                 onExpandedChange = onExpandedChange,
                 onFilterChange = onFilterChange,
                 onErrorChange = onErrorChange,
+                onSelectedChange = onSelectedChange,
                 getElement = getElement,
                 getData = getData,
                 context = context,
@@ -186,6 +192,7 @@ fun FormItem(
                 onExpandedChange = onExpandedChange,
                 onFilterChange = onFilterChange,
                 onErrorChange = onErrorChange,
+                onSelectedChange = onSelectedChange,
                 context = context,
                 modifier = modifier
             )
@@ -257,6 +264,8 @@ fun FormItem(
                 label = item.label,
                 filter = item.filter,
                 onFilterChange = { onFilterChange(item.name, it) },
+                selected = item.selected,
+                onSelectedChange = { onSelectedChange(item.name, it) },
                 modifier = modifier
             )
         }
@@ -325,6 +334,7 @@ fun FormRow(
     onExpandedChange: (String, Boolean) -> Unit,
     onFilterChange: (String, String) -> Unit,
     onErrorChange: (String, String) -> Unit,
+    onSelectedChange: (String, Boolean) -> Unit,
     getElement: (String) -> FormElement?,
     getData: (String) -> Any?,
     context: Context,
@@ -340,6 +350,7 @@ fun FormRow(
             onExpandedChange = onExpandedChange,
             onFilterChange = onFilterChange,
             onErrorChange = onErrorChange,
+            onSelectedChange = onSelectedChange,
             row = true,
             getElement = getElement,
             getData = getData,
@@ -357,6 +368,7 @@ fun FormColumn(
     onExpandedChange: (String, Boolean) -> Unit,
     onFilterChange: (String, String) -> Unit,
     onErrorChange: (String, String) -> Unit,
+    onSelectedChange: (String, Boolean) -> Unit,
     getElement: (String) -> FormElement?,
     getData: (String) -> Any?,
     context: Context,
@@ -372,6 +384,7 @@ fun FormColumn(
             onExpandedChange = onExpandedChange,
             onFilterChange = onFilterChange,
             onErrorChange = onErrorChange,
+            onSelectedChange = onSelectedChange,
             row = false,
             getElement = getElement,
             getData = getData,
@@ -388,6 +401,7 @@ fun FormGroup(
     onExpandedChange: (String, Boolean) -> Unit,
     onFilterChange: (String, String) -> Unit,
     onErrorChange: (String, String) -> Unit,
+    onSelectedChange: (String, Boolean) -> Unit,
     row: Boolean,
     getElement: (String) -> FormElement?,
     getData: (String) -> Any?,
@@ -403,6 +417,7 @@ fun FormGroup(
                 onExpandedChange = onExpandedChange,
                 onFilterChange = onFilterChange,
                 onErrorChange = onErrorChange,
+                onSelectedChange = onSelectedChange,
                 getValue = getValue,
                 context = context,
                 getElement = getElement,
@@ -429,6 +444,7 @@ fun FormConditional(
     onExpandedChange: (String, Boolean) -> Unit,
     onFilterChange: (String, String) -> Unit,
     onErrorChange: (String, String) -> Unit,
+    onSelectedChange: (String, Boolean) -> Unit,
     context: Context,
     modifier: Modifier = Modifier
 ) {
@@ -442,6 +458,7 @@ fun FormConditional(
                     onExpandedChange = onExpandedChange,
                     onFilterChange = onFilterChange,
                     onErrorChange = onErrorChange,
+                    onSelectedChange = onSelectedChange,
                     getValue = getValue,
                     context = context,
                     getElement = getElement,
@@ -714,6 +731,8 @@ fun DropdownInput(
     label: String,
     filter: String,
     onFilterChange: (String) -> Unit,
+    selected: Boolean,
+    onSelectedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -725,19 +744,33 @@ fun DropdownInput(
         Row {
             ExposedDropdownMenuBox(
                 expanded = expanded,
-                onExpandedChange = { onExpandedChange(it) }
+                onExpandedChange = {
+                    if (it && selected) {
+
+                    } else if (!it) {
+                        onSelectedChange(false)
+                    }
+                    onExpandedChange(it)
+                }
             ) {
                 TextField(
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth(),
                     value = filter,
-                    onValueChange = onFilterChange,
+                    onValueChange = {
+                        onSelectedChange(false)
+                        onFilterChange(it)
+                    },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                     singleLine = true
                 )
-                val filteringOptions = options.filter { it.label.contains(filter, ignoreCase = true) }
+                val filteringOptions = if (!selected) {
+                    options.filter { it.label.contains(filter, ignoreCase = true) }
+                } else {
+                    options
+                }
                 if (filteringOptions.isNotEmpty()) {
                     ExposedDropdownMenu(
                         expanded = expanded,
@@ -747,9 +780,10 @@ fun DropdownInput(
                             DropdownMenuItem(
                                 text = { Text(dropdownOption.label) },
                                 onClick = {
+                                    onExpandedChange(false)
+                                    onSelectedChange(true)
                                     onValueChange(dropdownOption.value)
                                     onFilterChange(dropdownOption.label)
-                                    onExpandedChange(false)
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                             )

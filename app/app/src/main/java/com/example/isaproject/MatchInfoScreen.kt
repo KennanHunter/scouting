@@ -56,6 +56,7 @@ fun MatchInfoScreen(
                 is SideEffect.ShowToast -> scope.launch { snackbarHostState.showSnackbar(sideEffect.message) }
             }
         }
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -64,6 +65,7 @@ fun MatchInfoScreen(
         ) {
             var scoutsExpanded by remember { mutableStateOf(false) }
             var scoutsFilter by remember { mutableStateOf(formViewModel.currentScout) }
+            var scoutsSelectedWoClose by remember { mutableStateOf(false) }
             var matchNumberError by remember { mutableStateOf("") }
             var teamNumberError by remember { mutableStateOf("") }
             formViewModel.scouts?.let { scouts ->
@@ -74,13 +76,16 @@ fun MatchInfoScreen(
                     options = scouts.map { FormOption(it, it) },
                     label = stringResource(R.string.scout_name),
                     filter = scoutsFilter,
-                    onFilterChange = { scoutsFilter = it }
+                    onFilterChange = { scoutsFilter = it },
+                    selected = scoutsSelectedWoClose,
+                    onSelectedChange = { scoutsSelectedWoClose = it }
                 )
             } ?: run {
                 Text(
                     text = "formViewModel.getScouts() failed"
                 )
             }
+
             Column(
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
             ) {
@@ -181,6 +186,7 @@ fun MatchInfoScreen(
                     )
                 }
             }
+
             if (formViewModel.eventCode != "") {
                 if (formViewModel.teamNumber != null) {
                     Text(
@@ -206,6 +212,7 @@ fun MatchInfoScreen(
                     context = context
                 )
             }
+
             CheckboxInput(
                 value = formViewModel.noShow,
                 onValueChange = { formViewModel.setNoShow(it.toString().toBooleanStrictOrNull() ?: false) },
