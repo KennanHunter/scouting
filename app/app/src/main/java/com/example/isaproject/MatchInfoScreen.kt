@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MatchInfoScreen(
     formViewModel: FormViewModel,
@@ -64,22 +65,63 @@ fun MatchInfoScreen(
                 .fillMaxHeight()
         ) {
             var scoutsExpanded by remember { mutableStateOf(false) }
-            var scoutsFilter by remember { mutableStateOf(formViewModel.currentScout) }
-            var scoutsSelectedWoClose by remember { mutableStateOf(false) }
+            var scoutsSelected by remember { mutableStateOf(false) }
             var matchNumberError by remember { mutableStateOf("") }
             var teamNumberError by remember { mutableStateOf("") }
             formViewModel.scouts?.let { scouts ->
-                DropdownInput(
-                    onValueChange = { formViewModel.setCurrentScout(it.toString()) },
-                    expanded = scoutsExpanded,
-                    onExpandedChange = { scoutsExpanded = it },
-                    options = scouts.map { FormOption(it, it) },
-                    label = stringResource(R.string.scout_name),
-                    filter = scoutsFilter,
-                    onFilterChange = { scoutsFilter = it },
-                    selected = scoutsSelectedWoClose,
-                    onSelectedChange = { scoutsSelectedWoClose = it }
-                )
+                Column(
+                    modifier = modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+                ) {
+                    FormLabel(label = stringResource(R.string.scout_name))
+                    Row {
+                        ExposedDropdownMenuBox(
+                            expanded = scoutsExpanded,
+                            onExpandedChange = {
+                                if (!it) {
+                                    scoutsSelected = false
+                                }
+                                scoutsExpanded = it
+                            }
+                        ) {
+                            TextField(
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth(),
+                                value = formViewModel.currentScout,
+                                onValueChange = {
+                                    scoutsSelected = false
+                                    formViewModel.setCurrentScout(it)
+                                },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = scoutsExpanded) },
+                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                singleLine = true
+                            )
+                            val filteringOptions = if (!scoutsSelected) {
+                                scouts.filter { it.contains(formViewModel.currentScout, ignoreCase = true) }
+                            } else {
+                                scouts
+                            }
+                            if (filteringOptions.isNotEmpty()) {
+                                ExposedDropdownMenu(
+                                    expanded = scoutsExpanded,
+                                    onDismissRequest = { scoutsExpanded = false }
+                                ) {
+                                    filteringOptions.forEach { dropdownOption ->
+                                        DropdownMenuItem(
+                                            text = { Text(dropdownOption) },
+                                            onClick = {
+                                                scoutsExpanded = false
+                                                scoutsSelected = false
+                                                formViewModel.setCurrentScout(dropdownOption)
+                                            },
+                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             } ?: run {
                 Text(
                     text = "formViewModel.getScouts() failed"

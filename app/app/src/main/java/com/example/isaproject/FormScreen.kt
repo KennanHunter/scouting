@@ -745,9 +745,7 @@ fun DropdownInput(
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = {
-                    if (it && selected) {
-
-                    } else if (!it) {
+                    if (!it) {
                         onSelectedChange(false)
                     }
                     onExpandedChange(it)
