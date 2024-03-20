@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import java.io.File
 import javax.inject.Inject
 import kotlin.collections.set
 
@@ -35,6 +36,8 @@ import kotlin.collections.set
 class FormViewModel @Inject constructor(
     context: Context
 ) : ViewModel() {
+    private val context2 = context
+
     private val serializedForm = run {
         val jsonString = context.assets.open("Form.json").bufferedReader().use { it.readText() }
         val gson = Gson()
@@ -510,53 +513,64 @@ class FormViewModel @Inject constructor(
                 )
             )
         } else {
-            try {
-                runBlocking {
-                    val response = client.request("https://api.scout.kennan.tech/graphql/") {
-                        method = HttpMethod.Post
-                        setBody("{ \"query\": \"{ getEvent(key: \\\"${eventCode}\\\") { matches { matchKey, matchNumber, matchEntries { teamNumber, alliance }}}}\" }")
-                        contentType(ContentType.Application.Json)
-                    }
 
-                    if (!response.status.isSuccess()) {
-                        SideEffect.ShowToast("API Match Schedule Sync failed")
-                        return@runBlocking null
-                    }
-
-                    val responseBody: String = response.body()
-                    Log.d("GqlResponse", responseBody)
-
-                    val parsedResponse = Json.decodeFromString<MatchDataA>(responseBody).data.getEvent.matches.sortedBy {
-                        extractMatchNumberFromKey(it.matchKey)
-                    }
-
-                    Log.d("GqlResponse", parsedResponse.toString())
-                    val finalResponse = mutableListOf<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>()
-
-                    for (i in parsedResponse) {
-                        val red = mutableListOf<Int>()
-                        val blue = mutableListOf<Int>()
-                        for (j in i.matchEntries) {
-                            when (j.alliance) {
-                                "red"  -> red.add(j.teamNumber)
-                                "blue" -> blue.add(j.teamNumber)
-                            }
+            val stringResponse = if (File(context2.filesDir, "${eventCode}.txt").exists()) {
+                File(context2.filesDir, "${eventCode}.txt").readText()
+            } else {
+                try {
+                    runBlocking {
+                        val response = client.request("https://api.scout.kennan.tech/graphql/") {
+                            method = HttpMethod.Post
+                            setBody("{ \"query\": \"{ getEvent(key: \\\"${eventCode}\\\") { matches { matchKey, matchNumber, matchEntries { teamNumber, alliance }}}}\" }")
+                            contentType(ContentType.Application.Json)
                         }
-                        finalResponse.add(
-                            Triple(
-                                Triple(red.getOrNull(0), red.getOrNull(1), red.getOrNull(2)),
-                                Triple(blue.getOrNull(0), blue.getOrNull(1), blue.getOrNull(2)),
-                                i.matchNumber
-                            )
-                        )
-                    }
 
-                    finalResponse
+                        if (!response.status.isSuccess()) {
+                            SideEffect.ShowToast("API Match Schedule Sync failed")
+                            return@runBlocking null
+                        }
+
+                        val responseBody: String = response.body()
+                        Log.d("GqlResponse", responseBody)
+
+                        File(context2.filesDir, "${eventCode}.txt").writeText(responseBody)
+
+                        responseBody
+                    }
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
+                    return
                 }
-            } catch (ex: Exception) {
-                ex.printStackTrace()
+            }
+            val parsedResponse = stringResponse?.let {
+                Json.decodeFromString<MatchDataA>(it).data.getEvent.matches.sortedBy {
+                    extractMatchNumberFromKey(it.matchKey)
+                }
+            } ?: run {
                 return
             }
+
+            Log.d("GqlResponse", parsedResponse.toString())
+            val finalResponse = mutableListOf<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>()
+
+            for (i in parsedResponse) {
+                val red = mutableListOf<Int>()
+                val blue = mutableListOf<Int>()
+                for (j in i.matchEntries) {
+                    when (j.alliance) {
+                        "red"  -> red.add(j.teamNumber)
+                        "blue" -> blue.add(j.teamNumber)
+                    }
+                }
+                finalResponse.add(
+                    Triple(
+                        Triple(red.getOrNull(0), red.getOrNull(1), red.getOrNull(2)),
+                        Triple(blue.getOrNull(0), blue.getOrNull(1), blue.getOrNull(2)),
+                        i.matchNumber
+                    )
+                )
+            }
+            finalResponse
         }
     }
 }
