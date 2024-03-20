@@ -20,10 +20,12 @@ import java.io.FileOutputStream
 @Composable
 fun ISAScreen(
     modifier: Modifier = Modifier,
-    formViewModel: FormViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val context = LocalContext.current
+    val formViewModel: FormViewModel = viewModel(
+        factory = FormViewModelFactory(context.applicationContext)
+    )
     NavHost(
             navController = navController,
             startDestination = AppScreen.SetupDevice.name,

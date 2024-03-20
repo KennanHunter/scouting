@@ -10,7 +10,9 @@ import androidx.compose.runtime.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -26,32 +28,47 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import javax.inject.Inject
 import kotlin.collections.set
 
 @SuppressLint("MutableCollectionMutableState")
-class FormViewModel : ViewModel() {
-    private val serializedForm = Json.decodeFromString<List<SerializableFormPage>>(DataSource.formJSON)
+class FormViewModel @Inject constructor(
+    context: Context
+) : ViewModel() {
+    private val serializedForm = run {
+        val jsonString = context.assets.open("Form.json").bufferedReader().use { it.readText() }
+        val gson = Gson()
+        gson.fromJson(jsonString, SerializableForm::class.java)
+    }.form
+
     private fun scanForElementsWithId(
         element: SerializableFormElement,
         defaultId: Int
     ): Pair<List<Pair<SerializableFormElement, String>>, Int> {
         var newId = defaultId
         val result = mutableListOf<Pair<SerializableFormElement, String>>()
-        if (element.name == "") {
+        if (element.name == null || element.name == "") {
             element.name = "noId${newId}"
             newId += 1
         }
         when (element.type) {
             "row", "column" -> {
                 result.add(Pair(element, ""))
-                element.children.forEach { it1 ->
+                element.children?.forEach { it1 ->
                     if (it1.name == "") {
                         it1.name = "noId${newId}"
                         newId += 1
                     }
                     val elements = scanForElementsWithId(it1, newId)
                     elements.first.forEach { it2 ->
-                        result.add(Pair(it2.first, it1.name))
+                        result.add(
+                            it1.name?.let {
+                                Pair(it2.first, it)
+                            } ?: run {
+                                newId += 1
+                                Pair(it2.first, "noId${newId - 1}")
+                            }
+                        )
                     }
                     newId = elements.second
                 }
@@ -59,14 +76,21 @@ class FormViewModel : ViewModel() {
 
             "conditional"   -> {
                 result.add(Pair(element, ""))
-                element.variants.forEach { it1 ->
+                element.variants?.forEach { it1 ->
                     if (it1.content.name == "") {
                         it1.content.name = "noId${newId}"
                         newId += 1
                     }
                     val elements = scanForElementsWithId(it1.content, newId)
                     elements.first.forEach { it2 ->
-                        result.add(Pair(it2.first, it1.content.name))
+                        result.add(
+                            it1.content.name?.let {
+                                Pair(it2.first, it)
+                            } ?: run {
+                                newId += 1
+                                Pair(it2.first, "noId${newId - 1}")
+                            }
+                        )
                     }
                     newId = elements.second
                 }
@@ -87,32 +111,51 @@ class FormViewModel : ViewModel() {
             for (j in i.page) {
                 val elements = scanForElementsWithId(j, defaultId)
                 elements.first.forEach { (item, parent) ->
-                    pageContent.add(FormElement(type = enumByNameIgnoreCase<FormElementType>(item.type) ?: FormElementType.Text, name = item.name, label = item.label, placeholder = item.placeholder, options = item.options, columns = item.columns.toIntOrNull() ?: 1, min = item.min.toIntOrNull() ?: Int.MIN_VALUE, max = item.max.toIntOrNull() ?: Int.MAX_VALUE, children = run {
-                        val children = mutableListOf<String>()
-                        for (k in item.children) {
-                            children.add(k.name)
-                        }
-                        children
-                    }, isChild = parent != "", content = item.content, initialValue = item.initialValue, useButtons = item.useButtons.toBooleanStrictOrNull() ?: true, property = item.property, variants = run {
-                        val variants = mutableListOf<ConditionalVariant>()
-                        for (k in item.variants) {
-                            variants.add(ConditionalVariant(k.value, k.content.name))
-                        }
-                        variants
-                    }, exportAs = if (item.exportAs == "") {
-                        when (item.type) {
-                            "number"   -> DataType.Int
-                            "checkbox" -> DataType.Boolean
-                            else       -> DataType.String
-                        }
-                    } else {
-                        enumByNameIgnoreCase<DataType>(item.exportAs) ?: DataType.String
-                    }, _filter = if (item.type == "number") {
-                        "0"
-                    } else {
-                        ""
-                    }
-                    )
+                    Log.d("Form.json", item.toString())
+                    pageContent.add(
+                        FormElement(
+                            type = enumByNameIgnoreCase<FormElementType>(item.type) ?: FormElementType.Text,
+                            name = item.name ?: "",
+                            label = item.label ?: "",
+                            placeholder = item.placeholder ?: "",
+                            options = item.options ?: listOf(),
+                            columns = item.columns?.toIntOrNull() ?: 1,
+                            min = item.min?.toIntOrNull() ?: Int.MIN_VALUE,
+                            max = item.max?.toIntOrNull() ?: Int.MAX_VALUE,
+                            children = run {
+                                val children = mutableListOf<String>()
+                                for (k in item.children ?: listOf()) {
+                                    k.name?.let { children.add(it) }
+                                }
+                                children
+                            },
+                            isChild = parent != "",
+                            content = item.content ?: "",
+                            initialValue = item.initialValue ?: "",
+                            useButtons = item.useButtons?.toBooleanStrictOrNull() ?: true,
+                            property = item.property ?: "",
+                            variants = run {
+                                val variants = mutableListOf<ConditionalVariant>()
+                                for (k in item.variants ?: listOf()) {
+                                    k.content.name?.let { variants.add(ConditionalVariant(k.value, it)) }
+                                }
+                                variants
+                            },
+                            exportAs = if (item.exportAs == null) {
+                                when (item.type) {
+                                    "number"   -> DataType.Int
+                                    "checkbox" -> DataType.Boolean
+                                    else       -> DataType.String
+                                }
+                            } else {
+                                enumByNameIgnoreCase<DataType>(item.exportAs) ?: DataType.String
+                            },
+                            _filter = if (item.type == "number") {
+                                "0"
+                            } else {
+                                ""
+                            }
+                        )
                     )
                 }
                 defaultId = elements.second
@@ -515,5 +558,15 @@ class FormViewModel : ViewModel() {
                 return
             }
         }
+    }
+}
+
+class FormViewModelFactory(private val applicationContext: Context) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(FormViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return FormViewModel(applicationContext) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

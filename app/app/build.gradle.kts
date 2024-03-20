@@ -15,8 +15,8 @@ android {
         applicationId = "com.example.isaproject"
         minSdk = 30
         targetSdk = 34
-        versionCode = 33
-        versionName = "0.7.2"
+        versionCode = 34
+        versionName = "0.8.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -70,6 +70,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.compose.material:material-icons-extended:1.6.3")
     implementation("com.google.zxing:core:3.5.3")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("javax.inject:javax.inject:1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

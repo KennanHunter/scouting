@@ -95,6 +95,11 @@ data class MatchEntry(
 )
 
 @Serializable
+data class SerializableForm(
+    val form: List<SerializableFormPage>
+)
+
+@Serializable
 data class SerializableFormPage(
     val name: String,
     val page: List<SerializableFormElement>
@@ -103,20 +108,20 @@ data class SerializableFormPage(
 @Serializable
 data class SerializableFormElement(
     val type: String,
-    var name: String = "",
-    val label: String = "",
-    val placeholder: String = "",
-    var options: List<FormOption> = listOf(),
-    val columns: String = "1",
-    val min: String = "",
-    val max: String = "",
-    val children: List<SerializableFormElement> = listOf(),
-    val content: String = "",
-    var initialValue: String = "",
-    val useButtons: String = "true",
-    val property: String = "",
-    val exportAs: String = "",
-    val variants: List<SerializableConditionalVariant> = listOf()
+    var name: String?,
+    val label: String? = "",
+    val placeholder: String? = "",
+    var options: List<FormOption>? = listOf(),
+    val columns: String? = "",
+    val min: String? = "",
+    val max: String? = "",
+    val children: List<SerializableFormElement>? = listOf(),
+    val content: String? = "",
+    var initialValue: String? = "",
+    val useButtons: String? = "",
+    val property: String? = "",
+    val exportAs: String? = "",
+    val variants: List<SerializableConditionalVariant>? = listOf()
 )
 
 @Serializable
