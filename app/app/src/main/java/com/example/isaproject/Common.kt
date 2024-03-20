@@ -190,11 +190,11 @@ data class ConditionalVariant(
     val content: String
 )
 
-@Serializable
-data class Device(
-    val id: String,
-    val name: String
-)
+//@Serializable
+//data class Device(
+//    val id: String,
+//    val name: String
+//)
 
 enum class ButtonType {
     Outlined,

@@ -1,15 +1,7 @@
 package com.example.isaproject
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -71,7 +63,7 @@ fun LoadingScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        text = stringResource(R.string.connecting_to_device) + formViewModel.currentDevice.name,
+                        text = stringResource(R.string.connecting_to_device) /*+ formViewModel.currentDevice.name*/,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )

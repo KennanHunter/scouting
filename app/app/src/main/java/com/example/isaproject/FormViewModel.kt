@@ -1,14 +1,9 @@
 package com.example.isaproject
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothManager
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
 import androidx.compose.runtime.*
-import androidx.core.app.ActivityCompat
-import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -36,6 +31,7 @@ import kotlin.collections.set
 class FormViewModel @Inject constructor(
     context: Context
 ) : ViewModel() {
+    @SuppressLint("StaticFieldLeak")
     private val context2 = context
 
     private val serializedForm = run {
@@ -257,46 +253,46 @@ class FormViewModel @Inject constructor(
     }
 
 
-    private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent())
-        .toMutableStateList()
+//    private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent())
+//        .toMutableStateList()
 
-    val devices: List<Device>
-        get() = _devices
+//    val devices: List<Device>
+//        get() = _devices
 
-    fun getAvailableDevices(context: Context) {
-        if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
-            throw Error("Bluetooth not allowed on system")
-        }
+//    fun getAvailableDevices(context: Context) {
+//        if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
+//            throw Error("Bluetooth not allowed on system")
+//        }
+//
+//        val bluetoothManager = context.getSystemService<BluetoothManager>()
+//
+//        if (bluetoothManager !is BluetoothManager) {
+//            return
+//        }
+//
+//        if (ActivityCompat.checkSelfPermission(
+//                context, Manifest.permission.BLUETOOTH_SCAN
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            throw Error("Bluetooth not granted")
+//        }
+//
+//        bluetoothManager.adapter.startDiscovery()
+//
+//
+//    }
 
-        val bluetoothManager = context.getSystemService<BluetoothManager>()
+//    private var _currentDevice by mutableStateOf(Device("", ""))
+//    val currentDevice: Device
+//        get() = _currentDevice
 
-        if (bluetoothManager !is BluetoothManager) {
-            return
-        }
-
-        if (ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.BLUETOOTH_SCAN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            throw Error("Bluetooth not granted")
-        }
-
-        bluetoothManager.adapter.startDiscovery()
-
-
-    }
-
-    private var _currentDevice by mutableStateOf(Device("", ""))
-    val currentDevice: Device
-        get() = _currentDevice
-
-    fun setDevice(device: Device) {
-        _currentDevice = if (device.id != "") {
-            _devices.first { it.id == device.id }
-        } else {
-            Device("", "")
-        }
-    }
+//    fun setDevice(device: Device) {
+//        _currentDevice = if (device.id != "") {
+//            _devices.first { it.id == device.id }
+//        } else {
+//            Device("", "")
+//        }
+//    }
 
     private var _currentPosition by mutableStateOf(Position.None)
     val currentPosition: Position
@@ -469,8 +465,8 @@ class FormViewModel @Inject constructor(
     operator fun get(key: String): Any? {
         return when (key) {
             "form"             -> form
-            "devices"          -> devices
-            "currentDevice"    -> currentDevice
+//            "devices"          -> devices
+//            "currentDevice"    -> currentDevice
             "currentPosition"  -> currentPosition
             "scoutPos"         -> fieldOrientation
             "connectionStatus" -> connectionStatus
@@ -542,8 +538,8 @@ class FormViewModel @Inject constructor(
                     return
                 }
             }
-            val parsedResponse = stringResponse?.let {
-                Json.decodeFromString<MatchDataA>(it).data.getEvent.matches.sortedBy {
+            val parsedResponse = stringResponse?.let { nonNullResponse ->
+                Json.decodeFromString<MatchDataA>(nonNullResponse).data.getEvent.matches.sortedBy {
                     extractMatchNumberFromKey(it.matchKey)
                 }
             } ?: run {
