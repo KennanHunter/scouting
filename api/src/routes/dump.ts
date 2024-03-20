@@ -22,9 +22,14 @@ type TeamMatchEntrySchema = z.infer<typeof teamMatchEntrySchema>;
 export const dumpHandler: RouteHandler = async (c) => {
   const { eventId, format } = c.req.param();
 
-  const query = c.env.DB.prepare(
-    "SELECT * FROM TeamMatchEntry, Matches WHERE TeamMatchEntry.matchKey = Matches.matchKey AND Matches.eventKey = ?"
-  ).bind(eventId);
+  const query =
+    eventId !== "*"
+      ? c.env.DB.prepare(
+          "SELECT * FROM TeamMatchEntry, Matches WHERE TeamMatchEntry.matchKey = Matches.matchKey AND Matches.eventKey = ?"
+        ).bind(eventId)
+      : c.env.DB.prepare(
+          "SELECT * FROM TeamMatchEntry, Matches WHERE TeamMatchEntry.matchKey = Matches.matchKey"
+        );
 
   const { results } = await query.all();
 
