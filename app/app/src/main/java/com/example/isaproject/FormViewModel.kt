@@ -34,6 +34,215 @@ class FormViewModel @Inject constructor(
     @SuppressLint("StaticFieldLeak")
     private val context2 = context
 
+
+    private val _sideEffectChannel = Channel<SideEffect>(capacity = Channel.BUFFERED)
+    val sideEffectFlow: Flow<SideEffect>
+        get() = _sideEffectChannel.receiveAsFlow()
+
+    fun sendEvent(evt: SideEffect) {
+        viewModelScope.launch {
+            _sideEffectChannel.send(evt)
+        }
+    }
+
+
+    private var _connectionStatus by mutableStateOf(ConnectionStatus.NOT_CONNECTED)
+    val connectionStatus: ConnectionStatus
+        get() = _connectionStatus
+    fun setConnectionStatus(status: ConnectionStatus) {
+        _connectionStatus = status
+    }
+
+
+    private var _currentPosition by mutableStateOf(Position.None)
+    val currentPosition: Position
+        get() = _currentPosition
+    fun setPosition(position: Position) {
+        _currentPosition = position
+    }
+
+    private var _fieldOrientation by mutableStateOf(FieldOrientation.None)
+    val fieldOrientation: FieldOrientation
+        get() = _fieldOrientation
+    fun setFieldOrientation(pos: FieldOrientation) {
+        _fieldOrientation = pos
+    }
+
+    private var _eventCode by mutableStateOf("")
+    val eventCode: String
+        get() = _eventCode
+    fun setEventCode(code: String) {
+        _eventCode = code
+    }
+
+    private var _matches: List<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>? by mutableStateOf(null)
+    val matches: List<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>?
+        get() = _matches
+    fun fetchMatches() {
+        setEventCode(eventCode.trim())
+
+        val client = HttpClient(CIO)
+
+
+        //TODO: implement code for getting matches from API
+        _matches = if (eventCode == "test") {
+            listOf(
+                Triple(
+                    Triple(78, 3494, 1501), Triple(8564, 256, 119), 1
+                ), Triple(
+                    Triple(3452, 45, 756), Triple(2547, 7678, 234), 2
+                ), Triple(
+                    Triple(4678, 2346, 7345), Triple(4836, 1563, 8136), 3
+                )
+            )
+        } else {
+
+            val stringResponse = if (File(context2.filesDir, "${eventCode}.txt").exists()) {
+                File(context2.filesDir, "${eventCode}.txt").readText()
+            } else {
+                try {
+                    runBlocking {
+                        val response = client.request("https://api.scout.kennan.tech/graphql/") {
+                            method = HttpMethod.Post
+                            setBody("{ \"query\": \"{ getEvent(key: \\\"${eventCode}\\\") { matches { matchKey, matchNumber, matchEntries { teamNumber, alliance }}}}\" }")
+                            contentType(ContentType.Application.Json)
+                        }
+
+                        if (!response.status.isSuccess()) {
+                            SideEffect.ShowToast("API Match Schedule Sync failed")
+                            return@runBlocking null
+                        }
+
+                        val responseBody: String = response.body()
+                        Log.d("GqlResponse", responseBody)
+
+                        File(context2.filesDir, "${eventCode}.txt").writeText(responseBody)
+
+                        responseBody
+                    }
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
+                    return
+                }
+            }
+            val parsedResponse = stringResponse?.let { nonNullResponse ->
+                Json.decodeFromString<MatchDataA>(nonNullResponse).data.getEvent.matches.sortedBy {
+                    extractMatchNumberFromKey(it.matchKey)
+                }
+            } ?: run {
+                return
+            }
+
+            Log.d("GqlResponse", parsedResponse.toString())
+            val finalResponse = mutableListOf<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>()
+
+            for (i in parsedResponse) {
+                val red = mutableListOf<Int>()
+                val blue = mutableListOf<Int>()
+                for (j in i.matchEntries) {
+                    when (j.alliance) {
+                        "red"  -> red.add(j.teamNumber)
+                        "blue" -> blue.add(j.teamNumber)
+                    }
+                }
+                finalResponse.add(
+                    Triple(
+                        Triple(red.getOrNull(0), red.getOrNull(1), red.getOrNull(2)),
+                        Triple(blue.getOrNull(0), blue.getOrNull(1), blue.getOrNull(2)),
+                        i.matchNumber
+                    )
+                )
+            }
+            finalResponse
+        }
+    }
+
+//    private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent()).toMutableStateList()
+//    val devices: List<Device>
+//        get() = _devices
+//    fun getAvailableDevices(context: Context) {
+//        if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
+//            throw Error("Bluetooth not allowed on system")
+//        }
+//
+//        val bluetoothManager = context.getSystemService<BluetoothManager>()
+//        if (bluetoothManager !is BluetoothManager) {
+//            return
+//        }
+//
+//        if (ActivityCompat.checkSelfPermission(
+//                context, Manifest.permission.BLUETOOTH_SCAN
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            throw Error("Bluetooth not granted")
+//        }
+//
+//        bluetoothManager.adapter.startDiscovery()
+//    }
+
+//    private var _currentDevice by mutableStateOf(Device("", ""))
+//    val currentDevice: Device
+//        get() = _currentDevice
+//    fun setCurrentDevice(device: Device) {
+//        _currentDevice = if (device.id != "") {
+//            _devices.first { it.id == device.id }
+//        } else {
+//            Device("", "")
+//        }
+//    }
+
+    private var _scouts: MutableList<String>? by mutableStateOf(null)
+    val scouts: List<String>?
+        get() = _scouts
+    fun fetchScouts() {
+        //TODO: send a request to relay computer for scout names
+        val availableScouts = DataSource.scouts
+        _scouts = availableScouts.toMutableList()
+    }
+
+    private var _currentScout by mutableStateOf("")
+    val currentScout: String
+        get() = _currentScout
+    fun setCurrentScout(value: String) {
+        _currentScout = value
+    }
+
+    private var _matchNumber by mutableIntStateOf(0)
+    val matchNumber: Int
+        get() = _matchNumber
+    fun setMatchNumber(value: Int) {
+        _matchNumber = value
+    }
+
+    private var _teamNumber by mutableStateOf("")
+    val teamNumber: Int?
+        get() = matches?.let {
+            if (matchNumber > 0 && matchNumber <= it.size) {
+                when (currentPosition) {
+                    Position.Red1  -> it[matchNumber - 1].first.first
+                    Position.Red2  -> it[matchNumber - 1].first.second
+                    Position.Red3  -> it[matchNumber - 1].first.third
+                    Position.Blue1 -> it[matchNumber - 1].second.first
+                    Position.Blue2 -> it[matchNumber - 1].second.second
+                    Position.Blue3 -> it[matchNumber - 1].second.third
+                    else           -> null
+                }
+            } else {
+                null
+            }
+        } ?: _teamNumber.toIntOrNull()
+    fun setTeamNumber(value: String) {
+        _teamNumber = value
+    }
+
+    private var _noShow by mutableStateOf(false)
+    val noShow: Boolean
+        get() = _noShow
+    fun setNoShow(value: Boolean) {
+        _noShow = value
+    }
+
+
     private val serializedForm = run {
         val jsonString = context.assets.open("Form.json").bufferedReader().use { it.readText() }
         val gson = Gson()
@@ -170,39 +379,6 @@ class FormViewModel @Inject constructor(
     val form: List<FormPage>
         get() = _form
 
-    private var _scouts: MutableList<String>? by mutableStateOf(null)
-    val scouts: List<String>?
-        get() = _scouts
-
-    fun fetchScouts() {
-        //TODO: send a request to relay computer for scout names
-        val availableScouts = DataSource.scouts
-        _scouts = availableScouts.toMutableList()
-    }
-
-    private var _currentScout by mutableStateOf("")
-    val currentScout: String
-        get() = _currentScout
-
-    fun setCurrentScout(value: String) {
-        _currentScout = value
-    }
-
-    private var _matchNumber by mutableIntStateOf(0)
-    val matchNumber: Int
-        get() = _matchNumber
-
-    fun setMatchNumber(value: Int) {
-        _matchNumber = value
-    }
-
-    private var _noShow by mutableStateOf(false)
-    val noShow: Boolean
-        get() = _noShow
-
-    fun setNoShow(value: Boolean) {
-        _noShow = value
-    }
 
     fun setExpanded(
         page: String,
@@ -253,71 +429,6 @@ class FormViewModel @Inject constructor(
     }
 
 
-//    private val _devices = Json.decodeFromString<List<Device>>(DataSource.deviceJSON.trimIndent())
-//        .toMutableStateList()
-
-//    val devices: List<Device>
-//        get() = _devices
-
-//    fun getAvailableDevices(context: Context) {
-//        if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
-//            throw Error("Bluetooth not allowed on system")
-//        }
-//
-//        val bluetoothManager = context.getSystemService<BluetoothManager>()
-//
-//        if (bluetoothManager !is BluetoothManager) {
-//            return
-//        }
-//
-//        if (ActivityCompat.checkSelfPermission(
-//                context, Manifest.permission.BLUETOOTH_SCAN
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            throw Error("Bluetooth not granted")
-//        }
-//
-//        bluetoothManager.adapter.startDiscovery()
-//
-//
-//    }
-
-//    private var _currentDevice by mutableStateOf(Device("", ""))
-//    val currentDevice: Device
-//        get() = _currentDevice
-
-//    fun setDevice(device: Device) {
-//        _currentDevice = if (device.id != "") {
-//            _devices.first { it.id == device.id }
-//        } else {
-//            Device("", "")
-//        }
-//    }
-
-    private var _currentPosition by mutableStateOf(Position.None)
-    val currentPosition: Position
-        get() = _currentPosition
-
-    fun setPosition(position: Position) {
-        _currentPosition = position
-    }
-
-    private var _fieldOrientation by mutableStateOf(FieldOrientation.None)
-    val fieldOrientation: FieldOrientation
-        get() = _fieldOrientation
-
-    fun setFieldOrientation(pos: FieldOrientation) {
-        _fieldOrientation = pos
-    }
-
-    private var _connectionStatus by mutableStateOf(ConnectionStatus.NOT_CONNECTED)
-    val connectionStatus: ConnectionStatus
-        get() = _connectionStatus
-
-    fun setConnectionStatus(status: ConnectionStatus) {
-        _connectionStatus = status
-    }
-
     private fun initAnswers(): MutableMap<String, Any> {
         val result = mutableStateMapOf<String, Any>()
         for (i in form) {
@@ -343,36 +454,11 @@ class FormViewModel @Inject constructor(
         get() {
             return _answers
         }
-
     fun setAnswer(
         name: String,
         value: Any
     ) {
         _answers[name] = value
-    }
-
-    fun resetForm() {
-        _answers = initAnswers()
-        _matchNumber = run {
-            if (matchNumber == Int.MIN_VALUE || matchNumber == Int.MAX_VALUE) {
-                null
-            } else {
-                val index = matches?.indexOfFirst { it.third == matchNumber }
-                if (index == -1) {
-                    matches?.get(0)?.third
-                } else if (index == matches?.size?.minus(1)) {
-                    null
-                } else {
-                    if (index != null) {
-                        matches?.get(index + 1)?.third
-                    } else {
-                        null
-                    }
-                }
-            }
-        } ?: (matchNumber + 1)
-        _noShow = false
-        setAnswer("matchnumber", matchNumber)
     }
 
     val answersJson: String
@@ -429,38 +515,30 @@ class FormViewModel @Inject constructor(
                 }
         }
 
-
-    private val _sideEffectChannel = Channel<SideEffect>(capacity = Channel.BUFFERED)
-    val sideEffectFlow: Flow<SideEffect>
-        get() = _sideEffectChannel.receiveAsFlow()
-
-    fun sendEvent(evt: SideEffect) {
-        viewModelScope.launch {
-            _sideEffectChannel.send(evt)
-        }
-    }
-
-    private var _teamNumber by mutableStateOf("")
-    val teamNumber: Int?
-        get() = matches?.let {
-            if (matchNumber > 0 && matchNumber <= it.size) {
-                when (currentPosition) {
-                    Position.Red1  -> it[matchNumber - 1].first.first
-                    Position.Red2  -> it[matchNumber - 1].first.second
-                    Position.Red3  -> it[matchNumber - 1].first.third
-                    Position.Blue1 -> it[matchNumber - 1].second.first
-                    Position.Blue2 -> it[matchNumber - 1].second.second
-                    Position.Blue3 -> it[matchNumber - 1].second.third
-                    else           -> null
-                }
-            } else {
+    fun resetForm() {
+        _answers = initAnswers()
+        _matchNumber = run {
+            if (matchNumber == Int.MIN_VALUE || matchNumber == Int.MAX_VALUE) {
                 null
+            } else {
+                val index = matches?.indexOfFirst { it.third == matchNumber }
+                if (index == -1) {
+                    matches?.get(0)?.third
+                } else if (index == matches?.size?.minus(1)) {
+                    null
+                } else {
+                    if (index != null) {
+                        matches?.get(index + 1)?.third
+                    } else {
+                        null
+                    }
+                }
             }
-        } ?: _teamNumber.toIntOrNull()
-
-    fun setTeamNumber(value: String) {
-        _teamNumber = value
+        } ?: (matchNumber + 1)
+        _noShow = false
+        setAnswer("matchnumber", matchNumber)
     }
+
 
     operator fun get(key: String): Any? {
         return when (key) {
@@ -476,97 +554,6 @@ class FormViewModel @Inject constructor(
             "eventCode"        -> eventCode
             "matches"          -> matches
             else               -> null
-        }
-    }
-
-    private var _eventCode by mutableStateOf("")
-    val eventCode: String
-        get() = _eventCode
-
-    fun setEventCode(code: String) {
-        _eventCode = code
-    }
-
-    private var _matches: List<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>? by mutableStateOf(null)
-    val matches: List<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>?
-        get() = _matches
-
-    fun fetchMatches() {
-        setEventCode(eventCode.trim())
-
-        val client = HttpClient(CIO)
-
-
-        //TODO: implement code for getting matches from API
-        _matches = if (eventCode == "test") {
-            listOf(
-                Triple(
-                    Triple(78, 3494, 1501), Triple(8564, 256, 119), 1
-                ), Triple(
-                    Triple(3452, 45, 756), Triple(2547, 7678, 234), 2
-                ), Triple(
-                    Triple(4678, 2346, 7345), Triple(4836, 1563, 8136), 3
-                )
-            )
-        } else {
-
-            val stringResponse = if (File(context2.filesDir, "${eventCode}.txt").exists()) {
-                File(context2.filesDir, "${eventCode}.txt").readText()
-            } else {
-                try {
-                    runBlocking {
-                        val response = client.request("https://api.scout.kennan.tech/graphql/") {
-                            method = HttpMethod.Post
-                            setBody("{ \"query\": \"{ getEvent(key: \\\"${eventCode}\\\") { matches { matchKey, matchNumber, matchEntries { teamNumber, alliance }}}}\" }")
-                            contentType(ContentType.Application.Json)
-                        }
-
-                        if (!response.status.isSuccess()) {
-                            SideEffect.ShowToast("API Match Schedule Sync failed")
-                            return@runBlocking null
-                        }
-
-                        val responseBody: String = response.body()
-                        Log.d("GqlResponse", responseBody)
-
-                        File(context2.filesDir, "${eventCode}.txt").writeText(responseBody)
-
-                        responseBody
-                    }
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                    return
-                }
-            }
-            val parsedResponse = stringResponse?.let { nonNullResponse ->
-                Json.decodeFromString<MatchDataA>(nonNullResponse).data.getEvent.matches.sortedBy {
-                    extractMatchNumberFromKey(it.matchKey)
-                }
-            } ?: run {
-                return
-            }
-
-            Log.d("GqlResponse", parsedResponse.toString())
-            val finalResponse = mutableListOf<Triple<Triple<Int?, Int?, Int?>, Triple<Int?, Int?, Int?>, Int>>()
-
-            for (i in parsedResponse) {
-                val red = mutableListOf<Int>()
-                val blue = mutableListOf<Int>()
-                for (j in i.matchEntries) {
-                    when (j.alliance) {
-                        "red"  -> red.add(j.teamNumber)
-                        "blue" -> blue.add(j.teamNumber)
-                    }
-                }
-                finalResponse.add(
-                    Triple(
-                        Triple(red.getOrNull(0), red.getOrNull(1), red.getOrNull(2)),
-                        Triple(blue.getOrNull(0), blue.getOrNull(1), blue.getOrNull(2)),
-                        i.matchNumber
-                    )
-                )
-            }
-            finalResponse
         }
     }
 }
