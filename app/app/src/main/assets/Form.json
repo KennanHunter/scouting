@@ -206,6 +206,12 @@
                   "type": "image",
                   "content": "shooting_locations_2024",
                   "label": "Key to Scoring Locations"
+                },
+                {
+                  "type": "number",
+                  "label": "Passed Notes",
+                  "name": "passednotes",
+                  "min": "0"
                 }
               ]
             }
