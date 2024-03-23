@@ -106,6 +106,7 @@ export const dumpHandler: RouteHandler = async (c) => {
       "shotfromoutside",
       "teleoptrap",
       "amplifications",
+      "passednotes",
       "climbtime",
       "onstageorder",
       "harmonizeqty",
