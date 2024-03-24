@@ -25,6 +25,7 @@ export const matchDataSchema = z.object({
   onstageorder: z.string().nullable(),
   playeddefense: z.boolean().nullable(),
   position: z.string().nullable(),
+  passednotes: z.number().nullable(),
   rating: z.string().nullable(),
   receiveddefense: z.boolean().nullable(),
   scoutname: z.string(),
