@@ -83,7 +83,6 @@ class FormViewModel @Inject constructor(
 
         val client = HttpClient(CIO)
 
-
         //TODO: implement code for getting matches from API
         _matches = if (eventCode == "test") {
             listOf(
@@ -96,7 +95,6 @@ class FormViewModel @Inject constructor(
                 )
             )
         } else {
-
             val stringResponse = if (File(context2.filesDir, "${eventCode}.txt").exists()) {
                 File(context2.filesDir, "${eventCode}.txt").readText()
             } else {

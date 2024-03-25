@@ -84,7 +84,8 @@ fun ISAScreen(
                         formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_team_number_selected)))
                     } else {
                         if (formViewModel.noShow) {
-                            navController.navigate(AppScreen.Summary.name)
+                            //TODO: Change this next year
+                            navController.navigate("Part 3: Post-Match")
                         } else {
                             navController.navigate(formViewModel.form[0].name)
                         }
@@ -118,7 +119,6 @@ fun ISAScreen(
             SummaryScreen(
                 formViewModel = formViewModel,
                 onPreviousButtonClicked = {
-                    //TODO: send data to relay via Bluetooth
                     navController.navigateUp()
                 },
                 onNewMatchButtonClicked = {
