@@ -124,8 +124,13 @@ class FormViewModel @Inject constructor(
                 }
             }
             val parsedResponse = stringResponse?.let { nonNullResponse ->
-                Json.decodeFromString<MatchDataA>(nonNullResponse).data.getEvent.matches.sortedBy {
-                    extractMatchNumberFromKey(it.matchKey)
+                try {
+                    Json.decodeFromString<MatchDataA>(nonNullResponse).data.getEvent.matches.sortedBy {
+                        extractMatchNumberFromKey(it.matchKey)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
                 }
             } ?: run {
                 return
