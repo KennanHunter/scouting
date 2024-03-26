@@ -90,6 +90,18 @@ export const mutationResolvers: Resolvers["Mutation"] = {
     const event = data.data;
     const startTime = new Date(event.start_date).getTime();
 
+    console.log(
+      JSON.stringify(
+        {
+          type: "Event",
+          notFancy: event.start_date,
+          fancy: startTime,
+        },
+        null,
+        4
+      )
+    );
+
     context.env.DB.prepare(
       "INSERT INTO Events (eventKey, eventName, startTime) VALUES (?, ?, ?)"
     )
@@ -125,7 +137,7 @@ export const mutationResolvers: Resolvers["Mutation"] = {
           VALUES (?, ?, ?, ?, ?, ?)"
           ).bind(
             match.key,
-            match.time,
+            match.time * 1000,
             match.event_key,
             match.winningAlliance ? match.winningAlliance : null,
             match.alliances.red.score ?? null,
@@ -139,7 +151,7 @@ export const mutationResolvers: Resolvers["Mutation"] = {
                 .map((teamNumber) =>
                   context.env.DB.prepare(
                     "INSERT OR IGNORE INTO TeamMatchEntry (matchKey, teamNumber, alliance, matchData) \
-                  VALUES (?, ?, ?, ?)"
+                    VALUES (?, ?, ?, ?)"
                   ).bind(match.key, teamNumber, alliance, null)
                 )
             )
