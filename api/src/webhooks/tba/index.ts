@@ -13,6 +13,15 @@ const matchScoreSchema = z.object({
 });
 
 export const TBAWebhookHandler: RouteHandler = async (c) => {
+  console.log(
+    JSON.stringify({
+      TBAWebhook: {
+        req: c.req,
+        json: await c.req.json(),
+      },
+    })
+  );
+
   const hash = c.req.header("X-TBA-HMAC");
 
   if (!hash) return c.text("Please attach header", 401);
