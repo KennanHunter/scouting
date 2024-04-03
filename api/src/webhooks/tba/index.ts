@@ -16,7 +16,6 @@ export const TBAWebhookHandler: RouteHandler = async (c) => {
   console.log(
     JSON.stringify({
       TBAWebhook: {
-        req: c.req,
         json: await c.req.json(),
       },
     })

@@ -9,6 +9,7 @@ import { dumpScheduleHandler } from "./routes/dumpSchedule";
 import { graphqlHandler } from "./routes/graphql";
 import { graphqlViewerHandler } from "./routes/graphql/viewer";
 import { TBAWebhookHandler } from "./webhooks/tba";
+import { dumpTeamsHandler } from "./routes/dumpTeams";
 
 export type Bindings = {
   DB: D1Database;
@@ -33,6 +34,7 @@ app
   // .use("/api/*", protect) // TODO: Fix Authentication
   .post("/auth/generate/", generateHandler)
   .get("/dump/schedule/:eventId/:format/", dumpScheduleHandler)
+  .get("/dump/teams/:eventId/:format/", dumpTeamsHandler)
   .get("/dump/:eventId/:format/", dumpHandler)
   .get("/viewer/", graphqlViewerHandler)
   .post("/webhooks/tba", TBAWebhookHandler)
