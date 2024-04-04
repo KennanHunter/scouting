@@ -46,8 +46,6 @@ export const TBAWebhookHandler: RouteHandler = async (c) => {
       .bind(matchScoreData.match.event_key)
       .first()
       .then((val) => {
-        console.log(JSON.stringify(val, null, 4));
-
         return z.number().parse(val);
       })
       .then((val) => val === 1);

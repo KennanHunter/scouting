@@ -20,11 +20,7 @@ const teamMatchEntrySchema = z.object({
 type TeamMatchEntrySchema = z.infer<typeof teamMatchEntrySchema>;
 
 export const dumpHandler: RouteHandler = async (c) => {
-  console.log(performance.now());
-
   const { eventId, format } = c.req.param();
-
-  console.log(performance.now());
 
   const query =
     eventId !== "*"
@@ -37,8 +33,6 @@ export const dumpHandler: RouteHandler = async (c) => {
 
   const { results } = await query.all();
 
-  console.log(performance.now());
-
   type MatchEntry = z.infer<typeof teamMatchEntrySchema> &
     z.infer<typeof matchDataSchema>;
 
@@ -46,6 +40,7 @@ export const dumpHandler: RouteHandler = async (c) => {
     teamMatchEntrySchema
       .array()
       .parse(results)
+      .filter((row) => !!row.matchData)
       .map((row) => {
         if (!row["matchData"]) return row;
 
@@ -53,21 +48,13 @@ export const dumpHandler: RouteHandler = async (c) => {
           JSON.parse(row["matchData"])
         );
 
-        const matchRow = {
+        const matchRow: MatchEntry | TeamMatchEntrySchema = {
           ...row,
           ...matchDataObj,
         };
 
         return matchRow;
       });
-
-  console.log(performance.now());
-
-  const filteredMatchEntries = matchEntries.filter(
-    (row) => row.matchData
-  ) as MatchEntry[];
-
-  console.log(performance.now());
 
   const date = new Date();
 
@@ -132,49 +119,43 @@ export const dumpHandler: RouteHandler = async (c) => {
       "comments",
     ] as (keyof MatchEntry | AddedHeaderTypes)[];
 
-    console.log(performance.now());
-
-    const rows = filteredMatchEntries
-      .sort((a, b) => {
+    const rows = (
+      matchEntries.sort((a, b) => {
         return (
           extractMatchNumberFromKey(a.matchKey) -
           extractMatchNumberFromKey(b.matchKey)
         );
-      })
-      .map((row) => {
-        const columnValues = header.map((columnLabel) => {
-          if (!row) throw new Error("empty row not filtered out");
+      }) as (MatchEntry | TeamMatchEntrySchema)[]
+    ).map((row) => {
+      const columnValues = header.map((columnLabel) => {
+        if (!row) throw new Error("empty row not filtered out");
 
-          const columnValue = row[columnLabel as keyof typeof row];
+        const columnValue = row[columnLabel as keyof typeof row];
 
-          if (columnLabel === "startTime") {
-            const startTime = columnValue as (typeof row)["startTime"];
+        if (columnLabel === "startTime") {
+          const startTime = columnValue as (typeof row)["startTime"];
 
-            return convertEpochToExcel(startTime ?? 0);
-          }
+          return convertEpochToExcel(startTime ?? 0);
+        }
 
-          if (columnLabel === "teamOccurrence") {
-            return matchEntries
-              .filter(
-                ({ matchKey }) =>
-                  extractMatchNumberFromKey(matchKey) <= row.matchnumber
-              )
-              .filter(({ teamNumber }) => teamNumber === row.teamNumber).length;
-          }
+        if (columnLabel === "teamOccurrence") {
+          return matchEntries.filter(
+            ({ matchKey, teamNumber }) =>
+              // I have absolutely no fucking clue why this doesn't work
+              extractMatchNumberFromKey(matchKey) <= (row as any).matchnumber &&
+              teamNumber === row.teamNumber
+          ).length;
+        }
 
-          return columnValue;
-        });
-
-        return columnValues.map(escapeValue).join(",");
+        return columnValue;
       });
 
-    console.log(performance.now());
+      return columnValues.map(escapeValue).join(",");
+    });
 
     const finalCSVText = [header.map(escapeValue).join(","), ...rows].join(
       "\n"
     );
-
-    console.log(performance.now());
 
     return c.body(finalCSVText, 200, {
       "Content-Disposition": `attachment; filename="${dateString}.csv"`,
