@@ -20,7 +20,11 @@ const teamMatchEntrySchema = z.object({
 type TeamMatchEntrySchema = z.infer<typeof teamMatchEntrySchema>;
 
 export const dumpHandler: RouteHandler = async (c) => {
+  console.log(performance.now());
+
   const { eventId, format } = c.req.param();
+
+  console.log(performance.now());
 
   const query =
     eventId !== "*"
@@ -32,6 +36,8 @@ export const dumpHandler: RouteHandler = async (c) => {
         );
 
   const { results } = await query.all();
+
+  console.log(performance.now());
 
   type MatchEntry = z.infer<typeof teamMatchEntrySchema> &
     z.infer<typeof matchDataSchema>;
@@ -55,11 +61,13 @@ export const dumpHandler: RouteHandler = async (c) => {
         return matchRow;
       });
 
+  console.log(performance.now());
+
   const filteredMatchEntries = matchEntries.filter(
     (row) => row.matchData
   ) as MatchEntry[];
 
-  console.log(JSON.stringify(filteredMatchEntries, null, 4));
+  console.log(performance.now());
 
   const date = new Date();
 
@@ -124,6 +132,8 @@ export const dumpHandler: RouteHandler = async (c) => {
       "comments",
     ] as (keyof MatchEntry | AddedHeaderTypes)[];
 
+    console.log(performance.now());
+
     const rows = filteredMatchEntries
       .sort((a, b) => {
         return (
@@ -158,14 +168,18 @@ export const dumpHandler: RouteHandler = async (c) => {
         return columnValues.map(escapeValue).join(",");
       });
 
-    return c.body(
-      [header.map(escapeValue).join(","), ...rows].join("\n"),
-      200,
-      {
-        "Content-Disposition": `attachment; filename="${dateString}.csv"`,
-        "Content-Type": "text/csv",
-      }
+    console.log(performance.now());
+
+    const finalCSVText = [header.map(escapeValue).join(","), ...rows].join(
+      "\n"
     );
+
+    console.log(performance.now());
+
+    return c.body(finalCSVText, 200, {
+      "Content-Disposition": `attachment; filename="${dateString}.csv"`,
+      "Content-Type": "text/csv",
+    });
   }
 
   return c.text("Please define a valid format", {
