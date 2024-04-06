@@ -119,6 +119,9 @@ export const dumpHandler: RouteHandler = async (c) => {
       "comments",
     ] as (keyof MatchEntry | AddedHeaderTypes)[];
 
+    // Keep a running tally of the occurrence of the team within our dataset
+    const teamOccurrenceLookup: Map<number, number> = new Map();
+
     const rows = (
       matchEntries.sort((a, b) => {
         return (
@@ -139,12 +142,18 @@ export const dumpHandler: RouteHandler = async (c) => {
         }
 
         if (columnLabel === "teamOccurrence") {
-          return matchEntries.filter(
-            ({ matchKey, teamNumber }) =>
-              // I have absolutely no fucking clue why this doesn't work
-              extractMatchNumberFromKey(matchKey) <= (row as any).matchnumber &&
-              teamNumber === row.teamNumber
-          ).length;
+          if (!teamOccurrenceLookup.has(row.teamNumber)) {
+            teamOccurrenceLookup.set(row.teamNumber, 1);
+
+            return teamOccurrenceLookup.get(row.teamNumber);
+          }
+
+          teamOccurrenceLookup.set(
+            row.teamNumber,
+            (teamOccurrenceLookup.get(row.teamNumber) as number) + 1
+          );
+
+          return teamOccurrenceLookup.get(row.teamNumber) ?? 1;
         }
 
         return columnValue;
