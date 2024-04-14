@@ -95,7 +95,7 @@ export const ExportPage: FC = () => {
 import requests
 import csv
 
-r = requests.get(${targetToURL(exportTarget, id, "CSV")})
+r = requests.get(\"${targetToURL(exportTarget, id, "CSV")}\")
 
 file = StringIO(r.text)
 
@@ -115,7 +115,7 @@ for row in reader:
 
         <Tabs.Panel value="graphql">
           <a
-            href={`https://${import.meta.env.VITE_API_URI}/viewer/`}
+            href={`${import.meta.env.VITE_API_URI}/viewer/`}
             style={{ all: "unset" }}
           >
             <Button m={"md"}>Go to GraphIQL</Button>
