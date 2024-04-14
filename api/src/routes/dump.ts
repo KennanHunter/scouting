@@ -117,6 +117,7 @@ export const dumpHandler: RouteHandler = async (c) => {
       "broke",
       "rating",
       "comments",
+      "stolennotes",
     ] as (keyof MatchEntry | AddedHeaderTypes)[];
 
     // Keep a running tally of the occurrence of the team within our dataset
