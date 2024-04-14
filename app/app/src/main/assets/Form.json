@@ -212,6 +212,12 @@
                   "label": "Passed Notes",
                   "name": "passednotes",
                   "min": "0"
+                },
+                {
+                  "type": "number",
+                  "label": "Stolen Notes",
+                  "name": "stolennotes",
+                  "min": "0"
                 }
               ]
             }
@@ -332,9 +338,25 @@
                   "name": "playeddefense"
                 },
                 {
-                  "type": "checkbox",
-                  "label": "Received Defense",
-                  "name": "receiveddefense"
+                  "type": "radio",
+                  "label": "Defense Received",
+                  "name": "receiveddefense",
+                  "initialValue": "0",
+                  "exportAs": "int",
+                  "options": [
+                    {
+                      "value": "0",
+                      "label": "None"
+                    },
+                    {
+                      "value": "1",
+                      "label": "Light"
+                    },
+                    {
+                      "value": "2",
+                      "label": "Heavy"
+                    }
+                  ]
                 }
               ]
             },
