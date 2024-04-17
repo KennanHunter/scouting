@@ -42,7 +42,7 @@ fun FormScreen(
                 PageTitle(
                     text = it.name,
                     nowScouting = formViewModel.teamNumber,
-                    position = formViewModel.currentPosition
+                    position = formViewModel.position
                 )
             }
         },

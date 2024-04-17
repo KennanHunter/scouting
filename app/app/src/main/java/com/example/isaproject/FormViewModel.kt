@@ -54,11 +54,11 @@ class FormViewModel @Inject constructor(
     }
 
 
-    private var _currentPosition by mutableStateOf(Position.None)
-    val currentPosition: Position
-        get() = _currentPosition
+    private var _position by mutableStateOf(Position.None)
+    val position: Position
+        get() = _position
     fun setPosition(position: Position) {
-        _currentPosition = position
+        _position = position
     }
 
     private var _fieldOrientation by mutableStateOf(FieldOrientation.None)
@@ -194,27 +194,18 @@ class FormViewModel @Inject constructor(
 //        }
 //    }
 
-    private var _scouts: MutableList<String>? by mutableStateOf(null)
-    val scouts: List<String>?
-        get() = _scouts
-    fun fetchScouts() {
-        //TODO: send a request to relay computer for scout names
-        val availableScouts = DataSource.scouts
-        _scouts = availableScouts.toMutableList()
+    private var _scoutName by mutableStateOf("")
+    val scoutName: String
+        get() = _scoutName
+    fun setScoutName(value: String) {
+        _scoutName = value
     }
 
-    private var _currentScout by mutableStateOf("")
-    val currentScout: String
-        get() = _currentScout
-    fun setCurrentScout(value: String) {
-        _currentScout = value
-    }
-
-    private var _currentScoutTeam by mutableIntStateOf(Int.MAX_VALUE)
-    val currentScoutTeam: Int
-        get() = _currentScoutTeam
-    fun setCurrentScoutTeam(value: Int) {
-        _currentScoutTeam = value
+    private var _scoutTeam by mutableIntStateOf(Int.MAX_VALUE)
+    val scoutTeam: Int
+        get() = _scoutTeam
+    fun setScoutTeam(value: Int) {
+        _scoutTeam = value
     }
 
     private var _matchNumber by mutableIntStateOf(0)
@@ -228,7 +219,7 @@ class FormViewModel @Inject constructor(
     val teamNumber: Int?
         get() = matches?.let {
             if (matchNumber > 0 && matchNumber <= it.size) {
-                when (currentPosition) {
+                when (position) {
                     Position.Red1  -> it[matchNumber - 1].first.first
                     Position.Red2  -> it[matchNumber - 1].first.second
                     Position.Red3  -> it[matchNumber - 1].first.third
@@ -475,8 +466,8 @@ class FormViewModel @Inject constructor(
         get() {
             return (
                     answers +
-                            ("position" to currentPosition.name) +
-                            ("scoutname" to "$currentScout ($currentScoutTeam)") +
+                            ("position" to position.name) +
+                            ("scoutname" to "$scoutName ($scoutTeam)") +
                             ("matchnumber" to matchNumber) +
                             ("teamnumber" to (teamNumber ?: 0)) +
                             ("noshow" to noShow)
@@ -555,7 +546,7 @@ class FormViewModel @Inject constructor(
             "form"             -> form
 //            "devices"          -> devices
 //            "currentDevice"    -> currentDevice
-            "currentPosition"  -> currentPosition
+            "currentPosition"  -> position
             "scoutPos"         -> fieldOrientation
             "connectionStatus" -> connectionStatus
             "answers"          -> answers

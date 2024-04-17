@@ -30,7 +30,7 @@ fun MatchInfoScreen(
             PageTitle(
                 text = AppScreen.MatchInfo.label,
                 nowScouting = formViewModel.teamNumber,
-                position = formViewModel.currentPosition
+                position = formViewModel.position
             )
         },
         bottomBar = {
@@ -73,14 +73,14 @@ fun MatchInfoScreen(
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
             )
             TextInput(
-                value = formViewModel.currentScout,
-                onValueChange = { formViewModel.setCurrentScout(it.toString()) },
+                value = formViewModel.scoutName,
+                onValueChange = { formViewModel.setScoutName(it.toString()) },
                 placeholder = "",
                 label = stringResource(R.string.scout_name)
             )
             NumberInput(
-                value = formViewModel.currentScoutTeam,
-                onValueChange = {formViewModel.setCurrentScoutTeam(it.toString().toIntOrNull() ?: 0)},
+                value = formViewModel.scoutTeam,
+                onValueChange = {formViewModel.setScoutTeam(it.toString().toIntOrNull() ?: 0)},
                 label = "Scout Team Number",
                 error = scoutTeamError,
                 onErrorChange = { scoutTeamError = it },

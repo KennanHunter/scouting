@@ -35,12 +35,11 @@ fun ISAScreen(
             DeviceSetupScreen(
                 formViewModel = formViewModel,
                 onConnectButtonClicked = {
-                    formViewModel.fetchScouts()
 //                  if (formViewModel.currentDevice.id == "") {
 //                      formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_device_selected)))
 //                      return@DeviceSetupScreen
 //                  }
-                    if (formViewModel.currentPosition == Position.None) {
+                    if (formViewModel.position == Position.None) {
                         formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_position_selected)))
                         return@DeviceSetupScreen
                     }
@@ -77,10 +76,10 @@ fun ISAScreen(
                 onPreviousButtonClicked = { navController.navigate(AppScreen.SetupDevice.name) },
                 onNextButtonClicked = {
                     if (
-                        formViewModel.currentScout == "" ||
-                        formViewModel.currentScoutTeam == 0 ||
-                        formViewModel.currentScoutTeam == Int.MAX_VALUE ||
-                        formViewModel.currentScoutTeam == Int.MIN_VALUE
+                        formViewModel.scoutName == "" ||
+                        formViewModel.scoutTeam == 0 ||
+                        formViewModel.scoutTeam == Int.MAX_VALUE ||
+                        formViewModel.scoutTeam == Int.MIN_VALUE
                     ) {
                         formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.scout_information_is_incomplete)))
                     } else if (formViewModel.matches?.indexOfFirst { it.third == formViewModel.matchNumber } == -1) {
@@ -137,7 +136,7 @@ fun ISAScreen(
                         R.string.isa_json,
                         formViewModel.eventCode,
                         formViewModel.matchNumber,
-                        formViewModel.currentPosition.name,
+                        formViewModel.position.name,
                         formViewModel.teamNumber ?: 0
                     )
 
@@ -170,7 +169,7 @@ fun ISAScreen(
                         R.string.isa_json,
                         formViewModel.eventCode,
                         formViewModel.matchNumber,
-                        formViewModel.currentPosition.name,
+                        formViewModel.position.name,
                         formViewModel.teamNumber ?: 0
                     )
 

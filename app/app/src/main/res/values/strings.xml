@@ -39,4 +39,6 @@
     <string name="invalid_match_number">Invalid Match Number</string>
     <string name="match_information">Match Information</string>
     <string name="scout_information">Scout Information</string>
+    <string name="event_code">Event Code</string>
+    <string name="leave_blank_for_manual_team_numbers">Leave this field blank to manually input team numbers</string>
 </resources>

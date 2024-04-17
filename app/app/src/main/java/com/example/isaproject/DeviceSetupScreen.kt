@@ -82,10 +82,10 @@ fun DeviceSetupScreen(
                     if (i != Position.None) {
                         DeviceListItem(
                             label = i.label,
-                            current = formViewModel.currentPosition.label,
+                            current = formViewModel.position.label,
                             subtext = "",
                             onValueChange = {
-                                if (formViewModel.currentPosition != i) {
+                                if (formViewModel.position != i) {
                                     formViewModel.setPosition(i)
                                 } else {
                                     formViewModel.setPosition(Position.None)
@@ -120,7 +120,7 @@ fun DeviceSetupScreen(
             }
             FormDivider()
             Text(
-                text = "Event Code",
+                text = stringResource(R.string.event_code),
                 style = MaterialTheme.typography.headlineMedium
             )
             TextField(
@@ -128,7 +128,7 @@ fun DeviceSetupScreen(
                 onValueChange = { formViewModel.setEventCode(it) },
                 singleLine = true,
                 supportingText = {
-                    Text("Leave this field blank to manually input team numbers")
+                    Text(stringResource(R.string.leave_blank_for_manual_team_numbers))
                 },
                 modifier = Modifier.fillMaxWidth()
             )
