@@ -338,6 +338,9 @@
                   "name": "playeddefense"
                 },
                 {
+                  "type": "spacer"
+                },
+                {
                   "type": "radio",
                   "label": "Defense Received",
                   "name": "receiveddefense",

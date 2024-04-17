@@ -76,8 +76,13 @@ fun ISAScreen(
                 formViewModel = formViewModel,
                 onPreviousButtonClicked = { navController.navigate(AppScreen.SetupDevice.name) },
                 onNextButtonClicked = {
-                    if (formViewModel.currentScout == "") {
-                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.no_scout_name_selected)))
+                    if (
+                        formViewModel.currentScout == "" ||
+                        formViewModel.currentScoutTeam == 0 ||
+                        formViewModel.currentScoutTeam == Int.MAX_VALUE ||
+                        formViewModel.currentScoutTeam == Int.MIN_VALUE
+                    ) {
+                        formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.scout_information_is_incomplete)))
                     } else if (formViewModel.matches?.indexOfFirst { it.third == formViewModel.matchNumber } == -1) {
                         formViewModel.sendEvent(SideEffect.ShowToast(context.getString(R.string.invalid_match_number)))
                     } else if (formViewModel.teamNumber == 0) {

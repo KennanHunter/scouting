@@ -34,7 +34,9 @@
     <string name="no">No</string>
     <string name="new_match_confirmation_title">Are you sure you want to start a new match?</string>
     <string name="new_match_confirmation_description">This will clear the form completely. A copy of the data will be saved locally but there is no easy way to edit it.</string>
-    <string name="no_scout_name_selected">No Scout Name Selected</string>
+    <string name="scout_information_is_incomplete">Scout Information is Incomplete</string>
     <string name="no_team_number_selected">No Team Number Selected</string>
     <string name="invalid_match_number">Invalid Match Number</string>
+    <string name="match_information">Match Information</string>
+    <string name="scout_information">Scout Information</string>
 </resources>

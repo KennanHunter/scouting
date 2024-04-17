@@ -210,6 +210,13 @@ class FormViewModel @Inject constructor(
         _currentScout = value
     }
 
+    private var _currentScoutTeam by mutableIntStateOf(Int.MAX_VALUE)
+    val currentScoutTeam: Int
+        get() = _currentScoutTeam
+    fun setCurrentScoutTeam(value: Int) {
+        _currentScoutTeam = value
+    }
+
     private var _matchNumber by mutableIntStateOf(0)
     val matchNumber: Int
         get() = _matchNumber
@@ -469,7 +476,7 @@ class FormViewModel @Inject constructor(
             return (
                     answers +
                             ("position" to currentPosition.name) +
-                            ("scoutname" to currentScout) +
+                            ("scoutname" to "$currentScout ($currentScoutTeam)") +
                             ("matchnumber" to matchNumber) +
                             ("teamnumber" to (teamNumber ?: 0)) +
                             ("noshow" to noShow)

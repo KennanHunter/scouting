@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MatchInfoScreen(
     formViewModel: FormViewModel,
@@ -64,70 +63,39 @@ fun MatchInfoScreen(
                 .padding(dimensionResource(R.dimen.margin))
                 .fillMaxHeight()
         ) {
-            var scoutsExpanded by remember { mutableStateOf(false) }
-            var scoutsSelected by remember { mutableStateOf(false) }
+            var scoutTeamError by remember { mutableStateOf("") }
             var matchNumberError by remember { mutableStateOf("") }
             var teamNumberError by remember { mutableStateOf("") }
-            formViewModel.scouts?.let { scouts ->
-                Column(
-                    modifier = modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
-                ) {
-                    FormLabel(label = stringResource(R.string.scout_name))
-                    Row {
-                        ExposedDropdownMenuBox(
-                            expanded = scoutsExpanded,
-                            onExpandedChange = {
-                                if (!it) {
-                                    scoutsSelected = false
-                                }
-                                scoutsExpanded = it
-                            }
-                        ) {
-                            TextField(
-                                modifier = Modifier
-                                    .menuAnchor()
-                                    .fillMaxWidth(),
-                                value = formViewModel.currentScout,
-                                onValueChange = {
-                                    scoutsSelected = false
-                                    formViewModel.setCurrentScout(it)
-                                },
-                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = scoutsExpanded) },
-                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                                singleLine = true
-                            )
-                            val filteringOptions = if (!scoutsSelected) {
-                                scouts.filter { it.contains(formViewModel.currentScout, ignoreCase = true) }
-                            } else {
-                                scouts
-                            }
-                            if (filteringOptions.isNotEmpty()) {
-                                ExposedDropdownMenu(
-                                    expanded = scoutsExpanded,
-                                    onDismissRequest = { scoutsExpanded = false }
-                                ) {
-                                    filteringOptions.forEach { dropdownOption ->
-                                        DropdownMenuItem(
-                                            text = { Text(dropdownOption) },
-                                            onClick = {
-                                                scoutsExpanded = false
-                                                scoutsSelected = false
-                                                formViewModel.setCurrentScout(dropdownOption)
-                                            },
-                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            } ?: run {
-                Text(
-                    text = "formViewModel.getScouts() failed"
-                )
-            }
 
+            Text(
+                text = stringResource(R.string.scout_information),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+            )
+            TextInput(
+                value = formViewModel.currentScout,
+                onValueChange = { formViewModel.setCurrentScout(it.toString()) },
+                placeholder = "",
+                label = stringResource(R.string.scout_name)
+            )
+            NumberInput(
+                value = formViewModel.currentScoutTeam,
+                onValueChange = {formViewModel.setCurrentScoutTeam(it.toString().toIntOrNull() ?: 0)},
+                label = "Scout Team Number",
+                error = scoutTeamError,
+                onErrorChange = { scoutTeamError = it },
+                min = 0,
+                useButtons = false,
+                context = context
+            )
+
+            FormDivider()
+
+            Text(
+                text = stringResource(R.string.match_information),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
+            )
             Column(
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.form_element_space))
             ) {
@@ -248,7 +216,6 @@ fun MatchInfoScreen(
                     error = teamNumberError,
                     onErrorChange = { teamNumberError = it },
                     min = 0,
-                    max = 99999,
                     label = stringResource(R.string.team_number),
                     useButtons = false,
                     context = context
