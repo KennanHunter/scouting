@@ -19,7 +19,7 @@ export const TBAEventSchema = z.object({
   lng: z.number(),
   location_name: z.string(),
   name: z.string(),
-  parent_event_key: z.null(),
+  parent_event_key: z.string().nullable(),
   playoff_type_string: z.string(),
   playoff_type: z.number(),
   postal_code: z.string(),
