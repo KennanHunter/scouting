@@ -471,49 +471,45 @@ class FormViewModel @Inject constructor(
                             ("matchnumber" to matchNumber) +
                             ("teamnumber" to (teamNumber ?: 0)) +
                             ("noshow" to noShow)
-                    ).entries.toSortedSet(compareBy { it.key }).joinToString(
-                    prefix = "{\n", postfix = "\n}", separator = ",\n"
-                ) {
-                    val element: FormElement? = run {
-                        for (j in form) {
-                            for (k in j.page) {
-                                if (k.name == it.key) return@run k
-                            }
-                        }
-                        return@run null
-                    }
-                    var value = it.value
-                    if (value is Int && (value == Int.MIN_VALUE || value == Int.MAX_VALUE)) {
-                        value = 0
-                    }
-                    if (element != null && value::class.simpleName != element.exportAs.name) {
-                        value = when (element.exportAs) {
-                            DataType.Int     -> when (value) {
-                                is Boolean -> if (value) 1 else 0
-                                is String  -> value.toIntOrNull() ?: 0
-                                else       -> value.toString().toIntOrNull() ?: 0
-                            }
-
-                            DataType.Boolean -> when (value) {
-                                is Int    -> value > 0
-                                is String -> value.toBooleanStrictOrNull() ?: false
-                                else      -> value.toString().toBooleanStrictOrNull() ?: false
-                            }
-
-                            DataType.String  -> value.toString()
+            ).entries.toSortedSet(compareBy { it.key }).joinToString(
+                prefix = "{\n", postfix = "\n}", separator = ",\n"
+            ) {
+                val element: FormElement? = run {
+                    for (j in form) {
+                        for (k in j.page) {
+                            if (k.name == it.key) return@run k
                         }
                     }
+                    return@run null
+                }
+                var value = it.value
+                if (value is Int && (value == Int.MIN_VALUE || value == Int.MAX_VALUE)) {
+                    value = 0
+                }
+                if (element != null && value::class.simpleName != element.exportAs.name) {
+                    value = when (element.exportAs) {
+                        DataType.Int     -> when (value) {
+                            is Boolean -> if (value) 1 else 0
+                            is String  -> value.toIntOrNull() ?: 0
+                            else       -> value.toString().toIntOrNull() ?: 0
+                        }
 
-                    "    \"" + it.key + "\": " + if (it.value is Int || it.value is Boolean) {
-                        ""
-                    } else {
-                        "\""
-                    } + value.toString() + if (it.value is Int || it.value is Boolean) {
-                        ""
-                    } else {
-                        "\""
+                        DataType.Boolean -> when (value) {
+                            is Int    -> value > 0
+                            is String -> value.toBooleanStrictOrNull() ?: false
+                            else      -> value.toString().toBooleanStrictOrNull() ?: false
+                        }
+
+                        DataType.String  -> value.toString()
                     }
                 }
+                Log.d("AnswersJson", it.key + " " + value.toString() + " " + value::class.simpleName)
+
+                "    \"" + it.key + "\": " +
+                        if (value is String) { "\"" } else { "" } +
+                        value.toString() +
+                        if (value is String) { "\"" } else { "" }
+            }
         }
 
     fun resetForm() {
