@@ -1,5 +1,6 @@
 package com.example.isaproject
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -121,6 +122,7 @@ fun MatchInfoScreen(
                                     }
                                 }
                             )
+                            Log.d("MatchInfo", formViewModel.eventCode)
                             if (formViewModel.matches?.indexOfFirst { it.third == formViewModel.matchNumber } == -1) {
                                 matchNumberError = context.getString(R.string.invalid_match_number)
                             } else if (matchNumberError != "") {
@@ -134,21 +136,27 @@ fun MatchInfoScreen(
                         leadingIcon = {
                             OutlinedIconButton(
                                 onClick = {
-                                    (
-                                        if (formViewModel.matchNumber == Int.MIN_VALUE || formViewModel.matchNumber == Int.MAX_VALUE) {
-                                            0
-                                        } else {
-                                            val index = formViewModel.matches?.indexOfFirst { it.third == formViewModel.matchNumber }
-                                            if (index == -1 || index == 0) {
-                                                formViewModel.matches?.get(0)?.third
+                                    if (formViewModel.eventCode != "") {
+                                        (
+                                            if (formViewModel.matchNumber == Int.MIN_VALUE || formViewModel.matchNumber == Int.MAX_VALUE) {
+                                                0
                                             } else {
-                                                if (index != null) {
-                                                    formViewModel.matches?.get(index - 1)?.third
-                                                } else { null }
+                                                val index = formViewModel.matches?.indexOfFirst { it.third == formViewModel.matchNumber }
+                                                if (index == -1 || index == 0) {
+                                                    formViewModel.matches?.get(0)?.third
+                                                } else {
+                                                    if (index != null) {
+                                                        formViewModel.matches?.get(index - 1)?.third
+                                                    } else {
+                                                        null
+                                                    }
+                                                }
                                             }
+                                            )?.let {
+                                            formViewModel.setMatchNumber(it)
                                         }
-                                    )?.let {
-                                        formViewModel.setMatchNumber(it)
+                                    } else {
+                                        formViewModel.setMatchNumber(formViewModel.matchNumber - 1)
                                     }
                                 },
                                 modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
@@ -162,23 +170,29 @@ fun MatchInfoScreen(
                         trailingIcon = {
                             OutlinedIconButton(
                                 onClick = {
-                                    (
-                                        if (formViewModel.matchNumber == Int.MIN_VALUE || formViewModel.matchNumber == Int.MAX_VALUE) {
-                                            0
-                                        } else {
-                                            val index = formViewModel.matches?.indexOfFirst { it.third == formViewModel.matchNumber }
-                                            if (index == -1) {
-                                                formViewModel.matches?.get(0)?.third
-                                            } else if (index == formViewModel.matches?.size?.minus(1)) {
-                                                null
+                                    if (formViewModel.eventCode != "") {
+                                        (
+                                            if (formViewModel.matchNumber == Int.MIN_VALUE || formViewModel.matchNumber == Int.MAX_VALUE) {
+                                                0
                                             } else {
-                                                if (index != null) {
-                                                    formViewModel.matches?.get(index + 1)?.third
-                                                } else { null }
+                                                val index = formViewModel.matches?.indexOfFirst { it.third == formViewModel.matchNumber }
+                                                if (index == -1) {
+                                                    formViewModel.matches?.get(0)?.third
+                                                } else if (index == formViewModel.matches?.size?.minus(1)) {
+                                                    null
+                                                } else {
+                                                    if (index != null) {
+                                                        formViewModel.matches?.get(index + 1)?.third
+                                                    } else {
+                                                        null
+                                                    }
+                                                }
                                             }
+                                            )?.let {
+                                            formViewModel.setMatchNumber(it)
                                         }
-                                    )?.let {
-                                        formViewModel.setMatchNumber(it)
+                                    } else {
+                                        formViewModel.setMatchNumber(formViewModel.matchNumber + 1)
                                     }
                                 },
                                 modifier = Modifier.size(dimensionResource(R.dimen.number_button_size))
