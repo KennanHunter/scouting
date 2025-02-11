@@ -8,6 +8,15 @@
 ## Dev Container
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/KennanHunter/scouting)
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/KennanHunter/scouting)
+[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/KennanHunter/scouting)
+[![Open in Glitch](https://img.shields.io/badge/Open%20in-Glitch-blue?logo=glitch)](https://glitch.com/edit/#!/import/github/KennanHunter/scouting)
+[![Open in Repl.it](https://replit.com/badge)](https://replit.com/github/KennanHunter/scouting)
+[![Open in Codeanywhere](https://codeanywhere.com/img/open-in-codeanywhere-btn.svg)](https://app.codeanywhere.com/#https://github.com/KennanHunter/scouting)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/KennanHunter/scouting)
+
+
+
 
 The easiest way to start contributing is to open this repository in a codespace. Either **press the button above**, or go to [the repository](https://github.com/kennanhunter/scouting) and select the big green button labeled `<> Code`. In the resulting drop down menu, press `Codespaces` and press `Create Codespace on main`.
 
