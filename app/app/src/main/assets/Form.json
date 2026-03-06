@@ -292,7 +292,7 @@
                   ]
                 },
                 {
-                  "type":"checkbox",
+                  "type": "checkbox",
                   "label": "Provided Climb Assistance (for same chain)",
                   "name": "buddy"
                 }
@@ -313,7 +313,7 @@
               "type": "column",
               "children": [
                 {
-                  "type":"checkbox",
+                  "type": "checkbox",
                   "label": "Floor Pick Up",
                   "name": "floorpickup",
                   "exportAs": "int"

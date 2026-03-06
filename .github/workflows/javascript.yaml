@@ -92,7 +92,7 @@ jobs:
         run: cd web && pnpm build
         env:
           VITE_API_TOKEN: ${{ secrets.WEB_API_TOKEN }}
-          VITE_API_URI: https://api.scout.kennan.tech
+          VITE_API_URI: https://scouting-api.kennan.workers.dev/
 
       - name: Publish Web to Cloudflare Pages
         uses: cloudflare/pages-action@v1

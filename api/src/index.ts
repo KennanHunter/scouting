@@ -30,7 +30,12 @@ export type APIContext = Context<{ Bindings: Bindings }>;
 app
   .notFound(handle404)
   .use("/*", addTrailingSlash)
-  .use("/*", cors()) // TODO: limit cors allowed origins
+  .use(
+    "/*",
+    cors({
+      origin: "https://scout.kennan.dev",
+    })
+  ) // TODO: limit cors allowed origins
   // .use("/api/*", protect) // TODO: Fix Authentication
   .post("/auth/generate/", generateHandler)
   .get("/dump/schedule/:eventId/:format/", dumpScheduleHandler)

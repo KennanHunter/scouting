@@ -9,7 +9,7 @@
       "ppa": "false"
     },
     "ghcr.io/devcontainers/features/sshd:1": {
-        "version": "latest"
+      "version": "latest"
     }
   },
 
